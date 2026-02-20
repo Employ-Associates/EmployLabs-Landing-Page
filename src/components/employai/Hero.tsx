@@ -92,7 +92,9 @@ export const Hero: React.FC = () => {
             className="gap-2 px-8 text-black bg-white rounded-full hover:bg-zinc-200"
             icon
           >
-            Experience Signal Interview
+            <a href="https://app.employlabs.ai/demo/login">
+              Experience Signal Interview
+            </a>
           </Button>
           <Button
             variant="outline"
