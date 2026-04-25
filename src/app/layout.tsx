@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Exo } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/employ-lab/Footer";
+import ConditionalFooter from "@/components/employ-lab/ConditionalFooter";
 
 const exo = Exo({
   subsets: ["latin"],
@@ -23,9 +24,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={exo.variable}>
+      <body className={exo.variable} suppressHydrationWarning>
         {children}
-        <Footer />
+        <ConditionalFooter />
       </body>
     </html>
   );

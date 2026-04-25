@@ -136,3 +136,113 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* ─── Naira Product Page Design Tokens ───────────────────────────────────── */
+
+/* CSS custom properties for inline style usage in naira components */
+:root {
+  --bg-root:  #050505;
+  --bg-base:  #080808;
+  --bg-card:  #0f0f0f;
+  --bg-inset: #1a1a1a;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.10);
+
+  --text-primary:   #f0f0f0;
+  --text-secondary: #a0a0a0;
+  --text-muted:     #4b5563;
+
+  --teal-400: #2dd4bf;
+  --teal-500: #14b8a6;
+  --teal-600: #0d9488;
+  --teal-900: #042f2e;
+
+  --signal-green:  #10b981;
+  --signal-amber:  #f59e0b;
+  --signal-red:    #ef4444;
+  --signal-indigo: #6366f1;
+  --signal-purple: #a78bfa;
+  --signal-cyan:   #22d3ee;
+}
+
+/* Tailwind v4 theme tokens — generates utility classes for naira components */
+@theme {
+  --color-bg-root:  #050505;
+  --color-bg-base:  #080808;
+  --color-bg-card:  #0f0f0f;
+  --color-bg-inset: #1a1a1a;
+
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+  --color-border-strong: rgba(255, 255, 255, 0.10);
+
+  --color-text-primary:   #f0f0f0;
+  --color-text-secondary: #a0a0a0;
+  --color-text-muted:     #4b5563;
+
+  --color-signal-green:  #10b981;
+  --color-signal-amber:  #f59e0b;
+  --color-signal-red:    #ef4444;
+  --color-signal-indigo: #6366f1;
+  --color-signal-purple: #a78bfa;
+  --color-signal-cyan:   #22d3ee;
+
+  --radius-card: 12px;
+}
+
+/* Naira-specific utility classes */
+@layer utilities {
+  .text-gradient-teal {
+    background: linear-gradient(
+      90deg,
+      var(--text-primary)  0%,
+      var(--teal-500)       50%,
+      var(--text-primary)  100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  .font-mono-data {
+    font-family: var(--font-mono), "IBM Plex Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  .marquee-mask {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
+  }
+
+  .animate-marquee {
+    animation: marquee 28s linear infinite;
+  }
+
+  .animate-marquee-reverse {
+    animation: marquee-reverse 44s linear infinite;
+  }
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-reverse {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
