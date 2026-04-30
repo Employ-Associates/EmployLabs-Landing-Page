@@ -352,10 +352,9 @@ export const NairaHero: React.FC = () => {
       data-screen-label="Hero"
     >
       <div
-        className="absolute inset-0 bg-cover bg-center rotate-180"
+        className="absolute inset-0 bg-cover bg-center rotate-180 blur-sm"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1635776062360-af423602aff3')",
+          backgroundImage: "url('/naira-hero-bg.jpg')",
           opacity: 1,
         }}
       />
