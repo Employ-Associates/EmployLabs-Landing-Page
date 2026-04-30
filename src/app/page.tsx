@@ -1,4 +1,4 @@
-import { Header } from "@/components/employai/Header";
+import { Header } from "@/components/employ-lab/Header";
 import { Hero } from "@/components/employai/Hero";
 import { WhyEmploySection } from "@/components/employai/WhyEmploySection";
 import ProcessIllustration from "@/components/employai/ProcessIllustration";
