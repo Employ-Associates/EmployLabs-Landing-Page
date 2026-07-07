@@ -1,4 +1,5 @@
 import { Header } from "@/components/employ-lab/Header";
+import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/people-search/Hero";
 import { FeaturesSection } from "@/components/people-search/FeaturesSection";
 import { FAQSection } from "@/components/people-search/FAQSection";
@@ -18,6 +19,7 @@ export default function PeopleSearchEngine() {
       {/* <TestinomialSection /> */}
       <FAQSection />
       <CallToActionSection />
+      <Footer />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/employ-lab/Header";
+import { Footer } from "@/components/Footer";
 import { NairaHero } from "@/components/naira/NairaHero";
 import { NairaCoverage } from "@/components/naira/NairaCoverage";
 import { NairaProblem, NairaModules } from "@/components/naira/NairaModules";
@@ -61,6 +62,7 @@ export default function NairaPage() {
         <NairaOutcomes />
         <NairaCTA />
       </main>
+      <Footer />
     </div>
   );
 }

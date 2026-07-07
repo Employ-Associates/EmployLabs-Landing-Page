@@ -13,6 +13,7 @@ import { PartnerEngage } from "@/components/employ-lab/PartnerEngage";
 import { CallToActionSection } from "@/components/employ-lab/CallToActionSection";
 import { ParticleWave } from "@/components/ParticleWave";
 import { ThreePillarsSection } from "@/components/employai/ThreePillarsSection";
+import { Footer } from "@/components/Footer";
 
 export default function VisionPage() {
   return (
@@ -22,7 +23,7 @@ export default function VisionPage() {
         <Hero />
 
         {/* Wave Transition */}
-        <div className="relative w-full h-[200p=] -mt-20 z-20 pointer-events-none">
+        <div className="relative w-full h-[200px] -mt-20 z-20 pointer-events-none">
           <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-black/80 to-black"></div>
           <ParticleWave />
         </div>
@@ -41,6 +42,7 @@ export default function VisionPage() {
         {/* <PartnerEngage /> */}
         <CallToActionSection />
       </main>
+      <Footer />
     </div>
   );
 }
