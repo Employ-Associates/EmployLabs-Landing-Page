@@ -37,7 +37,7 @@ function AgentCard({ agent, index, total }: AgentCardProps) {
   const yOffset = useTransform(scrollYProgress, [0, 1], [0, isLast ? 0 : -40]);
 
   // Dynamic sticky top alignment so subsequent cards stack perfectly
-  const stickyTop = 40 + index * 60;
+  const stickyTop = 92 + index * 92;
 
   return (
     <div
@@ -46,7 +46,7 @@ function AgentCard({ agent, index, total }: AgentCardProps) {
         top: `${stickyTop}px`,
         zIndex: index + 10
       }}
-      className="sticky w-full bg-zinc-950 pt-8 pb-14 border-t border-white/5"
+      className="sticky w-full bg-zinc-950 pt-5 pb-14 border-t border-white/5"
     >
       <motion.div
         style={{
