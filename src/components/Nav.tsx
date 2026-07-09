@@ -5,8 +5,13 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight } from "lucide-react";
 
-export function Nav() {
+export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
   const [isScrolled, setIsScrolled] = useState(false);
+  // "light" = the un-scrolled top bar sits on a light hero (home) → dark text.
+  // "dark" = it sits on a dark/black hero (Vision, People Search, Naira) →
+  // light text. The floating capsule (post-scroll) is always a dark pill
+  // with light text, so it needs no variant handling.
+  const isDark = variant === "dark";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,13 +28,13 @@ export function Nav() {
       {/* Top Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-transparent ${isScrolled ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'}`}>
         <div className="w-full px-6 md:px-12 h-20 md:h-24 flex items-center justify-between">
-          <div className="flex items-center gap-3 text-zinc-900">
-            <div className="bg-zinc-900 text-white w-8 h-8 flex items-center justify-center font-display font-black text-lg tracking-tighter leading-none rounded-none">EL</div>
+          <div className={`flex items-center gap-3 ${isDark ? "text-white" : "text-zinc-900"}`}>
+            <div className={`w-8 h-8 flex items-center justify-center font-display font-black text-lg tracking-tighter leading-none rounded-none ${isDark ? "bg-white text-black" : "bg-zinc-900 text-white"}`}>EL</div>
             <span className="font-display font-bold text-xl tracking-tight">EMPLOYLABS</span>
           </div>
 
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-800">
-            <a href="#employ" className="hover:text-white transition-colors">Employ</a>
+          <div className={`hidden md:flex items-center gap-8 text-sm font-medium ${isDark ? "text-zinc-300" : "text-zinc-800"}`}>
+            <Link href="/" className="hover:text-white transition-colors">Employ</Link>
             <Link href="/vision" className="hover:text-white transition-colors">Vision</Link>
             <Link href="/people-search-engine" className="hover:text-white transition-colors">People Search</Link>
             <Link href="/naira-ai-interviewer" className="hover:text-white transition-colors">Naira</Link>
@@ -62,7 +67,7 @@ export function Nav() {
             </div>
 
             <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-300">
-              <a href="#employ" className="hover:text-white transition-colors">Employ</a>
+              <Link href="/" className="hover:text-white transition-colors">Employ</Link>
               <Link href="/vision" className="hover:text-white transition-colors">Vision</Link>
               <Link href="/people-search-engine" className="hover:text-white transition-colors">People Search</Link>
               <Link href="/naira-ai-interviewer" className="hover:text-white transition-colors">Naira</Link>

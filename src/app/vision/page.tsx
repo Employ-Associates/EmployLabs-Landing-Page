@@ -1,4 +1,4 @@
-import { Header } from "@/components/employ-lab/Header";
+import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/employ-lab/Hero";
 import { Vision } from "@/components/employ-lab/Vision";
 import { Philosophy } from "@/components/employ-lab/Philosophy";
@@ -18,7 +18,7 @@ import { Footer } from "@/components/Footer";
 export default function VisionPage() {
   return (
     <div className="min-h-screen font-sans text-white bg-black selection:bg-blue-500 selection:text-white">
-      <Header />
+      <Nav variant="dark" />
       <main>
         <Hero />
 

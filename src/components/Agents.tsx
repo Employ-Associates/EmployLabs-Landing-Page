@@ -89,9 +89,8 @@ function AgentCard({ agent, index, total }: AgentCardProps) {
             <img
               src={agent.bgImage}
               alt="Background"
-              className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-luminosity group-hover:scale-[1.03] transition-transform duration-[4000ms] ease-out"
+              className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-[1.03] transition-transform duration-[4000ms] ease-out"
             />
-            <div className="absolute inset-0 bg-black/40" />
 
             {/* Center Widget */}
             <div className="relative z-20 w-full max-w-md flex justify-center p-4">

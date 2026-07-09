@@ -53,10 +53,37 @@ h6 {
   -webkit-backdrop-filter: blur(16px);
 }
 
+/* Glass card — ported from el-platform's glass.css (same technique, this
+   theme's tokens): opaque surface + hairline border + a lit top-edge sheen
+   (::before, inset from the corners so it respects the radius). Plain rule
+   (not @layer) so it wins over Tailwind bg-/border- utilities on the same
+   element — apply glass-card INSTEAD of those, not alongside them. */
 .glass-card {
-  background: linear-gradient(145deg, rgba(21, 21, 21, 0.9) 0%, rgba(13, 13, 13, 0.9) 100%);
+  position: relative;
+  background: var(--color-card);
   border: 1px solid var(--color-border);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset-inline: 1rem;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* Accent-tinted glass-card variant — stack alongside .glass-card (e.g. a
+   "most popular" pricing tier). Longhand border-color overrides the base
+   rule's shorthand since this is declared after it. */
+.glass-card-accent {
+  border-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  box-shadow: 0 0 50px rgba(85, 234, 140, 0.06);
 }
 
 /* 3D isometric scene — ParadigmShift · The Autonomous Way (pure CSS 3D, GPU-composited) */

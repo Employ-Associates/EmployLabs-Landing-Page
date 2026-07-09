@@ -23,7 +23,7 @@ export function SocialProof() {
               transition={{ duration: 0.6 }}
               className="text-xl md:text-2xl lg:text-3xl font-display font-medium tracking-tight text-white leading-snug"
             >
-              Solve your most complex pipelines with AI, up and running in <span className="text-accent italic">hours</span>, not days.
+              Solve your most complex pipelines with AI, up and running in <span className="text-accent italic">minutes</span>, not days.
             </motion.h3>
           </div>
 

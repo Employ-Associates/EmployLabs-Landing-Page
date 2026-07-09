@@ -126,53 +126,109 @@ export function ParadigmShift() {
             </div>
 
             {/* Isometric 3D scene — the autonomous pipeline as a rising stack */}
-            <div className="flex-1 flex items-center justify-center relative z-10 min-h-[400px] md:min-h-[480px]">
+            <div className="flex-1 flex items-center justify-center relative z-10 min-h-[440px] md:min-h-[520px]">
               {/* ambient accent glow (screen space) */}
-              <div className="absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/15 blur-[100px] pointer-events-none" />
+              <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/15 blur-[110px] pointer-events-none" />
 
               <motion.div
                 initial={{ opacity: 0, y: 26 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: 0.15 }}
-                className="relative w-full [perspective:1400px] [perspective-origin:50%_45%]"
+                className="relative w-full [perspective:1600px] [perspective-origin:50%_42%]"
               >
-                <div className="relative mx-auto h-[300px] w-[280px] [transform-style:preserve-3d] animate-[isoStackFloat_9s_ease-in-out_infinite]">
+                <div className="relative mx-auto h-[360px] w-[340px] [transform-style:preserve-3d] animate-[isoStackFloat_9s_ease-in-out_infinite]">
+
+                  {/* Grounding grid floor — gives the stack spatial context */}
+                  <div
+                    className="absolute left-1/2 top-[210px] h-[420px] w-[520px] -translate-x-1/2 pointer-events-none"
+                    style={{
+                      transform: "rotateX(74deg) translateZ(-60px)",
+                      backgroundImage:
+                        "linear-gradient(rgba(85,234,140,0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(85,234,140,0.14) 1px, transparent 1px)",
+                      backgroundSize: "34px 34px",
+                      maskImage: "radial-gradient(ellipse 55% 55% at 50% 50%, #000 20%, transparent 72%)",
+                      WebkitMaskImage: "radial-gradient(ellipse 55% 55% at 50% 50%, #000 20%, transparent 72%)",
+                    }}
+                  />
+
+                  {/* Ambient floating particles around the stack */}
+                  {[
+                    { l: "6%", t: "58%", z: 20, d: "0s" },
+                    { l: "92%", t: "64%", z: 40, d: "0.7s" },
+                    { l: "14%", t: "22%", z: 90, d: "1.3s" },
+                    { l: "86%", t: "16%", z: 110, d: "0.4s" },
+                  ].map((pt, i) => (
+                    <span
+                      key={i}
+                      className="absolute h-1.5 w-1.5 rounded-full bg-accent/70 pointer-events-none animate-[isoFloat_5.5s_ease-in-out_infinite]"
+                      style={{
+                        left: pt.l,
+                        top: pt.t,
+                        transform: `translateZ(${pt.z}px)`,
+                        animationDelay: pt.d,
+                        boxShadow: "0 0 10px rgba(85,234,140,0.85)",
+                      }}
+                    />
+                  ))}
+
+                  {/* Energy beam: Execution → Decision */}
+                  <div
+                    className="absolute left-1/2 top-[145px] h-[65px] w-[3px] -translate-x-1/2 pointer-events-none"
+                    style={{
+                      transform: "translateZ(45px)",
+                      backgroundImage: "repeating-linear-gradient(to top, rgba(85,234,140,0.9) 0 6px, transparent 6px 16px)",
+                      maskImage: "linear-gradient(to top, transparent, #000 25%, #000 75%, transparent)",
+                      WebkitMaskImage: "linear-gradient(to top, transparent, #000 25%, #000 75%, transparent)",
+                      animation: "beamFlow 1.4s linear infinite",
+                    }}
+                  />
+                  {/* Energy beam: Decision → Outcome */}
+                  <div
+                    className="absolute left-1/2 top-[68px] h-[55px] w-[3px] -translate-x-1/2 pointer-events-none"
+                    style={{
+                      transform: "translateZ(140px)",
+                      backgroundImage: "repeating-linear-gradient(to top, rgba(85,234,140,0.95) 0 6px, transparent 6px 16px)",
+                      maskImage: "linear-gradient(to top, transparent, #000 25%, #000 75%, transparent)",
+                      WebkitMaskImage: "linear-gradient(to top, transparent, #000 25%, #000 75%, transparent)",
+                      animation: "beamFlow 1.4s linear infinite 0.3s",
+                    }}
+                  />
 
                   {/* Panel A — Execution (parallel agents), lowest/back */}
-                  <div className="absolute left-1/2 top-[172px] h-[176px] w-[176px] [transform-style:preserve-3d]" style={{ transform: "translateX(-50%) translateZ(0px)" }}>
-                    <div className="absolute inset-0 rounded-2xl border border-white/10 bg-surface/85 shadow-[0_35px_60px_-25px_rgba(0,0,0,0.95)]" />
-                    <div className="absolute left-1/2 -top-9 h-9 w-px -translate-x-1/2 border-l border-dashed border-accent/40" />
+                  <div className="absolute left-1/2 top-[195px] h-[200px] w-[200px] [transform-style:preserve-3d]" style={{ transform: "translateX(-50%) translateZ(0px)" }}>
+                    <div className="absolute inset-0 rounded-2xl border border-white/10 bg-surface/85 shadow-[0_40px_70px_-25px_rgba(0,0,0,0.95)]" />
                     <div className="absolute inset-0 grid place-items-center [transform-style:preserve-3d]">
                       <div style={{ transform: "rotateZ(42deg) rotateX(-58deg)" }} className="flex flex-col items-center gap-1.5">
-                        <span className="mb-0.5 text-[9px] font-mono uppercase tracking-[0.2em] text-zinc-500">01 · Execution</span>
-                        <div className="flex w-[88px] items-center gap-2 rounded-md border border-accent/25 bg-surface/95 px-2.5 py-1"><Database className="h-3.5 w-3.5 shrink-0 text-accent" /><span className="text-[11px] font-medium text-white">Meera</span></div>
-                        <div className="flex w-[88px] items-center gap-2 rounded-md border border-accent/25 bg-surface/95 px-2.5 py-1"><Inbox className="h-3.5 w-3.5 shrink-0 text-accent" /><span className="text-[11px] font-medium text-white">Zia</span></div>
-                        <div className="flex w-[88px] items-center gap-2 rounded-md border border-accent/25 bg-surface/95 px-2.5 py-1"><Mic className="h-3.5 w-3.5 shrink-0 text-accent" /><span className="text-[11px] font-medium text-white">Naira</span></div>
+                        <span className="mb-1 text-[9px] font-mono uppercase tracking-[0.2em] text-zinc-500">01 · Execution</span>
+                        <div className="flex w-[96px] items-center gap-2 rounded-md border border-accent/25 bg-surface/95 px-2.5 py-1.5"><Database className="h-3.5 w-3.5 shrink-0 text-accent" /><span className="text-[11px] font-medium text-white">Meera</span></div>
+                        <div className="flex w-[96px] items-center gap-2 rounded-md border border-accent/25 bg-surface/95 px-2.5 py-1.5"><Inbox className="h-3.5 w-3.5 shrink-0 text-accent" /><span className="text-[11px] font-medium text-white">Zia</span></div>
+                        <div className="flex w-[96px] items-center gap-2 rounded-md border border-accent/25 bg-surface/95 px-2.5 py-1.5"><Mic className="h-3.5 w-3.5 shrink-0 text-accent" /><span className="text-[11px] font-medium text-white">Naira</span></div>
                       </div>
                     </div>
                   </div>
 
                   {/* Panel B — Decision (Human Gate), middle */}
-                  <div className="absolute left-1/2 top-[86px] h-[176px] w-[176px] [transform-style:preserve-3d]" style={{ transform: "translateX(-50%) translateZ(80px)" }}>
-                    <div className="absolute inset-0 rounded-2xl border border-accent/40 bg-surface/90 shadow-[0_0_45px_rgba(85,234,140,0.18),0_35px_60px_-25px_rgba(0,0,0,0.95)]" />
-                    <div className="absolute left-1/2 -top-9 h-9 w-px -translate-x-1/2 border-l border-dashed border-accent/50" />
+                  <div className="absolute left-1/2 top-[98px] h-[200px] w-[200px] [transform-style:preserve-3d]" style={{ transform: "translateX(-50%) translateZ(95px)" }}>
+                    <div className="absolute inset-0 rounded-2xl border border-accent/40 bg-surface/90 shadow-[0_0_50px_rgba(85,234,140,0.2),0_40px_70px_-25px_rgba(0,0,0,0.95)]" />
                     <div className="absolute inset-0 grid place-items-center [transform-style:preserve-3d]">
                       <div style={{ transform: "rotateZ(42deg) rotateX(-58deg)" }} className="flex flex-col items-center gap-2">
                         <div className="grid h-12 w-12 place-items-center rounded-full bg-accent text-black animate-[gatePulse_3s_ease-in-out_infinite]"><Lock className="h-5 w-5" /></div>
                         <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-accent">Human Gate</span>
+                        <span className="text-[9px] text-zinc-400">3 finalists ready</span>
                         <span className="text-[8px] font-mono uppercase tracking-[0.2em] text-zinc-500">02 · Decision</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Panel C — Outcome (Hire Complete), front/top */}
-                  <div className="absolute left-1/2 top-[0px] h-[176px] w-[176px] [transform-style:preserve-3d]" style={{ transform: "translateX(-50%) translateZ(160px)" }}>
-                    <div className="absolute inset-0 rounded-2xl border border-white/15 bg-white shadow-[0_40px_70px_-20px_rgba(0,0,0,0.85)]" />
+                  <div className="absolute left-1/2 top-[0px] h-[200px] w-[200px] [transform-style:preserve-3d]" style={{ transform: "translateX(-50%) translateZ(190px)" }}>
+                    <div className="absolute inset-0 rounded-2xl border border-white/15 bg-white shadow-[0_45px_80px_-20px_rgba(0,0,0,0.85)]" />
                     <div className="absolute inset-0 grid place-items-center [transform-style:preserve-3d]">
                       <div style={{ transform: "rotateZ(42deg) rotateX(-58deg)" }} className="flex flex-col items-center gap-1.5 text-center">
                         <CheckCircle2 className="h-7 w-7 text-black" />
                         <span className="text-[12px] font-bold uppercase tracking-wider text-black">Hire Complete</span>
+                        <span className="text-[9px] text-zinc-600">Alex Rivera · Lead SRE</span>
                         <span className="text-[8px] font-mono uppercase tracking-[0.2em] text-zinc-400">03 · Outcome</span>
                       </div>
                     </div>

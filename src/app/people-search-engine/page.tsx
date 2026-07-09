@@ -1,4 +1,4 @@
-import { Header } from "@/components/employ-lab/Header";
+import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/people-search/Hero";
 import { FeaturesSection } from "@/components/people-search/FeaturesSection";
@@ -11,7 +11,7 @@ import PipelineStagesSection from "@/components/people-search/PipelineStagesSect
 export default function PeopleSearchEngine() {
   return (
     <div className="min-h-screen font-sans text-white bg-black">
-      <Header />
+      <Nav variant="dark" />
       <Hero />
       <DiscoverySection />
       <PipelineStagesSection />

@@ -1,134 +1,267 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
+import { Fragment, useRef, useState, type ComponentType } from "react";
 import {
-  FileText, Upload, Bot, Check, Mail, MessageSquare,
-  Calendar, Mic, Award, ArrowRight, Sparkles, Image as ImageIcon, Box, Paperclip, ArrowUp,
-  UserCheck, BarChart, ChevronRight, Activity, Zap, Shield, FileSearch
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useMotionValue,
+  useMotionValueEvent,
+  type MotionValue,
+} from "motion/react";
+import type { LucideIcon } from "lucide-react";
+import {
+  FileText, Upload, Check, Mail, MessageSquare, Paperclip,
+  Calendar, Mic, Award, Sparkles, Box, ArrowUp,
+  BarChart, FileSearch,
+  ClipboardList, Target, Lightbulb, Activity,
 } from "lucide-react";
+
+interface StepMeta {
+  label: string;
+  title: string;
+  Icon: LucideIcon;
+}
+
+/** Every illustration takes the same shape: a 0→1 scroll-local progress value
+ *  that sweeps once per visit to this step's dwell window (resets each time
+ *  you scroll back into it — see `localT` below). Optional so a bare
+ *  `<Ill />` (used on mobile, which has no scroll-scrub) still renders fully
+ *  revealed via each component's own `useMotionValue(1)` fallback. */
+type IllustrationProps = { progress?: MotionValue<number> };
+
+const steps: StepMeta[] = [
+  { label: "Step 01", Icon: Upload, title: "Upload the Job" },
+  { label: "Step 02", Icon: FileSearch, title: "Build the ICP" },
+  { label: "Step 03", Icon: Sparkles, title: "Select the Persona" },
+  { label: "Step 04", Icon: BarChart, title: "Score & Shortlist" },
+  { label: "Step 05", Icon: Mail, title: "Reach Out & Automate" },
+  { label: "Step 06", Icon: Calendar, title: "Autonomous Scheduling" },
+  { label: "Step 07", Icon: Mic, title: "AI Voice Interview" },
+  { label: "Step 08", Icon: Award, title: "Make the Offer" },
+];
+
+// slide width (px) + connector width (px) — must match the markup below
+const SLIDE_W = 760;
+const CONNECTOR_W = 88;
+const STEP_PX = SLIDE_W + CONNECTOR_W;
 
 export function Funnel() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end end"]
+    offset: ["start start", "end end"],
   });
 
-  const [activeStep, setActiveStep] = useState(0);
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const totalSteps = 8;
-    // Calculate which step is active (0 to 7) based on scroll percentage.
-    let step = Math.floor(latest * totalSteps);
-    if (step >= totalSteps) step = totalSteps - 1;
-    if (step !== activeStep) {
-      setActiveStep(step);
-    }
+  const [active, setActive] = useState(0);
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    const s = Math.min(steps.length - 1, Math.max(0, Math.floor(v * steps.length)));
+    setActive((prev) => (prev === s ? prev : s));
   });
 
-  const stepContent = [
-    { title: "Upload the Job", subtitle: "Drop in the JD. Meera extracts core requirements and context automatically." },
-    { title: "Build the ICP", subtitle: "Meera converts the JD into an Ideal Candidate Profile and clarifies ambiguities." },
-    { title: "Select Persona", subtitle: "Choose the exact archetype you need to tune the search parameters." },
-    { title: "Score & Shortlist", subtitle: "Meera searches and scores the talent pool against your confirmed profile." },
-    { title: "Reach out & Automate", subtitle: "Sia contacts your shortlist across channels and monitors responses." },
-    { title: "Autonomous Scheduling", subtitle: "Interested candidates receive a booking link for zero back-and-forth scheduling." },
-    { title: "AI Voice Interview", subtitle: "Naira conducts a live voice interview and generates a scored report card." },
-    { title: "Make the Offer", subtitle: "Review the finalists, read their reports, and extend the offer." },
+  // vertical scroll → snap the track so the active slide stays pinned (bright)
+  // for its whole scroll window, kept in sync with `active` and the left text.
+  const targetX = useTransform(scrollYProgress, (v) => {
+    const i = Math.min(steps.length - 1, Math.max(0, Math.floor(v * steps.length)));
+    return -i * STEP_PX;
+  });
+  const x = useSpring(targetX, { stiffness: 110, damping: 22, mass: 0.6 });
+
+  // Per-step LOCAL progress — a 0→1 sawtooth that resets at every step
+  // boundary. Every illustration reads this directly (a live MotionValue, no
+  // React re-render) to scrub its own internal reveal — typing, chat bubbles
+  // landing, rows staggering in — in lockstep with the scrollbar, not a fixed
+  // mount-time duration. Scrolling back into a step replays it naturally,
+  // since it's just scroll position, not a one-shot animation.
+  const localT = useTransform(scrollYProgress, (v) => {
+    const scaled = v * steps.length;
+    const clamped = Math.min(steps.length - 1e-6, Math.max(0, scaled));
+    return clamped - Math.floor(clamped);
+  });
+
+  const illustrations: ComponentType<IllustrationProps>[] = [
+    Step0Upload, Step1ICP, Step2Persona, Step3Score,
+    Step4Outreach, Step5Schedule, Step6Interview, Step7Offer,
   ];
 
   return (
-    <section ref={containerRef} className="relative bg-transparent h-[800vh]" id="funnel">
-      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-start overflow-hidden px-4 md:px-8">
-
-        {/* Dynamic Titles */}
-        <div className="text-center mb-0 md:mb-4 shrink-0 z-20 w-full max-w-6xl mx-auto pt-24 md:pt-28">
-          <div className="relative h-14 md:h-20 mb-2 md:mb-4 w-full">
-            <AnimatePresence mode="wait">
-              <motion.h3
-                key={`title-${activeStep}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 text-3xl md:text-4xl lg:text-5xl font-display font-medium text-white tracking-tight flex items-center justify-center w-full"
-              >
-                {stepContent[activeStep].title}
-              </motion.h3>
-            </AnimatePresence>
+    <section ref={containerRef} id="funnel" className="relative bg-transparent lg:h-[650vh]">
+      {/* ---------- Desktop: pinned horizontal scroll ---------- */}
+      <div className="sticky top-0 hidden h-screen w-full items-start overflow-hidden pt-24 xl:pt-28 lg:flex">
+        <div className="mx-auto grid w-full max-w-[1520px] grid-cols-[minmax(280px,30%)_1fr] items-center gap-8 px-8 xl:px-12">
+          {/* Left — headline */}
+          <div className="relative">
+            <div className="mb-6 inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.2em] text-accent">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              The Autonomous Funnel
+            </div>
+            <h2 className="font-title text-4xl leading-[1.08] tracking-tight text-white xl:text-[3.2rem]">
+              From <span className="text-accent">Job Post</span>
+              <br />
+              to Final <span className="text-accent">Hire</span>.
+            </h2>
+            <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-zinc-400">
+              EmployLabs runs the entire hiring funnel autonomously — you just decide
+              at the gates. Watch a single job post become a signed offer.
+            </p>
+            <div className="mt-8 flex items-center gap-3">
+              <span className="font-mono text-xs text-accent">{steps[active].label}</span>
+              <span className="h-4 w-px bg-white/20" />
+              <span className="text-sm font-medium text-white">{steps[active].title}</span>
+            </div>
+            <div className="mt-5 flex items-center gap-2">
+              {steps.map((_, i) => (
+                <span
+                  key={i}
+                  className={`h-[3px] rounded-full transition-all duration-500 ${
+                    i === active ? "w-9 bg-accent" : "w-5 bg-zinc-700"
+                  }`}
+                />
+              ))}
+            </div>
           </div>
-          <div className="relative h-16 md:h-12 w-full mx-auto px-4">
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={`sub-${activeStep}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 text-zinc-400 text-sm md:text-base max-w-2xl mx-auto text-center flex items-start justify-center w-full"
-              >
-                {stepContent[activeStep].subtitle}
-              </motion.p>
-            </AnimatePresence>
+
+          {/* Right — horizontal illustration track */}
+          <div className="relative h-[660px] overflow-hidden border-l border-white/10 pl-8 xl:pl-12">
+            <div className="absolute inset-y-0 left-8 right-0 flex items-center xl:left-12">
+              <motion.div style={{ x }} className="flex h-full items-center">
+                {steps.map((s, i) => {
+                  const Ill = illustrations[i];
+                  const isActive = i === active;
+                  return (
+                    <Fragment key={s.label}>
+                      <motion.div
+                        animate={{ opacity: isActive ? 1 : 0.32, scale: isActive ? 1 : 0.94 }}
+                        transition={{ duration: 0.45, ease: "easeOut" }}
+                        style={{ width: SLIDE_W }}
+                        className="relative flex shrink-0 flex-col"
+                      >
+                        {/* minimal label — no box */}
+                        <div className="mb-4 flex items-center justify-end gap-2 pr-1">
+                          <s.Icon className={`h-4 w-4 ${isActive ? "text-accent" : "text-zinc-600"}`} />
+                          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500">
+                            {s.label}
+                          </span>
+                          <span className="font-title text-lg tracking-tight text-white">
+                            {s.title}
+                          </span>
+                        </div>
+                        <div className="relative h-[600px] w-full">
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            {/* Step0 (JD) + Step2 (Persona) read `progress` as a
+                                live MotionValue and scrub their own reveal off
+                                scroll position — no remount needed there. Every
+                                other step ignores `progress` and instead replays
+                                its fixed-duration entrance animation on activate,
+                                via the `key` flip below (remount = replay). */}
+                            <Ill key={isActive ? `on-${i}` : `off-${i}`} progress={localT} />
+                          </div>
+                        </div>
+                      </motion.div>
+                      {i < steps.length - 1 && <Connector />}
+                    </Fragment>
+                  );
+                })}
+              </motion.div>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Central Visual Canvas */}
-        <div className="w-full max-w-[1200px] relative h-[450px] md:h-[600px] flex items-center justify-center">
-           <AnimatePresence mode="wait">
-              {activeStep === 0 && <Step0Upload key="step0" />}
-              {activeStep === 1 && <Step1ICP key="step1" />}
-              {activeStep === 2 && <Step2Persona key="step2" />}
-              {activeStep === 3 && <Step3Score key="step3" />}
-              {activeStep === 4 && <Step4Outreach key="step4" />}
-              {activeStep === 5 && <Step5Schedule key="step5" />}
-              {activeStep === 6 && <Step6Interview key="step6" />}
-              {activeStep === 7 && <Step7Offer key="step7" />}
-           </AnimatePresence>
+      {/* ---------- Mobile: vertical stack ---------- */}
+      <div className="px-6 py-24 lg:hidden">
+        <div className="mb-4 inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.2em] text-accent">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+          The Autonomous Funnel
         </div>
-
-        {/* Progress indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2">
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={i}
-              className={`h-1 rounded-full transition-all duration-500 ${i === activeStep ? 'w-8 bg-accent' : 'w-2 bg-zinc-800'}`}
-            />
-          ))}
+        <h2 className="font-title text-4xl leading-[1.1] tracking-tight text-white">
+          From <span className="text-accent">Job Post</span> to Final{" "}
+          <span className="text-accent">Hire</span>.
+        </h2>
+        <div className="mt-10 space-y-6">
+          {steps.map((s, i) => {
+            const Ill = illustrations[i];
+            return (
+              <div key={s.label} className="rounded-2xl border border-white/10 bg-surface/60 p-4">
+                <div className="mb-3 flex items-center gap-2">
+                  <s.Icon className="h-4 w-4 text-accent" />
+                  <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-zinc-500">
+                    {s.label}
+                  </span>
+                  <span className="ml-auto font-title text-lg text-white">{s.title}</span>
+                </div>
+                <div className="relative h-[360px] overflow-hidden rounded-xl">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    {/* no `progress` on mobile — each illustration's own
+                        useMotionValue(1) fallback renders it fully revealed. */}
+                    <Ill />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
-  )
+  );
 }
 
-function Step0Upload() {
+function Connector() {
+  return (
+    <div className="flex shrink-0 items-center justify-center" style={{ width: CONNECTOR_W }}>
+      <div className="relative h-px w-full border-t border-dashed border-white/20">
+        <span className="absolute right-0 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-white/50" />
+      </div>
+    </div>
+  );
+}
+
+/** Resolve the incoming `progress` (desktop, scroll-scrubbed) or fall back to
+ *  a static fully-revealed value (mobile / no scroll-scrub context). Always
+ *  calls the hook (rules-of-hooks safe) — the fallback is simply unused when
+ *  a live value is supplied. */
+function useProgress(progress?: MotionValue<number>): MotionValue<number> {
+  const fallback = useMotionValue(1);
+  return progress ?? fallback;
+}
+
+function Step0Upload({ progress }: IllustrationProps) {
+  const p = useProgress(progress);
+  // Card frame settles in first…
+  const frameOpacity = useTransform(p, [0, 0.06], [0, 1]);
+  const frameScale = useTransform(p, [0, 0.06], [0.95, 1]);
+  // …then the JD text "writes itself" — a left-to-right clip reveal over a
+  // monospace block reads convincingly as typing without per-character spans.
+  // Extended (vs. a single-section reveal) so it plays out across
+  // Requirements → Responsibilities → Nice-to-haves as you scroll.
+  const textClip = useTransform(p, [0.1, 0.68], [100, 0]);
+  const clipPath = useTransform(textClip, (v) => `inset(0 ${v}% 0 0)`);
+  // …then the floating composer arrives once the "JD" has finished typing.
+  const inputOpacity = useTransform(p, [0.74, 0.9], [0, 1]);
+  const inputY = useTransform(p, [0.74, 0.9], [16, 0]);
+
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.4 }}
+      style={{ opacity: frameOpacity, scale: frameScale }}
       className="w-full max-w-sm md:max-w-md mx-auto relative flex flex-col items-center justify-center h-full"
     >
       <div className="w-full relative">
-        <div className="flex justify-between items-center text-xs text-zinc-500 mb-2 px-1">
-          <div className="flex items-center gap-2"><ImageIcon className="w-3 h-3" /> Image</div>
-          <div className="font-mono">720 x 960</div>
-        </div>
-
-        <div className="h-72 md:h-[420px] w-full bg-zinc-900 border border-accent relative group overflow-hidden">
+        <div className="h-80 md:h-[480px] w-full bg-zinc-900 border border-accent relative group overflow-hidden">
            <div className="absolute top-[-3px] left-[-3px] w-1.5 h-1.5 bg-accent z-10" />
            <div className="absolute top-[-3px] right-[-3px] w-1.5 h-1.5 bg-accent z-10" />
            <div className="absolute bottom-[-3px] left-[-3px] w-1.5 h-1.5 bg-accent z-10" />
            <div className="absolute bottom-[-3px] right-[-3px] w-1.5 h-1.5 bg-accent z-10" />
 
-           <div className="absolute inset-0 p-6 md:p-8 text-zinc-400 font-mono text-xs opacity-50 flex flex-col gap-4 overflow-hidden mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]">
+           <motion.div
+             style={{ clipPath }}
+             className="absolute inset-0 p-6 md:p-7 text-zinc-400 font-mono text-[11px] leading-relaxed opacity-60 flex flex-col gap-3.5 overflow-hidden"
+           >
              <div className="text-white text-sm">ROLE: Lead Staff Site Reliability Engineer</div>
              <div>
                REQUIREMENTS:<br/>
-               - 8+ years of production Go & Kubernetes experience<br/>
-               - Expertise in distributed systems & eBPF<br/>
+               - 8+ years of production Go &amp; Kubernetes experience<br/>
+               - Expertise in distributed systems &amp; eBPF<br/>
                - Track record of leading infra teams at scale
              </div>
              <div>
@@ -137,11 +270,21 @@ function Step0Upload() {
                - Mentorship and technical direction<br/>
                - Drive multi-region failover strategy
              </div>
-           </div>
+             <div>
+               NICE-TO-HAVE:<br/>
+               - Rust or systems-level language exposure<br/>
+               - Public speaking / conference talks<br/>
+               - Open-source infra contributions
+             </div>
+           </motion.div>
+           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-zinc-900 pointer-events-none" />
         </div>
 
         {/* Floating input box */}
-        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[95%] max-w-[400px] bg-surface-800 border border-white/10 rounded-2xl p-3 shadow-2xl backdrop-blur-xl z-20">
+        <motion.div
+          style={{ opacity: inputOpacity, y: inputY }}
+          className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[95%] max-w-[400px] bg-surface-800 border border-white/10 rounded-2xl p-3 shadow-2xl backdrop-blur-xl z-20"
+        >
            <div className="flex items-center gap-3 mb-2 md:mb-3">
              <div className="bg-zinc-800 rounded-lg px-2 py-1.5 text-xs text-white flex items-center gap-1.5 border border-white/5 shrink-0">
                 <FileText className="w-3 h-3" /> Job Description
@@ -162,550 +305,606 @@ function Step0Upload() {
                </button>
              </div>
            </div>
-        </div>
-      </div>
-    </motion.div>
-  )
-}
-
-function Step1ICP() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.4 }}
-      className="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 h-full absolute inset-0 md:relative px-2"
-    >
-      {/* Parsing Feed */}
-      <div className="md:col-span-5 bg-zinc-900/40 p-5 md:p-6 rounded-2xl border border-white/10 shadow-2xl flex flex-col relative overflow-hidden">
-         <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5 shrink-0">
-           <div className="flex items-center gap-3">
-             <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent">
-               <FileSearch className="w-4 h-4" />
-             </div>
-             <div>
-               <h4 className="text-white font-medium text-sm">Document Analysis</h4>
-               <span className="text-xs text-zinc-500 font-mono">Running</span>
-             </div>
-           </div>
-           <div className="flex gap-1">
-             <span className="w-1.5 h-1.5 rounded-full bg-zinc-600 animate-pulse delay-75"></span>
-             <span className="w-1.5 h-1.5 rounded-full bg-zinc-600 animate-pulse delay-150"></span>
-             <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse delay-300"></span>
-           </div>
-         </div>
-         <div className="space-y-3 flex-1 overflow-y-auto pr-2 font-mono text-[10px] md:text-xs">
-           <motion.div initial={{opacity:0, x:-10}} animate={{opacity:1, x:0}} transition={{delay: 0.2}} className="text-zinc-500">{`> Parsing job_description.pdf...`}</motion.div>
-           <motion.div initial={{opacity:0, x:-10}} animate={{opacity:1, x:0}} transition={{delay: 0.8}} className="text-zinc-500">{`> Extracting core competencies...`}</motion.div>
-           <motion.div initial={{opacity:0, x:-10}} animate={{opacity:1, x:0}} transition={{delay: 1.4}} className="text-zinc-300 bg-zinc-950 p-2 rounded border border-white/5 mt-2 mb-2">
-             Found implicit requirement: <span className="text-accent">High-Availability Systems</span> (derived from "99.99% uptime")
-           </motion.div>
-           <motion.div initial={{opacity:0, x:-10}} animate={{opacity:1, x:0}} transition={{delay: 2.0}} className="text-zinc-500">{`> Cross-referencing title with market standards...`}</motion.div>
-           <motion.div initial={{opacity:0, x:-10}} animate={{opacity:1, x:0}} transition={{delay: 2.6}} className="text-accent">{`✓ ICP Baseline generated successfully.`}</motion.div>
-         </div>
-      </div>
-
-      {/* ICP Parameters */}
-      <div className="md:col-span-7 flex flex-col gap-4 md:gap-6">
-        <div className="bg-zinc-950 p-5 md:p-6 rounded-2xl border border-accent/30 shadow-2xl flex-1 relative overflow-hidden flex flex-col">
-           <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-3xl" />
-           <div className="flex items-center gap-2 mb-4 shrink-0 text-xs text-zinc-500 uppercase tracking-widest font-mono">
-             <Activity className="w-3.5 h-3.5 text-accent" /> Ideal Candidate Profile
-           </div>
-
-           <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <div className="text-xs text-zinc-500 mb-1">Target Title</div>
-                <div className="text-white font-medium text-sm md:text-base">Lead Staff SRE</div>
-              </div>
-              <div>
-                <div className="text-xs text-zinc-500 mb-1">Experience Level</div>
-                <div className="text-white font-medium text-sm md:text-base">8+ Years</div>
-              </div>
-           </div>
-
-           <div className="space-y-4 flex-1">
-              <div>
-                <div className="text-[10px] md:text-xs text-zinc-500 mb-2">Must-Haves</div>
-                <div className="flex flex-wrap gap-2">
-                  {["Golang", "Kubernetes", "eBPF", "System Architecture"].map(s => (
-                    <span key={s} className="text-xs bg-accent/10 border border-accent/20 px-2 py-1 rounded text-accent font-medium">{s}</span>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <div className="text-[10px] md:text-xs text-zinc-500 mb-2">Nice-to-Haves</div>
-                <div className="flex flex-wrap gap-2">
-                  {["Rust", "AWS Graviton", "FinOps"].map(s => (
-                    <span key={s} className="text-xs bg-white/5 border border-white/10 px-2 py-1 rounded text-zinc-300">{s}</span>
-                  ))}
-                </div>
-              </div>
-           </div>
-        </div>
-
-        {/* Clarification prompt */}
-        <motion.div initial={{opacity:0, y:10}} animate={{opacity:1, y:0}} transition={{delay: 3}} className="bg-zinc-900/80 p-4 md:p-5 rounded-xl border border-white/10 flex items-start gap-3">
-          <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 shrink-0 mt-1">
-             <MessageSquare className="w-4 h-4" />
-          </div>
-          <div>
-            <div className="text-white text-xs md:text-sm mb-1.5 font-medium">Meera needs clarification</div>
-            <div className="text-[10px] md:text-xs text-zinc-400 leading-relaxed mb-3">
-              The JD mentions "leading teams", but doesn't specify if this is a people-manager role or a technical IC lead. Which should I optimize for?
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <button className="text-[10px] bg-white text-black px-3 py-1.5 rounded-md font-medium hover:bg-zinc-200 transition-colors">Technical IC Lead</button>
-              <button className="text-[10px] bg-zinc-800 text-white border border-white/10 px-3 py-1.5 rounded-md hover:bg-zinc-700 transition-colors">People Manager</button>
-            </div>
-          </div>
         </motion.div>
       </div>
     </motion.div>
   )
 }
 
-function Step2Persona() {
+
+function Step1ICP() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.97 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.97 }}
+      transition={{ duration: 0.4 }}
+      className="mx-auto w-full max-w-xl"
+    >
+      <div className="rounded-2xl border border-white/10 bg-surface/80 p-5 shadow-2xl backdrop-blur-sm">
+        {/* Meera header — sparkles is her mark (the single accent) */}
+        <div className="mb-4 flex items-center gap-2.5 border-b border-white/5 pb-4">
+          <div className="grid h-8 w-8 place-items-center rounded-full bg-accent/15 text-accent">
+            <Sparkles className="h-4 w-4" />
+          </div>
+          <div>
+            <div className="text-sm font-medium leading-none text-white">Meera</div>
+            <div className="mt-1 font-mono text-[11px] uppercase tracking-widest text-zinc-500">AI recruiter</div>
+          </div>
+        </div>
+
+        {/* Thread — 5 turns streamed in sequence */}
+        <div className="space-y-3">
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="ml-auto max-w-[80%] rounded-2xl rounded-br-sm bg-white/10 px-3.5 py-2 text-[13px] text-white"
+          >
+            Find me a Lead Staff SRE — 8+ yrs, Go &amp; Kubernetes.
+          </motion.div>
+
+          {/* transient status line while Meera parses */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 1, 0] }}
+            transition={{ delay: 0.4, duration: 1, times: [0, 0.2, 0.8, 1] }}
+            className="flex items-center gap-2 pl-8 font-mono text-[11px] text-zinc-500"
+          >
+            <span className="h-1 w-1 animate-pulse rounded-full bg-accent" />
+            Parsing job_description.pdf…
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.35 }}
+            className="flex gap-2.5"
+          >
+            <div className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-accent/15 text-accent">
+              <Sparkles className="h-3 w-3" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[13px] leading-relaxed text-zinc-300">
+                Quick check — is this a people-manager role or a technical IC lead?
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <span className="rounded-md bg-white px-2.5 py-1 text-[11px] font-medium text-black">Technical IC Lead</span>
+                <span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-zinc-300">People Manager</span>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.85 }}
+            className="ml-auto max-w-[80%] rounded-2xl rounded-br-sm bg-white/10 px-3.5 py-2 text-[13px] text-white"
+          >
+            Technical IC Lead
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 2.2 }}
+            className="flex gap-2.5"
+          >
+            <div className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-accent/15 text-accent">
+              <Sparkles className="h-3 w-3" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[13px] leading-relaxed text-zinc-300">
+                Built your ICP — 4 must-haves, high-availability derived from the JD.
+              </p>
+              <div className="mt-2.5 rounded-xl border border-white/8 bg-white/[0.02] p-3">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Required</span>
+                  <span className="font-mono text-[11px] text-zinc-400">96% confident</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {["Golang", "Kubernetes", "eBPF", "High-Availability"].map((c) => (
+                    <span key={c} className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[11px] text-zinc-200">
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Composer */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.6 }}
+          className="mt-4 flex items-center gap-2 rounded-xl border border-white/8 bg-black/30 px-3 py-2.5"
+        >
+          <span className="text-[13px] text-zinc-600">Message Meera…</span>
+          <span className="ml-auto grid h-6 w-6 place-items-center rounded-lg bg-white/5 text-zinc-500">
+            <ArrowUp className="h-3.5 w-3.5" />
+          </span>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
+
+
+
+function Step2Persona({ progress }: IllustrationProps) {
+  const p = useProgress(progress);
   const personas = [
-    { id: 1, title: "The Architect", desc: "System Design Focus", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop" },
-    { id: 2, title: "The Operator", desc: "Flawless Execution", img: "https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=800&auto=format&fit=crop" },
-    { id: 3, title: "The Optimizer", desc: "Performance Tuning", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop" },
-    { id: 4, title: "The Leader", desc: "Team & Processes", img: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=800&auto=format&fit=crop" },
+    {
+      id: 1, title: "The Architect",
+      img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop",
+      points: ["Depth over breadth", "System design first", "Comfortable owning ambiguity"],
+    },
+    {
+      id: 2, title: "The Operator",
+      img: "https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=800&auto=format&fit=crop",
+      points: ["Flawless execution", "Calm under production load", "Ships and owns outcomes"],
+    },
+    {
+      id: 3, title: "The Optimizer",
+      img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop",
+      points: ["Performance-obsessed", "Thrives on hard constraints", "Data-driven decisions"],
+    },
+    {
+      id: 4, title: "The Leader",
+      img: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=800&auto=format&fit=crop",
+      points: ["Team growth focus", "Process at scale", "Mentors through delivery"],
+    },
   ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.4 }}
-      className="w-full max-w-[1200px] mx-auto h-full flex items-center justify-center absolute inset-0 md:relative px-2 md:px-4"
-    >
+    <div className="w-full max-w-[1200px] mx-auto h-full flex items-center justify-center absolute inset-0 md:relative px-2 md:px-4">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 w-full">
-        {personas.map((p, i) => (
-          <motion.div
-            key={p.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.15 }}
-            className={`flex flex-col gap-2 transition-all duration-500 ${i !== 1 ? 'opacity-60 md:grayscale scale-95' : 'scale-100'}`}
-          >
-            {/* Header */}
-            <div className="flex justify-between items-center text-[10px] md:text-xs text-zinc-500 px-1">
-              <div className="flex items-center gap-1.5">
-                 <ImageIcon className="w-3 h-3" /> Image
+        {personas.map((persona, i) => (
+          <PersonaCell key={persona.id} persona={persona} index={i} p={p} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function PersonaCell({
+  persona,
+  index,
+  p,
+}: {
+  persona: { id: number; title: string; img: string; points: string[] };
+  index: number;
+  p: MotionValue<number>;
+}) {
+  const start = 0.05 + index * 0.18;
+  const opacity = useTransform(p, [start, start + 0.2], [0, 1]);
+  const y = useTransform(p, [start, start + 0.2], [20, 0]);
+  const isSelected = index === 1;
+
+  return (
+    <motion.div
+      style={{ opacity, y }}
+      className={`flex flex-col gap-2 transition-all duration-500 ${!isSelected ? 'opacity-70 md:grayscale scale-95' : 'scale-100'}`}
+    >
+      {/* Box — real photo, no placeholder label (matches the original card:
+          transparent border + plain title for non-selected; a sharp accent
+          border + corner dots + a "Select Persona" button for the selected
+          one — the only true addition here is the points list below). */}
+      <div className={`relative aspect-[3/4] w-full bg-zinc-900 border ${isSelected ? 'border-accent' : 'border-transparent'}`}>
+        {isSelected && (
+          <>
+             <div className="absolute top-[-3px] left-[-3px] w-1.5 h-1.5 bg-accent z-10" />
+             <div className="absolute top-[-3px] right-[-3px] w-1.5 h-1.5 bg-accent z-10" />
+             <div className="absolute bottom-[-3px] left-[-3px] w-1.5 h-1.5 bg-accent z-10" />
+             <div className="absolute bottom-[-3px] right-[-3px] w-1.5 h-1.5 bg-accent z-10" />
+          </>
+        )}
+
+        <img src={persona.img} alt={persona.title} className="w-full h-full object-cover absolute inset-0" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40" />
+
+        <div className="absolute inset-0 p-4 md:p-6 flex flex-col items-center justify-between text-center">
+           <h4 className="text-lg md:text-2xl font-display font-medium text-white tracking-tight leading-tight mt-2 md:mt-4 drop-shadow-md">
+             {persona.title}
+           </h4>
+
+           {isSelected && (
+             <button className="bg-transparent border border-white rounded-full px-4 py-1.5 md:px-6 md:py-2 text-xs md:text-sm text-white backdrop-blur-sm hover:bg-white hover:text-black transition-colors">
+               Select Persona
+             </button>
+           )}
+        </div>
+      </div>
+
+      {/* 3 points below the box, for every persona */}
+      <ul className="space-y-1 px-0.5">
+        {persona.points.map((pt) => (
+          <li key={pt} className="flex items-start gap-1.5 text-[10px] leading-snug text-zinc-500">
+            <span className="mt-1 h-1 w-1 shrink-0 rounded-full bg-zinc-600" />
+            {pt}
+          </li>
+        ))}
+      </ul>
+    </motion.div>
+  );
+}
+
+
+function Step3Score() {
+  // Three candidates spanning the real tier system: cleared (green) / flagged
+  // (amber) / disqualified (red) — the shortlist is a spread, not one card.
+  const candidates = [
+    {
+      initials: "AR", name: "Alex Rivera", role: "Sr. SRE · Stripe",
+      tier: "cleared" as const, tierLabel: "Cleared", score: 96,
+      points: ["4/4 must-haves matched", "10y Go in production", "Architected Stripe's global ingress"],
+    },
+    {
+      initials: "PN", name: "Priya Nair", role: "Staff Eng · Datadog",
+      tier: "flagged" as const, tierLabel: "Flagged", score: 78,
+      points: ["3/4 must-haves matched", "Light on Kubernetes depth"],
+    },
+    {
+      initials: "MW", name: "Marcus Webb", role: "SRE II · Snap",
+      tier: "gated" as const, tierLabel: "Disqualified", score: null,
+      points: ["Below 5y seniority bar", "Auto-rejected — no manual review needed"],
+    },
+  ];
+  const TIER_STYLE = {
+    cleared: { badge: "border-accent/30 bg-accent/10 text-accent", score: "text-white", dot: "text-accent" },
+    flagged: { badge: "border-amber-500/30 bg-amber-500/10 text-amber-400", score: "text-white", dot: "text-amber-400" },
+    gated: { badge: "border-red-500/30 bg-red-500/10 text-red-400", score: "text-zinc-600", dot: "text-red-400" },
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.97 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.97 }}
+      transition={{ duration: 0.4 }}
+      className="mx-auto w-full max-w-lg"
+    >
+      <div className="mb-3 flex items-center justify-between px-1">
+        <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Shortlist · ranked by fit</span>
+        <span className="font-mono text-[10px] text-zinc-600">800M+ scanned</span>
+      </div>
+      <div className="space-y-2.5">
+        {candidates.map((c, i) => {
+          const style = TIER_STYLE[c.tier];
+          return (
+            <motion.div
+              key={c.initials}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 + i * 0.14 }}
+              className="rounded-2xl border border-white/10 bg-surface/80 p-4 shadow-xl backdrop-blur-sm"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-white/10 bg-white/5 text-xs font-medium text-zinc-300">
+                    {c.initials}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-white">{c.name}</span>
+                      <span className={`rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider ${style.badge}`}>
+                        {c.tierLabel}
+                      </span>
+                    </div>
+                    <div className="mt-0.5 text-xs text-zinc-500">{c.role}</div>
+                  </div>
+                </div>
+                <div className={`font-mono text-lg font-semibold leading-none ${style.score}`}>
+                  {c.score ?? "—"}
+                </div>
               </div>
-              <div className="font-mono">720 x 960</div>
+              <ul className="mt-2.5 space-y-1 border-t border-white/5 pt-2.5">
+                {c.points.map((pt) => (
+                  <li key={pt} className="flex items-start gap-1.5 text-[11px] leading-snug text-zinc-400">
+                    <Check className={`mt-0.5 h-3 w-3 shrink-0 ${style.dot}`} />
+                    {pt}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
+function Step4Outreach() {
+  const rows = [
+    { Icon: Mail, ch: "Email", meta: "Attempt 1", status: "Opened", active: false },
+    { Icon: MessageSquare, ch: "WhatsApp", meta: "Attempt 2", status: "Replied — interested", active: true },
+    { Icon: Calendar, ch: "Follow-up", meta: "Auto", status: "Booking a slot", active: false },
+  ];
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.97 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.97 }}
+      transition={{ duration: 0.4 }}
+      className="mx-auto w-full max-w-xl"
+    >
+      <div className="mb-4 flex items-center justify-between rounded-xl border border-white/10 bg-surface/70 px-5 py-3">
+        <div className="flex items-center gap-2 text-base text-white">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Outreach in progress
+        </div>
+        <span className="font-mono text-[11px] text-zinc-500">Zia · cadence</span>
+      </div>
+
+      {/* Cadence funnel — how the sequence is performing at a glance */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="mb-4 grid grid-cols-4 gap-2"
+      >
+        {[
+          { label: "Queued", value: 42, accent: false },
+          { label: "Sent", value: 38, accent: false },
+          { label: "Opened", value: 21, accent: false },
+          { label: "Replied", value: 6, accent: true },
+        ].map((s) => (
+          <div key={s.label} className="rounded-xl border border-white/8 bg-white/[0.02] px-2 py-2.5 text-center">
+            <div className={`font-mono text-lg font-semibold leading-none ${s.accent ? "text-accent" : "text-white"}`}>
+              {s.value}
             </div>
+            <div className="mt-1 font-mono text-[9px] uppercase tracking-wider text-zinc-500">{s.label}</div>
+          </div>
+        ))}
+      </motion.div>
 
-            {/* Image Frame */}
-            <div className={`relative aspect-[3/4] w-full bg-zinc-900 border ${i === 1 ? 'border-accent' : 'border-transparent'}`}>
-              {/* Corner markers for the active one */}
-              {i === 1 && (
-                <>
-                   <div className="absolute top-[-3px] left-[-3px] w-1.5 h-1.5 bg-accent z-10" />
-                   <div className="absolute top-[-3px] right-[-3px] w-1.5 h-1.5 bg-accent z-10" />
-                   <div className="absolute bottom-[-3px] left-[-3px] w-1.5 h-1.5 bg-accent z-10" />
-                   <div className="absolute bottom-[-3px] right-[-3px] w-1.5 h-1.5 bg-accent z-10" />
-                </>
-              )}
-
-              <img src={p.img} alt={p.title} className="w-full h-full object-cover absolute inset-0" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40" />
-
-              <div className="absolute inset-0 p-4 md:p-6 flex flex-col items-center justify-between text-center">
-                 <h4 className="text-lg md:text-2xl font-display font-medium text-white tracking-tight leading-tight mt-2 md:mt-4 drop-shadow-md">
-                   {p.title}
-                 </h4>
-
-                 {i === 1 ? (
-                   <button className="bg-transparent border border-white rounded-full px-4 py-1.5 md:px-6 md:py-2 text-xs md:text-sm text-white backdrop-blur-sm hover:bg-white hover:text-black transition-colors">
-                     Select Persona
-                   </button>
-                 ) : (
-                   <div className="text-[10px] md:text-xs text-white/70">
-                     {p.desc}
-                   </div>
-                 )}
+      <div className="relative space-y-2.5 pl-5">
+        <div className="absolute left-[9px] top-4 bottom-4 w-px bg-white/10" />
+        {rows.map((c, i) => (
+          <motion.div
+            key={c.ch}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 + i * 0.12 }}
+            className="relative"
+          >
+            <span
+              className={`absolute -left-5 top-4 grid h-[18px] w-[18px] place-items-center rounded-full ring-4 ring-[#0e0e11] ${
+                c.active ? "bg-accent text-black" : "border border-white/10 bg-zinc-800 text-zinc-400"
+              }`}
+            >
+              <c.Icon className="h-2.5 w-2.5" />
+            </span>
+            <div className={`rounded-xl border p-3.5 ${c.active ? "border-accent/30 bg-accent/[0.04]" : "border-white/8 bg-surface/60"}`}>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-white">
+                  {c.ch} <span className="text-xs font-normal text-zinc-500">· {c.meta}</span>
+                </span>
+                <span className={`font-mono text-[11px] ${c.active ? "text-accent" : "text-zinc-500"}`}>{c.status}</span>
               </div>
             </div>
           </motion.div>
         ))}
       </div>
     </motion.div>
-  )
-}
-
-function Step3Score() {
-  const candidates = [
-    { name: "Alex Rivera", role: "Sr. SRE at Stripe", score: 96, img: 11, status: "High Match" },
-    { name: "Chen Wei", role: "Platform Eng at Netflix", score: 92, img: 21, status: "Strong Match" },
-    { name: "Sarah Jenkins", role: "Systems Lead at HashiCorp", score: 88, img: 22, status: "Good Match" },
-    { name: "David Kim", role: "Backend Eng at Uber", score: 81, img: 23, status: "Potential Fit" },
-  ];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.4 }}
-      className="w-full max-w-5xl mx-auto h-full flex flex-col justify-center absolute inset-0 md:relative px-2"
-    >
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 h-[400px] md:h-full">
-
-        {/* Candidate List */}
-        <div className="md:col-span-5 bg-zinc-900/40 rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col h-full">
-          <div className="p-3 md:p-4 border-b border-white/10 bg-zinc-950/50 flex items-center justify-between">
-            <span className="text-[10px] md:text-xs font-mono text-zinc-500">TALENT POOL (420)</span>
-            <span className="text-[9px] md:text-[10px] bg-accent/10 text-accent px-2 py-0.5 rounded border border-accent/20">Sorted by Fit</span>
-          </div>
-          <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {candidates.map((c, i) => (
-              <motion.div
-                key={c.name}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className={`flex items-center justify-between p-2 md:p-3 rounded-xl cursor-pointer transition-colors ${i === 0 ? 'bg-zinc-800/80 border border-white/10' : 'hover:bg-zinc-900 border border-transparent'}`}
-              >
-                <div className="flex items-center gap-2 md:gap-3">
-                  <div className="relative">
-                    <img src={`https://i.pravatar.cc/150?u=${c.img}`} alt={c.name} className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-white/10 object-cover" />
-                    {i === 0 && <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-accent rounded-full border-2 border-zinc-900" />}
-                  </div>
-                  <div>
-                    <div className="text-white text-[10px] md:text-xs font-medium">{c.name}</div>
-                    <div className="text-zinc-500 text-[9px] md:text-[10px]">{c.role}</div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className={`font-mono text-xs md:text-sm font-bold ${i === 0 ? 'text-accent' : 'text-white'}`}>{c.score}</div>
-                  <div className="text-[8px] md:text-[9px] text-zinc-500">{c.status}</div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* Candidate Deep Dive */}
-        <div className="md:col-span-7 bg-zinc-950 rounded-2xl border border-accent/30 shadow-2xl p-4 md:p-6 flex flex-col relative overflow-hidden h-full">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="flex items-start justify-between mb-4 md:mb-6 shrink-0">
-            <div className="flex items-center gap-3 md:gap-4">
-              <img src={`https://i.pravatar.cc/150?u=11`} className="w-12 h-12 md:w-16 md:h-16 rounded-xl border border-white/20 object-cover shadow-lg" />
-              <div>
-                <h3 className="text-lg md:text-xl text-white font-medium mb-1">Alex Rivera</h3>
-                <div className="text-xs md:text-sm text-zinc-400 mb-2">Senior Site Reliability Engineer at Stripe</div>
-                <div className="flex gap-2">
-                  <span className="text-[9px] md:text-[10px] bg-white/10 text-white px-2 py-0.5 rounded">San Francisco (Remote)</span>
-                  <span className="text-[9px] md:text-[10px] bg-white/10 text-white px-2 py-0.5 rounded">$180k - $220k</span>
-                </div>
-              </div>
-            </div>
-            <div className="bg-zinc-900 border border-white/10 rounded-lg p-2 md:p-3 text-center min-w-[60px] md:min-w-[80px]">
-              <div className="text-xl md:text-2xl text-accent font-mono font-bold mb-1">96</div>
-              <div className="text-[8px] md:text-[9px] text-zinc-500 uppercase tracking-widest">Match Score</div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 md:gap-4 mb-4 md:mb-6 flex-1">
-            <div className="bg-zinc-900/50 p-3 rounded-xl border border-white/5 h-full">
-              <div className="text-[10px] md:text-xs text-zinc-400 mb-2 flex items-center gap-1.5"><Check className="w-3 h-3 text-accent"/> Core Strengths</div>
-              <ul className="text-[9px] md:text-[10px] text-white space-y-1.5 pl-4 list-disc marker:text-zinc-600">
-                <li>10+ years Go experience</li>
-                <li>Architected Stripe's global ingress</li>
-                <li>Deep eBPF knowledge</li>
-              </ul>
-            </div>
-            <div className="bg-zinc-900/50 p-3 rounded-xl border border-white/5 h-full">
-              <div className="text-[10px] md:text-xs text-zinc-400 mb-2 flex items-center gap-1.5"><Shield className="w-3 h-3 text-yellow-500"/> Risk Areas</div>
-              <ul className="text-[9px] md:text-[10px] text-white space-y-1.5 pl-4 list-disc marker:text-zinc-600">
-                <li>Less experience with Rust</li>
-                <li>Primarily IC, fewer direct reports</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-auto flex items-center justify-between pt-3 md:pt-4 border-t border-white/10 shrink-0">
-            <div className="text-[9px] md:text-xs text-zinc-500 italic hidden md:block">Meera analyzed 42 data points for this match.</div>
-            <button className="bg-white hover:bg-zinc-200 text-black px-4 py-1.5 md:py-2 rounded-lg text-xs font-medium transition-colors w-full md:w-auto">
-              Approve to Outreach
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </motion.div>
-  )
-}
-
-function Step4Outreach() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.4 }}
-      className="w-full max-w-5xl mx-auto h-full flex flex-col justify-center absolute inset-0 md:relative"
-    >
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="bg-zinc-900/60 p-5 md:p-6 rounded-2xl border border-accent/30 text-center mb-6 md:mb-8 shadow-[0_0_30px_rgba(85,234,140,0.05)] backdrop-blur-md relative overflow-hidden"
-      >
-         <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent pointer-events-none" />
-         <h4 className="text-accent font-medium mb-2 flex items-center justify-center gap-2 text-sm md:text-base">
-            <Sparkles className="w-4 h-4" /> Autopilot Engaged
-         </h4>
-         <p className="text-xs md:text-sm text-zinc-400 mb-4 max-w-md mx-auto hidden md:block">Sia is now autonomously contacting the top matches across multiple channels.</p>
-         <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-1.5 rounded-full text-[10px] md:text-xs font-mono border border-accent/20">
-           <div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse" />
-           SEQUENCE ACTIVE
-         </div>
-      </motion.div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-         <motion.div
-           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}
-           className="bg-zinc-950 p-4 md:p-5 rounded-2xl border border-white/10 relative shadow-xl"
-         >
-            <div className="flex items-center justify-between mb-3 md:mb-4 pb-3 border-b border-white/5">
-              <div className="flex items-center gap-2">
-                <Mail className="w-3 h-3 md:w-4 md:h-4 text-zinc-400" />
-                <span className="text-[10px] md:text-xs text-zinc-400 font-medium">Email to Alex Rivera</span>
-              </div>
-              <span className="text-[9px] md:text-[10px] font-mono text-accent">SENT</span>
-            </div>
-            <div className="text-xs md:text-sm text-zinc-300 leading-relaxed font-serif">
-              "Hi Alex, loved your recent work on K8s ingress at Stripe. We're hitting similar concurrency bottlenecks and looking for a Lead SRE..."
-            </div>
-         </motion.div>
-
-         <motion.div
-           initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }}
-           className="bg-zinc-950 p-4 md:p-5 rounded-2xl border border-white/10 relative shadow-xl"
-         >
-            <div className="flex items-center justify-between mb-3 md:mb-4 pb-3 border-b border-white/5">
-              <div className="flex items-center gap-2">
-                <MessageSquare className="w-3 h-3 md:w-4 md:h-4 text-accent" />
-                <span className="text-[10px] md:text-xs text-zinc-400 font-medium">WhatsApp to Chen Wei</span>
-              </div>
-              <span className="text-[9px] md:text-[10px] font-mono text-accent">DELIVERED</span>
-            </div>
-            <div className="text-xs md:text-sm text-zinc-300 leading-relaxed bg-accent/5 p-3 rounded-lg border border-accent/10">
-              "Hey Chen! Sia here from EmployLabs. Are you open to a quick chat about a Lead Platform role? I think your Netflix experience is a perfect fit."
-            </div>
-         </motion.div>
-      </div>
-    </motion.div>
-  )
+  );
 }
 
 function Step5Schedule() {
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+  const times = ["9:00", "10:00", "11:00", "2:00"];
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
+      exit={{ opacity: 0, scale: 0.97 }}
       transition={{ duration: 0.4 }}
-      className="w-full max-w-5xl mx-auto h-full flex flex-col justify-center absolute inset-0 md:relative"
+      className="mx-auto w-full max-w-lg"
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 items-stretch">
-        <div className="col-span-1 bg-zinc-900/40 p-5 md:p-6 rounded-2xl border border-white/10 flex flex-col justify-center items-center text-center">
-          <Calendar className="w-8 h-8 md:w-10 md:h-10 text-accent mb-4" />
-          <h4 className="text-white text-base md:text-lg font-medium mb-2">Calendars Synced</h4>
-          <p className="text-xs md:text-sm text-zinc-400">Meera cross-references your hiring team's availability instantly.</p>
+      <div className="rounded-2xl border border-white/10 bg-surface/80 p-6 shadow-2xl backdrop-blur-sm">
+        <div className="mb-5 flex items-center gap-3">
+          <div className="grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-white/5 text-zinc-300">
+            <Calendar className="h-4.5 w-4.5" />
+          </div>
+          <div>
+            <div className="text-sm font-medium text-white">Talk to Zia</div>
+            <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">WhatsApp chat or phone call · your pick</div>
+          </div>
         </div>
-        <div className="col-span-1 md:col-span-2 bg-zinc-950 p-5 md:p-6 rounded-2xl border border-white/10 shadow-2xl flex flex-col justify-center">
-           <div className="flex items-center justify-between mb-4 md:mb-6 pb-4 border-b border-white/5">
-             <div className="text-xs md:text-sm text-white font-medium">Alex Rivera <span className="text-zinc-500">selected a time</span></div>
-             <div className="text-[9px] md:text-xs text-accent font-mono bg-accent/10 px-2 py-1 rounded">JUST NOW</div>
-           </div>
 
-           <div className="grid grid-cols-5 gap-1.5 md:gap-2">
-              {["Mon", "Tue", "Wed", "Thu", "Fri"].map((day, i) => (
-                <div key={day} className="flex flex-col gap-1.5 md:gap-2">
-                  <div className="text-[9px] md:text-[10px] text-zinc-500 font-mono text-center mb-1">{day}</div>
-                  <div className="h-6 md:h-8 rounded bg-zinc-900 border border-white/5" />
-                  <div className="h-6 md:h-8 rounded bg-zinc-900 border border-white/5" />
-                  <motion.div
-                    initial={i === 3 ? { opacity: 0, scale: 0.8 } : { opacity: 1 }}
-                    animate={i === 3 ? { opacity: 1, scale: 1 } : { opacity: 1 }}
-                    transition={{ delay: 0.5, type: "spring" }}
-                    className={`h-6 md:h-8 rounded border ${i === 3 ? 'bg-accent border-accent shadow-[0_0_15px_rgba(85,234,140,0.4)]' : 'bg-zinc-900 border-white/5'}`}
-                  />
-                  <div className="h-6 md:h-8 rounded bg-zinc-900 border border-white/5" />
-                </div>
-              ))}
-           </div>
-
-           <motion.div
-             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1 }}
-             className="mt-6 text-center text-xs md:text-sm text-white flex items-center justify-center gap-2"
-           >
-             <Check className="w-3 h-3 md:w-4 md:h-4 text-accent" /> Interview scheduled for <strong className="text-accent">Thursday, 10:00 AM</strong>
-           </motion.div>
+        {/* Mode toggle — the real candidate room's WhatsApp/Phone tabs */}
+        <div className="mb-4 flex gap-1.5 rounded-xl border border-white/8 bg-black/20 p-1">
+          <div className="flex-1 rounded-lg bg-accent py-2 text-center text-xs font-medium text-black">WhatsApp chat</div>
+          <div className="flex-1 rounded-lg py-2 text-center text-xs font-medium text-zinc-500">Phone call</div>
         </div>
+
+        <div className="mb-1.5 font-mono text-[10px] uppercase tracking-wide text-zinc-500">Pick a day</div>
+        <div className="mb-3 flex gap-1.5">
+          {days.map((d, i) => (
+            <div
+              key={d}
+              className={`flex-1 rounded-lg border px-2 py-1.5 text-center text-xs ${
+                i === 3 ? "border-white/20 bg-white/10 text-white" : "border-white/8 bg-white/[0.02] text-zinc-400"
+              }`}
+            >
+              {d}
+            </div>
+          ))}
+        </div>
+
+        <div className="mb-1.5 font-mono text-[10px] uppercase tracking-wide text-zinc-500">Pick a time (IST)</div>
+        <div className="grid grid-cols-4 gap-1.5">
+          {times.map((t, i) => {
+            const sel = i === 1;
+            return (
+              <motion.div
+                key={t}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: sel ? 0.5 : 0.15 + i * 0.05 }}
+                className={`rounded-lg border py-2 text-center text-xs font-medium ${
+                  sel
+                    ? "border-accent bg-accent text-black shadow-[0_0_18px_rgba(85,234,140,0.35)]"
+                    : "border-white/8 bg-white/[0.03] text-zinc-400"
+                }`}
+              >
+                {t}
+              </motion.div>
+            );
+          })}
+        </div>
+
+        <button className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-2.5 text-sm font-medium text-white">
+          Confirm — Thursday 10:00 AM
+        </button>
       </div>
     </motion.div>
-  )
+  );
 }
 
 function Step6Interview() {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
+      exit={{ opacity: 0, scale: 0.97 }}
       transition={{ duration: 0.4 }}
-      className="w-full max-w-5xl mx-auto h-full flex flex-col justify-center absolute inset-0 md:relative px-2"
+      className="mx-auto w-full max-w-lg"
     >
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 h-[450px] md:h-full">
-        {/* Call Interface */}
-        <div className="md:col-span-7 bg-zinc-900/40 border border-white/10 rounded-2xl p-4 md:p-6 flex flex-col shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-accent to-emerald-500 opacity-50" />
-
-          <div className="flex justify-between items-center mb-6 shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-zinc-800 border border-white/10 flex items-center justify-center">
-                  <Mic className="w-4 h-4 text-accent" />
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-accent rounded-full animate-pulse border-2 border-zinc-900" />
-              </div>
-              <div>
-                <div className="text-white text-sm font-medium">Technical Screen</div>
-                <div className="text-xs text-accent">00:14:22</div>
-              </div>
-            </div>
-            <div className="flex items-center gap-1 opacity-50">
-               {[...Array(6)].map((_, i) => (
-                 <motion.div key={i} animate={{height: [8, Math.random()*24 + 8, 8]}} transition={{repeat: Infinity, duration: 0.5 + Math.random()*0.5}} className="w-1 bg-accent rounded-full shrink-0" />
-               ))}
-            </div>
+      <div className="rounded-2xl border border-white/10 bg-surface/80 p-5 shadow-2xl backdrop-blur-sm">
+        <div className="mb-5 flex items-center justify-between">
+          <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-zinc-500">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Live · Naira
           </div>
-
-          <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="w-[90%] bg-zinc-950 p-3 rounded-xl rounded-tl-sm border border-white/5 text-xs text-zinc-300">
-              <span className="text-accent font-medium block text-[10px] mb-1">Naira (AI)</span>
-              That's an interesting approach to scaling the datastore. How did you specifically address the write-heavy loads during peak traffic events?
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.5 }} className="w-[90%] ml-auto bg-zinc-800/80 p-3 rounded-xl rounded-tr-sm border border-white/10 text-xs text-white">
-              <span className="text-zinc-400 font-medium block text-[10px] mb-1 text-right">Alex Rivera</span>
-              We implemented a write-behind caching layer using Redis, and batched writes to Postgres. It smoothed out the spikes significantly...
-            </motion.div>
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 2.5 }} className="w-[90%] bg-accent/10 p-3 rounded-xl rounded-tl-sm border border-accent/20 text-xs text-accent font-mono flex items-center gap-2 mt-4">
-              <Zap className="w-3.5 h-3.5 shrink-0" /> Naira is analyzing response for "System Design" depth...
-            </motion.div>
+          {/* Real module lineup — M1..M4, the one in progress is the accent */}
+          <div className="flex items-center gap-2.5 font-mono text-[10px] text-zinc-600">
+            <span className="flex items-center gap-1 text-zinc-500"><Check className="h-2.5 w-2.5 text-accent" /> M1</span>
+            <span className="text-accent">M2 · Scenario Triage</span>
+            <span>M3</span>
+            <span>M4</span>
           </div>
         </div>
 
-        {/* Live Evaluation Checklist */}
-        <div className="md:col-span-5 bg-zinc-950 border border-white/10 rounded-2xl p-4 md:p-6 flex flex-col shadow-2xl overflow-hidden">
-           <h4 className="text-[10px] md:text-xs font-mono text-zinc-500 uppercase tracking-widest mb-4 flex items-center gap-2 shrink-0">
-             <UserCheck className="w-3.5 h-3.5" /> Live Assessment
-           </h4>
+        {/* AiPresence — the real avatar: two concentric rings + mic core */}
+        <div className="mb-5 flex flex-col items-center py-2">
+          <div className="relative grid h-16 w-16 place-items-center">
+            <motion.span
+              className="absolute inset-0 rounded-full bg-accent/15"
+              animate={{ scale: [1.15, 1.35, 1.15] }}
+              transition={{ repeat: Infinity, duration: 2.4, ease: "easeInOut" }}
+            />
+            <span className="absolute inset-0 rounded-full bg-accent/25" />
+            <div className="relative grid h-11 w-11 place-items-center rounded-full bg-accent text-black">
+              <Mic className="h-5 w-5" />
+            </div>
+          </div>
+          <div className="mt-2.5 text-sm font-medium text-white">Naira</div>
+          <div className="text-xs text-zinc-500">Listening</div>
+        </div>
 
-           <div className="space-y-3 flex-1 overflow-y-auto pr-2">
-             {[
-               { criteria: "Communication & Clarity", status: "passed", text: "Clear and concise explanations." },
-               { criteria: "Go Concurrency", status: "passed", text: "Understands channels and go-routines deeply." },
-               { criteria: "System Design (Scale)", status: "evaluating", text: "Currently probing on DB write scaling..." },
-               { criteria: "Cultural Fit", status: "pending", text: "Awaiting behavioral questions." }
-             ].map((item, i) => (
-               <div key={item.criteria} className={`p-3 rounded-xl border ${item.status === 'passed' ? 'bg-accent/5 border-accent/20' : item.status === 'evaluating' ? 'bg-blue-500/5 border-blue-500/20' : 'bg-zinc-900 border-white/5'}`}>
-                 <div className="flex items-center justify-between mb-1.5">
-                   <span className="text-[10px] md:text-xs font-medium text-white">{item.criteria}</span>
-                   {item.status === 'passed' && <Check className="w-3 h-3 text-accent" />}
-                   {item.status === 'evaluating' && <Activity className="w-3 h-3 text-blue-400 animate-pulse" />}
-                   {item.status === 'pending' && <div className="w-1.5 h-1.5 rounded-full bg-zinc-600" />}
-                 </div>
-                 <div className={`text-[9px] md:text-[10px] ${item.status === 'passed' ? 'text-zinc-400' : item.status === 'evaluating' ? 'text-blue-300' : 'text-zinc-600'}`}>
-                   {item.text}
-                 </div>
-               </div>
-             ))}
-           </div>
+        <div className="space-y-2.5">
+          <div className="max-w-[85%] rounded-xl rounded-tl-sm border border-white/8 bg-white/[0.03] p-3">
+            <div className="mb-1 font-mono text-[10px] uppercase tracking-wider text-zinc-500">Naira</div>
+            <div className="text-[13px] leading-relaxed text-zinc-300">Walk me through handling write-heavy load at peak.</div>
+          </div>
+          <div className="ml-auto max-w-[85%] rounded-xl rounded-tr-sm border border-white/8 bg-white/[0.05] p-3">
+            <div className="mb-1 text-right font-mono text-[10px] uppercase tracking-wider text-zinc-500">You</div>
+            <div className="text-[13px] leading-relaxed text-white">Write-behind Redis cache, batched flushes to Postgres…</div>
+          </div>
         </div>
       </div>
     </motion.div>
-  )
+  );
 }
 
 function Step7Offer() {
+  const dims = [
+    { k: "System Design", pips: 5 },
+    { k: "Reliability", pips: 4 },
+    { k: "Communication", pips: 4 },
+  ];
+  const activeSeg = 3; // "Aligned"
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
+      exit={{ opacity: 0, scale: 0.97 }}
       transition={{ duration: 0.4 }}
-      className="w-full max-w-5xl mx-auto h-full flex flex-col justify-center absolute inset-0 md:relative px-2"
+      className="mx-auto w-full max-w-lg"
     >
-      <div className="grid grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6 shrink-0">
-        <div className="p-3 md:p-4 bg-zinc-900/40 rounded-xl border border-white/10 text-center flex flex-col justify-center"><div className="text-xl md:text-3xl text-zinc-500 font-display mb-1">420</div><div className="text-[8px] md:text-[10px] text-zinc-600 uppercase tracking-wider font-mono">Sourced</div></div>
-        <div className="p-3 md:p-4 bg-zinc-900/40 rounded-xl border border-white/10 text-center flex flex-col justify-center"><div className="text-xl md:text-3xl text-zinc-400 font-display mb-1">125</div><div className="text-[8px] md:text-[10px] text-zinc-500 uppercase tracking-wider font-mono">Screened</div></div>
-        <div className="p-3 md:p-4 bg-zinc-900/60 rounded-xl border border-white/10 text-center flex flex-col justify-center"><div className="text-xl md:text-3xl text-white font-display mb-1">18</div><div className="text-[8px] md:text-[10px] text-zinc-400 uppercase tracking-wider font-mono">Interviewed</div></div>
-        <div className="p-3 md:p-4 bg-accent/10 rounded-xl border border-accent/30 text-center flex flex-col justify-center"><div className="text-xl md:text-3xl text-accent font-display mb-1">3</div><div className="text-[8px] md:text-[10px] text-accent uppercase tracking-wider font-mono font-bold">Finalists</div></div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6 flex-1 min-h-[300px]">
-
-        {/* Dossier Left */}
-        <div className="md:col-span-7 lg:col-span-8 bg-zinc-950 border border-white/10 rounded-2xl p-4 md:p-8 shadow-2xl flex flex-col justify-between h-full">
-           <div>
-             <div className="flex items-center gap-3 mb-4 md:mb-6 pb-4 md:pb-6 border-b border-white/5">
-               <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-accent/20 flex items-center justify-center border border-accent/30">
-                 <Award className="w-5 h-5 md:w-6 md:h-6 text-accent" />
-               </div>
-               <div>
-                 <h2 className="text-white text-lg md:text-2xl font-medium">Alex Rivera</h2>
-                 <p className="text-[10px] md:text-sm text-zinc-400">Top Finalist \u2014 Lead Staff SRE</p>
-               </div>
-             </div>
-
-             <div className="space-y-4 md:space-y-6">
-               <div>
-                 <h4 className="text-[10px] md:text-xs text-zinc-500 font-mono uppercase tracking-widest mb-2 md:mb-3">Interview Summary</h4>
-                 <p className="text-xs md:text-sm text-zinc-300 leading-relaxed bg-zinc-900/50 p-3 md:p-4 rounded-xl border border-white/5">
-                   Alex demonstrated exceptional depth in Go and Kubernetes. During the system design phase, they architected a robust multi-region failover strategy that aligned perfectly with our requirements. Communication was clear and concise.
-                 </p>
-               </div>
-               <div className="grid grid-cols-2 gap-3 md:gap-4">
-                  <div className="bg-zinc-900/50 p-3 md:p-4 rounded-xl border border-white/5">
-                    <div className="text-[10px] md:text-xs text-zinc-500 mb-1">Technical Fit</div>
-                    <div className="text-base md:text-lg text-white font-medium">98/100</div>
-                  </div>
-                  <div className="bg-zinc-900/50 p-3 md:p-4 rounded-xl border border-white/5">
-                    <div className="text-[10px] md:text-xs text-zinc-500 mb-1">Cultural Fit</div>
-                    <div className="text-base md:text-lg text-white font-medium">95/100</div>
-                  </div>
-               </div>
-             </div>
-           </div>
+      <div className="rounded-2xl border border-white/10 bg-surface/80 p-5 shadow-2xl backdrop-blur-sm">
+        <div className="mb-4 flex items-center justify-between border-b border-white/5 pb-4">
+          <div>
+            <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Naira Report Card</div>
+            <div className="mt-1.5 flex items-center gap-1.5 text-xs text-zinc-500">
+              <Mic className="h-3 w-3" /> Voice · Naira
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="font-mono text-2xl font-semibold leading-none text-white">
+              4.6<span className="text-sm text-zinc-500"> / 5</span>
+            </div>
+            <div className="mt-1 font-mono text-[10px] uppercase tracking-widest text-zinc-500">overall</div>
+          </div>
         </div>
 
-        {/* Action Right */}
-        <div className="md:col-span-5 lg:col-span-4 bg-zinc-900/60 border border-accent/40 rounded-2xl p-5 md:p-6 shadow-[0_0_40px_rgba(85,234,140,0.1)] flex flex-col items-center justify-center text-center relative overflow-hidden backdrop-blur-xl h-full">
-           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent to-transparent" />
-           <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-accent/10 flex items-center justify-center mb-4 md:mb-6">
-              <span className="text-2xl md:text-3xl">🎉</span>
-           </div>
-           <h3 className="text-lg md:text-xl text-white font-medium mb-2">Ready to Hire?</h3>
-           <p className="text-[10px] md:text-xs text-zinc-400 mb-6 md:mb-8">Approve the offer and Sia will automatically send the package to Alex.</p>
+        {/* The real ReportCard's 4-tab strip — Assessment / Role Fit /
+            Recommendations / Behavioral. "Assessment" is the active pane below. */}
+        <div className="mb-4 flex gap-1 border-b border-white/5 pb-3 text-[11px]">
+          <span className="flex items-center gap-1.5 rounded-lg bg-white/10 px-2.5 py-1.5 font-medium text-white">
+            <ClipboardList className="h-3 w-3" /> Assessment
+          </span>
+          <span className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-zinc-500">
+            <Target className="h-3 w-3" /> Role Fit
+          </span>
+          <span className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-zinc-500">
+            <Lightbulb className="h-3 w-3" /> Recommendations
+          </span>
+          <span className="hidden items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-zinc-500 sm:flex">
+            <Activity className="h-3 w-3" /> Behavioral
+          </span>
+        </div>
 
-           <div className="w-full mt-auto">
-             <button className="w-full bg-accent hover:bg-white text-zinc-950 transition-colors py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-[10px] md:text-sm shadow-[0_0_20px_rgba(85,234,140,0.3)]">
-               Generate Offer <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
-             </button>
-             <button className="w-full bg-transparent text-zinc-500 hover:text-white transition-colors py-2 md:py-3 mt-1 md:mt-2 rounded-xl text-[10px] md:text-xs font-medium">
-               Review Other Finalists
-             </button>
-           </div>
+        {/* Role-alignment meter — active segment is the single accent */}
+        <div className="mb-4">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="font-mono text-[11px] uppercase tracking-widest text-zinc-500">Role alignment</span>
+            <span className="rounded-full border border-accent/25 bg-accent/10 px-2.5 py-0.5 font-mono text-[11px] text-accent">Aligned</span>
+          </div>
+          <div className="flex gap-1.5">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className={`h-1.5 flex-1 rounded-full ${i === activeSeg ? "bg-accent" : i < activeSeg ? "bg-white/25" : "bg-white/8"}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* RAR dimensions — 5-pip meters */}
+        <div className="space-y-2.5">
+          {dims.map((d, i) => (
+            <motion.div
+              key={d.k}
+              initial={{ opacity: 0, x: -6 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 + i * 0.08 }}
+              className="flex items-center justify-between"
+            >
+              <span className="text-[13px] text-zinc-300">{d.k}</span>
+              <div className="flex items-center gap-2.5">
+                <div className="flex gap-1">
+                  {[0, 1, 2, 3, 4].map((p) => (
+                    <span key={p} className={`h-1.5 w-1.5 rounded-full ${p < d.pips ? "bg-zinc-300" : "bg-white/10"}`} />
+                  ))}
+                </div>
+                <span className="w-6 text-right font-mono text-xs text-zinc-400">{d.pips}/5</span>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </motion.div>
-  )
+  );
 }
