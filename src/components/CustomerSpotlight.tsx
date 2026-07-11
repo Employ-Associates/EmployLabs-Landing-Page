@@ -10,8 +10,8 @@ export function CustomerSpotlight() {
 
         {/* Header */}
         <div className="mb-12">
-          <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest uppercase text-zinc-500 mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+          <div className="relative overflow-hidden inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 backdrop-blur-md border border-zinc-200/80 text-zinc-600 text-[10px] font-mono tracking-widest uppercase mb-6 shadow-sm before:absolute before:inset-x-3 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/80 before:to-transparent before:content-['']">
+            <span className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
             CUSTOMER SPOTLIGHT
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-title text-zinc-900 tracking-tight leading-tight max-w-4xl">

@@ -1,29 +1,212 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Check, ShieldCheck, SlidersHorizontal, Lock, Eye, Shield, AlertCircle, ArrowRight } from "lucide-react";
+import {
+  Eye,
+  ShieldCheck,
+  SlidersHorizontal,
+  Wallet,
+  Check,
+  Sparkles,
+} from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/* Card sub-mocks — the real product surfaces for each control primitive.     */
+/* -------------------------------------------------------------------------- */
+
+function BudgetMock() {
+  return (
+    <div className="mt-auto space-y-3">
+      <div className="rounded-sm border border-zinc-200 bg-zinc-50 p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-[10px] uppercase font-mono tracking-widest text-zinc-400 mb-1">
+              Campaign budget
+            </div>
+            <div className="text-2xl font-display text-zinc-900">
+              $450 <span className="text-base text-zinc-400">/ $1,000</span>
+            </div>
+          </div>
+          <div className="relative w-14 h-14">
+            <div className="w-14 h-14 rounded-full border-[5px] border-zinc-200" />
+            <div className="absolute inset-0 w-14 h-14 rounded-full border-[5px] border-transparent border-t-green-500 border-r-green-500" />
+            <span className="absolute inset-0 flex items-center justify-center text-[11px] font-mono text-green-600">
+              45%
+            </span>
+          </div>
+        </div>
+        <div className="mt-3 h-2 w-full bg-zinc-200 rounded-full overflow-hidden">
+          <div className="h-full w-[45%] bg-green-500 rounded-full" />
+        </div>
+      </div>
+      <div className="flex items-center gap-2.5 rounded-sm border border-orange-200 bg-orange-50/70 px-3.5 py-2.5">
+        <Wallet className="w-4 h-4 text-orange-600 shrink-0" />
+        <p className="text-[12.5px] text-zinc-700 leading-snug">
+          Meera pauses at the cap and asks before spending more.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function AutonomyMock() {
+  const rows = [
+    { stage: "Sourcing", mode: "auto" as const },
+    { stage: "Outreach", mode: "review" as const },
+    { stage: "Interviews", mode: "auto" as const },
+    { stage: "Offers", mode: "review" as const },
+  ];
+  return (
+    <div className="mt-auto space-y-3">
+      {rows.map((a) => (
+        <div key={a.stage} className="flex items-center justify-between">
+          <span className="text-[13px] font-medium text-zinc-800">{a.stage}</span>
+          <div className="flex text-[10px] font-medium">
+            <span
+              className={`px-2.5 py-1 rounded-l-sm border ${
+                a.mode === "review"
+                  ? "bg-orange-50 border-orange-200 text-orange-600"
+                  : "border-zinc-200 text-zinc-400"
+              }`}
+            >
+              Review
+            </span>
+            <span
+              className={`px-2.5 py-1 rounded-r-sm border -ml-px ${
+                a.mode === "auto"
+                  ? "bg-green-50 border-green-200 text-green-600"
+                  : "border-zinc-200 text-zinc-400"
+              }`}
+            >
+              Full auto
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const GATES: {
+  tone: "amber" | "green";
+  label: string;
+  age: string;
+  title: string;
+  preview: string;
+  primary: string;
+  secondary: string;
+}[] = [
+  {
+    tone: "amber",
+    label: "Approve",
+    age: "just now",
+    title: "Approve outreach — 38 candidates",
+    preview: "Email + WhatsApp · personalized",
+    primary: "Approve & send",
+    secondary: "Hold",
+  },
+  {
+    tone: "green",
+    label: "Offer",
+    age: "1m ago",
+    title: "Authorize offer — Alex Rivera",
+    preview: "98 / 100 fit · $185k base suggested",
+    primary: "Authorize",
+    secondary: "Adjust",
+  },
+];
+
+function GatesMock() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {/* Automation status spans both columns */}
+      <div className="sm:col-span-2 rounded-sm border border-zinc-200 bg-zinc-50 overflow-hidden">
+        <div className="border-l-[3px] border-l-green-500 p-3.5 flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-medium text-green-700">
+                <Check className="w-3 h-3" />
+                Running
+              </span>
+              <span className="inline-flex items-center gap-1 text-[11px] text-zinc-500">
+                <Sparkles className="w-3 h-3" />
+                Automation
+              </span>
+            </div>
+            <p className="mt-1.5 text-[13.5px] font-semibold text-zinc-900">
+              Meera is running the Lead SRE pipeline
+            </p>
+          </div>
+          <span className="text-[12px] text-zinc-500 hidden md:block">2 gates need your call</span>
+        </div>
+      </div>
+
+      {GATES.map((g) => {
+        const edge = g.tone === "amber" ? "border-l-orange-400" : "border-l-green-500";
+        const badge =
+          g.tone === "amber" ? "bg-orange-100 text-orange-700" : "bg-green-100 text-green-700";
+        return (
+          <div key={g.title} className="rounded-sm border border-zinc-200 bg-white overflow-hidden">
+            <div className={`border-l-[3px] ${edge} p-3.5`}>
+              <div className="flex items-center gap-2">
+                <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${badge}`}>
+                  {g.label}
+                </span>
+                <span className="text-[11.5px] text-zinc-400">Meera · {g.age}</span>
+              </div>
+              <p className="mt-1.5 text-[13.5px] font-semibold text-zinc-900">{g.title}</p>
+              <p className="mt-0.5 text-[12px] text-zinc-500">{g.preview}</p>
+              <div className="mt-3 flex items-center gap-2">
+                <button className="h-8 rounded-sm bg-zinc-900 px-3 text-xs font-medium text-white hover:bg-zinc-800 transition-colors">
+                  {g.primary}
+                </button>
+                <button className="h-8 rounded-sm border border-zinc-200 px-3 text-xs font-medium text-zinc-600 hover:bg-zinc-50 transition-colors">
+                  {g.secondary}
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+
+const cardFade = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true },
+};
 
 export function HumanAtGates() {
   return (
-    <section className="py-32 md:py-40 relative bg-zinc-50 overflow-hidden">
-      {/* Background accents */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-100/50 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-100/50 rounded-full blur-[100px] pointer-events-none translate-y-1/3 -translate-x-1/3" />
+    <section className="py-32 md:py-40 relative overflow-hidden bg-zinc-100">
+      {/* Background = the old hero image, with a soft light wash so the white
+          cards + dark text stay legible on top. */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "url(/assets/images/custom_hero_bg.png)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="absolute inset-0 pointer-events-none bg-white/55" />
 
       <div className="max-w-[1200px] mx-auto px-6 relative z-10">
-
-        {/* Header Section */}
-        <div className="flex flex-col items-center justify-center text-center mb-20 max-w-3xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col items-center justify-center text-center mb-12 md:mb-14 max-w-3xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 border border-orange-200 text-orange-700 text-[10px] font-mono uppercase tracking-widest mb-6 shadow-sm"
+            className="relative overflow-hidden inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 backdrop-blur-md border border-zinc-200/80 text-zinc-600 text-[10px] font-mono uppercase tracking-widest mb-6 shadow-sm before:absolute before:inset-x-3 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/80 before:to-transparent before:content-['']"
           >
-            <Eye className="w-3.5 h-3.5" />
+            <Eye className="w-3.5 h-3.5 text-zinc-900" />
             <span>Human In The Loop</span>
           </motion.div>
-
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -31,10 +214,10 @@ export function HumanAtGates() {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-5xl lg:text-6xl font-display text-zinc-900 tracking-tight leading-tight mb-6"
           >
-            Autonomous by default.<br/>
+            Autonomous by default.
+            <br />
             <span className="text-zinc-500">Yours to control.</span>
           </motion.h2>
-
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -42,128 +225,68 @@ export function HumanAtGates() {
             transition={{ delay: 0.2 }}
             className="text-lg text-zinc-600 leading-relaxed"
           >
-            The agents do the heavy lifting, but they never hire without you. You decide how hands-off you want to be. Approve the ICP, greenlight the outreach, and make the final call.
+            The agents do the heavy lifting — but they never hire without you.
+            Meera pauses at every consequential step and waits for your call.
           </motion.p>
         </div>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(280px,auto)]">
-
-          {/* Main Card: Approval Gates (Spans 2 cols) */}
+        {/* Bento: two cards on top, Approval gates spans the full row below */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Budget & spend caps */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            {...cardFade}
+            transition={{ delay: 0.15 }}
+            className="flex flex-col bg-white rounded-sm border border-zinc-200 p-7 shadow-xl shadow-black/[0.03]"
+          >
+            <div className="w-10 h-10 rounded-sm bg-zinc-900 text-white flex items-center justify-center mb-4">
+              <Wallet className="w-5 h-5" />
+            </div>
+            <h3 className="text-xl font-display text-zinc-900 mb-1.5">Budget &amp; spend caps</h3>
+            <p className="text-sm text-zinc-600 leading-relaxed mb-6">
+              A hard per-job budget and spend caps. Meera stops at the ceiling and asks before
+              spending another credit.
+            </p>
+            <BudgetMock />
+          </motion.div>
+
+          {/* Per-stage autonomy */}
+          <motion.div
+            {...cardFade}
+            transition={{ delay: 0.25 }}
+            className="flex flex-col bg-white rounded-sm border border-zinc-200 p-7 shadow-xl shadow-black/[0.03]"
+          >
+            <div className="w-10 h-10 rounded-sm bg-zinc-900 text-white flex items-center justify-center mb-4">
+              <SlidersHorizontal className="w-5 h-5" />
+            </div>
+            <h3 className="text-xl font-display text-zinc-900 mb-1.5">Per-stage autonomy</h3>
+            <p className="text-sm text-zinc-600 leading-relaxed mb-6">
+              Dial each stage from Review-all to Full-auto. Tighten a brand-new role, let a
+              high-volume one run on its own.
+            </p>
+            <AutonomyMock />
+          </motion.div>
+
+          {/* Approval gates — full row */}
+          <motion.div
+            {...cardFade}
             transition={{ delay: 0.3 }}
-            className="md:col-span-2 bg-white rounded-xl border border-zinc-200 p-8 flex flex-col justify-between shadow-xl shadow-black/5 relative overflow-hidden"
+            className="md:col-span-2 bg-white rounded-sm border border-zinc-200 p-7 shadow-xl shadow-black/[0.03] grid grid-cols-1 lg:grid-cols-5 gap-8 items-start"
           >
-            <div className="relative z-10 mb-8">
-              <div className="w-10 h-10 rounded-sm bg-orange-100 border border-orange-200 flex items-center justify-center mb-4">
-                <ShieldCheck className="w-5 h-5 text-orange-600" />
+            <div className="lg:col-span-2">
+              <div className="w-10 h-10 rounded-sm bg-zinc-900 text-white flex items-center justify-center mb-4">
+                <ShieldCheck className="w-5 h-5" />
               </div>
-              <h3 className="text-2xl font-display text-zinc-900 mb-2">Approval Gates</h3>
-              <p className="text-zinc-500 text-sm">Intercept key decisions before they execute.</p>
-            </div>
-
-            {/* UI Mockup */}
-            <div className="bg-zinc-50 rounded-lg border border-zinc-200 p-4 space-y-3 relative z-10">
-              <div className="flex items-center justify-between p-3 bg-white border border-zinc-200 rounded-sm shadow-sm">
-                 <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
-                       <Check className="w-3.5 h-3.5 text-green-600" />
-                    </div>
-                    <span className="text-sm font-medium text-zinc-900">Target List Approved</span>
-                 </div>
-                 <span className="text-[10px] text-zinc-400 font-mono">Gate 02</span>
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white border-2 border-orange-200 rounded-sm shadow-md gap-4 relative overflow-hidden">
-                 <div className="absolute top-0 right-0 w-24 h-24 bg-orange-100/50 blur-xl pointer-events-none rounded-full" />
-                 <div className="flex items-start gap-3 relative z-10">
-                    <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center shrink-0 mt-0.5">
-                       <AlertCircle className="w-3.5 h-3.5 text-orange-600" />
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium text-zinc-900 block mb-1">Approve Offer Package</span>
-                      <span className="text-xs text-zinc-500 block">Alex Rivera scored 98/100. AI suggests $185k base.</span>
-                    </div>
-                 </div>
-                 <button className="shrink-0 h-9 px-4 rounded-sm bg-orange-500 text-white font-medium text-xs flex items-center justify-center hover:bg-orange-600 transition-colors relative z-10 shadow-sm">
-                   Authorize
-                 </button>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Granular Autonomy */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-            className="bg-white rounded-xl border border-zinc-200 p-8 flex flex-col shadow-xl shadow-black/5"
-          >
-            <div className="w-10 h-10 rounded-sm bg-blue-50 border border-blue-100 flex items-center justify-center mb-4">
-              <SlidersHorizontal className="w-5 h-5 text-blue-600" />
-            </div>
-            <h3 className="text-xl font-display text-zinc-900 mb-2">Granular Autonomy</h3>
-            <p className="text-zinc-500 text-sm mb-8 flex-1">Dial autonomy up or down per stage. Set it to 'Review All' for new roles, and 'Full Auto' for high-volume roles.</p>
-
-            {/* UI Mockup */}
-            <div className="space-y-4">
-               <div>
-                  <div className="flex justify-between text-xs font-medium text-zinc-900 mb-2">
-                     <span>Sourcing</span>
-                     <span className="text-blue-600">Full Auto</span>
-                  </div>
-                  <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
-                     <div className="h-full bg-blue-500 w-[100%] rounded-full" />
-                  </div>
-               </div>
-               <div>
-                  <div className="flex justify-between text-xs font-medium text-zinc-900 mb-2">
-                     <span>Outreach</span>
-                     <span className="text-orange-500">Review All</span>
-                  </div>
-                  <div className="h-1.5 w-full bg-zinc-100 rounded-full overflow-hidden">
-                     <div className="h-full bg-orange-400 w-[30%] rounded-full" />
-                  </div>
-               </div>
-            </div>
-          </motion.div>
-
-          {/* Spend Caps & Limits */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-            className="md:col-span-3 bg-surface rounded-xl border border-zinc-800 p-8 flex flex-col md:flex-row items-center gap-8 shadow-2xl overflow-hidden relative"
-          >
-            {/* Dark background accent */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-zinc-800/50 via-zinc-900 to-zinc-950 pointer-events-none" />
-
-            <div className="w-full md:w-1/2 relative z-10">
-              <div className="w-10 h-10 rounded-sm bg-white/10 border border-white/20 flex items-center justify-center mb-4">
-                <Shield className="w-5 h-5 text-white" />
-              </div>
-              <h3 className="text-2xl font-display text-white mb-2">Spend Caps & Limits</h3>
-              <p className="text-zinc-400 text-sm leading-relaxed">
-                Set hard constraints on outreach volume, email credits, and AI compute usage per campaign. Never blow the budget.
+              <h3 className="text-xl font-display text-zinc-900 mb-1.5">Approval gates</h3>
+              <p className="text-sm text-zinc-600 leading-relaxed">
+                Every actuating step — outreach, scheduling, offers — pauses for your one-click
+                approval. The agent literally cannot send without you. Meera surfaces each gate the
+                moment it&rsquo;s ready, with everything you need to decide in a glance.
               </p>
             </div>
-
-            <div className="w-full md:w-1/2 relative z-10 bg-black/40 rounded-lg border border-white/10 p-6 flex items-center justify-between">
-               <div>
-                 <div className="text-[10px] uppercase font-mono tracking-widest text-zinc-500 mb-1">Campaign Budget</div>
-                 <div className="text-3xl font-display text-white">$450 <span className="text-lg text-zinc-500">/ $1000</span></div>
-               </div>
-               <div className="w-16 h-16 rounded-full border-[4px] border-zinc-800 border-t-accent border-r-accent flex items-center justify-center shadow-[0_0_15px_rgba(85,234,140,0.2)]">
-                 <span className="text-xs font-mono text-accent">45%</span>
-               </div>
+            <div className="lg:col-span-3">
+              <GatesMock />
             </div>
           </motion.div>
-
         </div>
       </div>
     </section>

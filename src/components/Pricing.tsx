@@ -157,15 +157,16 @@ export function Pricing() {
                 ))}
               </ul>
 
-              <button
-                className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-sm text-sm font-medium transition-colors ${
+              <a
+                href="https://app.employlabs.ai"
+                className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-sm text-sm font-medium transition-colors cursor-pointer ${
                   plan.highlight
                     ? "bg-accent text-black hover:bg-white"
                     : "border border-white/10 text-white hover:bg-white/5"
                 }`}
               >
                 {plan.cta} <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              </a>
             </motion.div>
           ))}
         </div>

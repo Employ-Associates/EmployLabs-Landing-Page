@@ -92,8 +92,8 @@ export function Funnel() {
         <div className="mx-auto grid w-full max-w-[1520px] grid-cols-[minmax(280px,30%)_1fr] items-center gap-8 px-8 xl:px-12">
           {/* Left — headline */}
           <div className="relative">
-            <div className="mb-6 inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.2em] text-accent">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+            <div className="relative overflow-hidden mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card/70 backdrop-blur-md border border-white/10 text-[11px] font-mono uppercase tracking-[0.2em] text-zinc-300 shadow-lg before:absolute before:inset-x-3 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:content-['']">
+              <span className="h-1.5 w-1.5 rounded-full bg-white" />
               The Autonomous Funnel
             </div>
             <h2 className="font-title text-4xl leading-[1.08] tracking-tight text-white xl:text-[3.2rem]">
@@ -171,8 +171,8 @@ export function Funnel() {
 
       {/* ---------- Mobile: vertical stack ---------- */}
       <div className="px-6 py-24 lg:hidden">
-        <div className="mb-4 inline-flex items-center gap-2 text-[11px] font-mono uppercase tracking-[0.2em] text-accent">
-          <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+        <div className="relative overflow-hidden mb-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card/70 backdrop-blur-md border border-white/10 text-[11px] font-mono uppercase tracking-[0.2em] text-zinc-300 shadow-lg before:absolute before:inset-x-3 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:content-['']">
+          <span className="h-1.5 w-1.5 rounded-full bg-white" />
           The Autonomous Funnel
         </div>
         <h2 className="font-title text-4xl leading-[1.1] tracking-tight text-white">

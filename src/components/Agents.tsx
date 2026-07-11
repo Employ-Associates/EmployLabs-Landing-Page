@@ -318,8 +318,8 @@ export function Agents() {
 
         {/* Header Section */}
         <div className="flex flex-col items-center justify-center text-center mb-24 max-w-3xl mx-auto">
-          <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest uppercase text-zinc-500 mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+          <div className="relative overflow-hidden inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card/70 backdrop-blur-md border border-white/10 text-zinc-300 text-[10px] font-mono tracking-widest uppercase mb-6 shadow-lg before:absolute before:inset-x-3 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:content-['']">
+            <span className="w-1.5 h-1.5 rounded-full bg-white" />
             ENTITY GRID
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-display text-white tracking-tight leading-tight">

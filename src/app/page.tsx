@@ -14,7 +14,7 @@ import { Footer } from "@/components/Footer";
 export default function Home() {
   return (
     <div className="min-h-screen selection:bg-accent/30 selection:text-white">
-      <Nav />
+      <Nav variant="dark" />
       <main>
         <Hero />
         {/* Dark Mode Sections Wrapper */}
