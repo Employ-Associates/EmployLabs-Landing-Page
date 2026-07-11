@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useRef, useEffect } from "react";
-import gsap from "gsap";
 
 export interface ChromaItem {
   image: string;
@@ -23,21 +22,19 @@ export interface ChromaGridProps {
   ease?: string;
 }
 
-type SetterFn = (v: number | string) => void;
-
 const ChromaGrid: React.FC<ChromaGridProps> = ({
   items,
   className = "",
   radius = 300,
   damping = 0.45,
   fadeOut = 0.6,
-  ease = "power3.out",
 }) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const fadeRef = useRef<HTMLDivElement>(null);
-  const setX = useRef<SetterFn | null>(null);
-  const setY = useRef<SetterFn | null>(null);
   const pos = useRef({ x: 0, y: 0 });
+  const target = useRef({ x: 0, y: 0 });
+  const rafRef = useRef<number | null>(null);
+  const lastTimeRef = useRef<number>(0);
 
   // Default demo data if none provided
   const demo: ChromaItem[] = [
@@ -54,43 +51,79 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
 
   const data = items?.length ? items : demo;
 
+  const setVars = (el: HTMLDivElement, x: number, y: number) => {
+    el.style.setProperty("--x", `${x}px`);
+    el.style.setProperty("--y", `${y}px`);
+  };
+
+  // Damped follow: exponential smoothing toward the target with a time
+  // constant of `damping` seconds, matching gsap's eased `gsap.to(pos, ...)`.
+  const tick = (time: number) => {
+    const el = rootRef.current;
+    if (!el) {
+      rafRef.current = null;
+      return;
+    }
+    const last = lastTimeRef.current || time;
+    const dt = (time - last) / 1000;
+    lastTimeRef.current = time;
+
+    const factor = damping > 0 ? 1 - Math.exp(-dt / damping) : 1;
+    const p = pos.current;
+    const t = target.current;
+    p.x += (t.x - p.x) * factor;
+    p.y += (t.y - p.y) * factor;
+    setVars(el, p.x, p.y);
+
+    if (Math.abs(t.x - p.x) > 0.1 || Math.abs(t.y - p.y) > 0.1) {
+      rafRef.current = requestAnimationFrame(tick);
+    } else {
+      p.x = t.x;
+      p.y = t.y;
+      setVars(el, p.x, p.y);
+      rafRef.current = null;
+    }
+  };
+
+  const moveTo = (x: number, y: number) => {
+    target.current = { x, y };
+    if (rafRef.current === null) {
+      lastTimeRef.current = 0;
+      rafRef.current = requestAnimationFrame(tick);
+    }
+  };
+
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return;
-    setX.current = gsap.quickSetter(el, "--x", "px") as SetterFn;
-    setY.current = gsap.quickSetter(el, "--y", "px") as SetterFn;
     const { width, height } = el.getBoundingClientRect();
     pos.current = { x: width / 2, y: height / 2 };
-    setX.current(pos.current.x);
-    setY.current(pos.current.y);
+    target.current = { x: width / 2, y: height / 2 };
+    el.style.setProperty("--x", `${width / 2}px`);
+    el.style.setProperty("--y", `${height / 2}px`);
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
-  const moveTo = (x: number, y: number) => {
-    gsap.to(pos.current, {
-      x,
-      y,
-      duration: damping,
-      ease,
-      onUpdate: () => {
-        setX.current?.(pos.current.x);
-        setY.current?.(pos.current.y);
-      },
-      overwrite: true,
-    });
-  };
-
   const handleMove = (e: React.PointerEvent) => {
-    const r = rootRef.current!.getBoundingClientRect();
+    const el = rootRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
     moveTo(e.clientX - r.left, e.clientY - r.top);
-    gsap.to(fadeRef.current, { opacity: 0, duration: 0.25, overwrite: true });
+    const fade = fadeRef.current;
+    if (fade) {
+      fade.style.transitionDuration = "0.25s";
+      fade.style.opacity = "0";
+    }
   };
 
   const handleLeave = () => {
-    gsap.to(fadeRef.current, {
-      opacity: 1,
-      duration: fadeOut,
-      overwrite: true,
-    });
+    const fade = fadeRef.current;
+    if (fade) {
+      fade.style.transitionDuration = `${fadeOut}s`;
+      fade.style.opacity = "1";
+    }
   };
 
   const handleCardClick = (url?: string) => {

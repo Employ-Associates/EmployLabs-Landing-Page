@@ -2,9 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import ScrollReveal from "../ScrollReveal";
-import { desc } from "framer-motion/client";
 
 const layers = [
   {

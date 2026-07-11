@@ -1,30 +1,35 @@
-import { Header } from "@/components/employ-lab/Header";
-import { Hero } from "@/components/employai/Hero";
-import { WhyEmploySection } from "@/components/employai/WhyEmploySection";
-import ProcessIllustration from "@/components/employai/ProcessIllustration";
-import PeopleSearchSection from "@/components/employai/people-search";
-import SignalInterviewSection from "@/components/employai/signal-interview";
-import AssessmentSection from "@/components/employai/assessment";
-import { HumanOwnershipSection } from "@/components/employai/HumanOwnershipSection";
-import OutcomesSection from "@/components/employai/OutcomesSection";
-import { CallToActionSection } from "@/components/employai/CallToActionSection";
-import { TrustedBySection } from "@/components/employai/TrustedBySection";
+import { Nav } from "@/components/Nav";
+import { Hero } from "@/components/Hero";
+import { SocialProof } from "@/components/SocialProof";
+import { Funnel } from "@/components/Funnel";
+import { ParadigmShift } from "@/components/ParadigmShift";
+import { Agents } from "@/components/Agents";
+import { HumanAtGates } from "@/components/HumanAtGates";
+import { Trust } from "@/components/Trust";
+import { Pricing } from "@/components/Pricing";
+import { CustomerSpotlight } from "@/components/CustomerSpotlight";
+import { FinalCTA } from "@/components/FinalCTA";
+import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen overflow-x-hidden font-sans text-white bg-black selection:bg-blue-500 selection:text-white">
-      <Header />
+    <div className="min-h-screen selection:bg-accent/30 selection:text-white">
+      <Nav variant="dark" />
       <main>
         <Hero />
-        <TrustedBySection />
-        <WhyEmploySection />
-        <ProcessIllustration />
-        <PeopleSearchSection />
-        <SignalInterviewSection />
-        <AssessmentSection />
-        <HumanOwnershipSection />
-        <OutcomesSection />
-        <CallToActionSection />
+        {/* Dark Mode Sections Wrapper */}
+        <div className="bg-zinc-950 text-zinc-100">
+          <SocialProof />
+          <ParadigmShift />
+          <Funnel />
+          <Agents />
+          <HumanAtGates />
+          <Trust />
+          <Pricing />
+          <CustomerSpotlight />
+          <FinalCTA />
+          <Footer />
+        </div>
       </main>
     </div>
   );

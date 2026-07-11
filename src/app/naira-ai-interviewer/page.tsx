@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/employ-lab/Header";
+import { Nav } from "@/components/Nav";
+import { Footer } from "@/components/Footer";
 import { NairaHero } from "@/components/naira/NairaHero";
 import { NairaCoverage } from "@/components/naira/NairaCoverage";
 import { NairaProblem, NairaModules } from "@/components/naira/NairaModules";
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
 export default function NairaPage() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-black">
-      <Header />
+      <Nav variant="dark" />
       <main>
         <NairaHero />
         <NairaCoverage />
@@ -61,6 +62,7 @@ export default function NairaPage() {
         <NairaOutcomes />
         <NairaCTA />
       </main>
+      <Footer />
     </div>
   );
 }
