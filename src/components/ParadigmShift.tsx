@@ -1,7 +1,179 @@
 "use client";
 
-import { motion } from "motion/react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
+import { motion, useInView } from "motion/react";
 import { Workflow, Folder, Search, ArrowUp, Loader2, ChevronDown, Check } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/* Streaming chat — Meera's messages type out, and each block reveals in       */
+/* sequence, looping while the section is in view.                             */
+/* -------------------------------------------------------------------------- */
+
+const MEERA_1 =
+  "Hey Kartey 👋 Here's where the Lead SRE pipeline stands right now — I pulled the latest state across every stage.";
+const MEERA_2 =
+  "Naira has wrapped 4 of 6 interviews. Alex Rivera leads at a 96 fit — cleared system design and Go concurrency. I'll have the ranked shortlist ready for your review in ~20 minutes.";
+
+const SNAPSHOT = [
+  { dot: "bg-amber-400", stage: "Sourced", owner: "Meera", n: "214" },
+  { dot: "bg-sky-300", stage: "Engaged", owner: "Zia", n: "38" },
+  { dot: "bg-violet-300", stage: "Interviewing", owner: "Naira", n: "6" },
+  { dot: "bg-accent", stage: "Shortlisted", owner: "for you", n: "3" },
+];
+
+const ACTIVITY = [
+  { badge: "Z", cls: "bg-sky-400/15 text-sky-300", name: "Zia", detail: "Engaging 38 candidates · email + WhatsApp" },
+  { badge: "N", cls: "bg-violet-400/15 text-violet-300", name: "Naira", detail: "Live voice interviews · 4 of 6 done" },
+];
+
+function Typewriter({ text, active, speed = 14 }: { text: string; active: boolean; speed?: number }) {
+  const chars = Array.from(text);
+  const [n, setN] = useState(0);
+
+  useEffect(() => {
+    setN(0);
+  }, [active, text]);
+
+  useEffect(() => {
+    if (!active || n >= chars.length) return;
+    const id = setTimeout(() => setN((v) => v + 1), speed);
+    return () => clearTimeout(id);
+  }, [n, active, chars.length, speed]);
+
+  const typing = active && n < chars.length;
+  return (
+    <span>
+      {chars.slice(0, n).join("")}
+      {typing && (
+        <span className="ml-px inline-block h-3.5 w-[3px] -mb-0.5 animate-pulse rounded-[1px] bg-accent/70 align-middle" />
+      )}
+    </span>
+  );
+}
+
+function Reveal({ show, children }: { show: boolean; children: ReactNode }) {
+  return (
+    <motion.div
+      initial={false}
+      animate={show ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+      transition={{ duration: 0.35 }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function ChatStream() {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { amount: 0.35 });
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    if (!inView) {
+      setStep(0);
+      return;
+    }
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const run = () => {
+      setStep(0);
+      ([
+        [300, 1],
+        [2600, 2],
+        [3200, 3],
+        [4000, 4],
+        [4500, 5],
+      ] as const).forEach(([d, s]) => timers.push(setTimeout(() => setStep(s), d)));
+      timers.push(setTimeout(run, 11500)); // loop while in view
+    };
+    run();
+    return () => timers.forEach(clearTimeout);
+  }, [inView]);
+
+  return (
+    <div ref={ref} className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4">
+      {/* 1. Meera greeting (streams) */}
+      <Reveal show={step >= 1}>
+        <div className="flex gap-2.5">
+          <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border border-accent/30 bg-accent/15 text-[10px] font-bold text-accent">
+            M
+          </span>
+          <p className="text-[13px] leading-relaxed text-zinc-300">
+            <Typewriter text={MEERA_1} active={step >= 1} />
+          </p>
+        </div>
+      </Reveal>
+
+      {/* 2. Pipeline snapshot */}
+      <Reveal show={step >= 2}>
+        <div className="pl-8">
+          <div className="overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
+            <div className="flex items-center justify-between border-b border-white/10 px-3.5 py-2">
+              <span className="text-[11px] font-medium text-white">Pipeline · Lead SRE</span>
+              <span className="flex items-center gap-1 font-mono text-[10px] text-accent">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
+                live
+              </span>
+            </div>
+            <div className="divide-y divide-white/5">
+              {SNAPSHOT.map((row) => (
+                <div key={row.stage} className="flex items-center justify-between px-3.5 py-1.5">
+                  <span className="flex items-center gap-2 text-[12px] text-zinc-300">
+                    <span className={`h-1.5 w-1.5 rounded-full ${row.dot}`} />
+                    {row.stage}
+                    <span className="text-[10px] text-zinc-500">· {row.owner}</span>
+                  </span>
+                  <span className="font-mono text-[12px] text-white">{row.n}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Reveal>
+
+      {/* 3. Live agent activity */}
+      <Reveal show={step >= 3}>
+        <div className="space-y-2 pl-8">
+          {ACTIVITY.map((a) => (
+            <div key={a.name} className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5">
+              <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-md text-[10px] font-bold ${a.cls}`}>
+                {a.badge}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium text-white">{a.name}</p>
+                <p className="truncate text-[11px] text-zinc-500">{a.detail}</p>
+              </div>
+              <span className="flex shrink-0 items-center gap-1.5 rounded-full border border-accent/20 bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent">
+                <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                Running
+              </span>
+            </div>
+          ))}
+        </div>
+      </Reveal>
+
+      {/* 4. Human question */}
+      <Reveal show={step >= 4}>
+        <div className="flex justify-end">
+          <div className="max-w-[82%] rounded-2xl rounded-br-sm bg-white/10 px-3.5 py-2 text-[13px] leading-relaxed text-white">
+            Nice — who&rsquo;s furthest along?
+          </div>
+        </div>
+      </Reveal>
+
+      {/* 5. Meera response (streams) */}
+      <Reveal show={step >= 5}>
+        <div className="flex gap-2.5">
+          <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border border-accent/30 bg-accent/15 text-[10px] font-bold text-accent">
+            M
+          </span>
+          <p className="text-[13px] leading-relaxed text-zinc-300">
+            <Typewriter text={MEERA_2} active={step >= 5} />
+          </p>
+        </div>
+      </Reveal>
+    </div>
+  );
+}
 
 // --- Radial layout math -----------------------------------------------------
 // 8 stage nodes evenly spaced (45deg steps) on an ellipse centered on the
@@ -67,19 +239,13 @@ export function ParadigmShift() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-display mb-6 tracking-tight text-white leading-tight"
+            className="text-6xl md:text-7xl lg:text-8xl font-display tracking-tight text-white leading-[1.02]"
           >
-            The Autonomous Way
+            Your whole funnel,
+            <br />
+            run by{" "}
+            <span className="font-title italic text-accent">agents.</span>
           </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl text-zinc-400 leading-relaxed max-w-2xl mx-auto"
-          >
-            Meera runs your entire hiring pipeline — you stay in control.
-          </motion.p>
         </div>
 
         {/* App-window frame */}
@@ -119,9 +285,16 @@ export function ParadigmShift() {
                   vectorEffect="non-scaling-stroke"
                 >
                   <ellipse cx={50} cy={50} rx={39} ry={37} />
-                  {NODES.map((n) => (
+                  {NODES.map((n, i) => (
                     <g key={n.label} vectorEffect="non-scaling-stroke">
-                      <line x1={50} y1={50} x2={n.node.x} y2={n.node.y} vectorEffect="non-scaling-stroke" />
+                      <line
+                        x1={50}
+                        y1={50}
+                        x2={n.node.x}
+                        y2={n.node.y}
+                        vectorEffect="non-scaling-stroke"
+                        style={{ animation: "dashFlow 1.1s linear infinite", animationDelay: `${i * 0.12}s` }}
+                      />
                       <line
                         x1={n.node.x}
                         y1={n.node.y}
@@ -258,103 +431,8 @@ export function ParadigmShift() {
                 ))}
               </div>
 
-              {/* Chat body */}
-              <div className="flex-1 min-h-0 overflow-y-auto px-4 py-5 space-y-4">
-                {/* 1. Meera greeting */}
-                <div className="flex gap-2.5">
-                  <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border border-accent/30 bg-accent/15 text-[10px] font-bold text-accent">
-                    M
-                  </span>
-                  <p className="text-[13px] leading-relaxed text-zinc-300">
-                    Hey Kartey 👋{" "}Here&rsquo;s where the{" "}
-                    <span className="font-medium text-white">Lead SRE</span> pipeline stands right
-                    now — I pulled the latest state across every stage.
-                  </p>
-                </div>
-
-                {/* 2. Pipeline-state snapshot card */}
-                <div className="pl-8">
-                  <div className="overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
-                    <div className="flex items-center justify-between border-b border-white/10 px-3.5 py-2">
-                      <span className="text-[11px] font-medium text-white">Pipeline · Lead SRE</span>
-                      <span className="flex items-center gap-1 font-mono text-[10px] text-accent">
-                        <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                        live
-                      </span>
-                    </div>
-                    <div className="divide-y divide-white/5">
-                      {[
-                        { dot: "bg-amber-400", stage: "Sourced", owner: "Meera", n: "214" },
-                        { dot: "bg-sky-300", stage: "Engaged", owner: "Zia", n: "38" },
-                        { dot: "bg-violet-300", stage: "Interviewing", owner: "Naira", n: "6" },
-                        { dot: "bg-accent", stage: "Shortlisted", owner: "for you", n: "3" },
-                      ].map((row) => (
-                        <div key={row.stage} className="flex items-center justify-between px-3.5 py-1.5">
-                          <span className="flex items-center gap-2 text-[12px] text-zinc-300">
-                            <span className={`h-1.5 w-1.5 rounded-full ${row.dot}`} />
-                            {row.stage}
-                            <span className="text-[10px] text-zinc-500">· {row.owner}</span>
-                          </span>
-                          <span className="font-mono text-[12px] text-white">{row.n}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* 3. Live agent activity */}
-                <div className="space-y-2 pl-8">
-                  <div className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5">
-                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-sky-400/15 text-[10px] font-bold text-sky-300">
-                      Z
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium text-white">Zia</p>
-                      <p className="truncate text-[11px] text-zinc-500">Engaging 38 candidates · email + WhatsApp</p>
-                    </div>
-                    <span className="flex shrink-0 items-center gap-1.5 rounded-full border border-accent/20 bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent">
-                      <Loader2 className="h-2.5 w-2.5 animate-spin" />
-                      Running
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5">
-                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-violet-400/15 text-[10px] font-bold text-violet-300">
-                      N
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium text-white">Naira</p>
-                      <p className="truncate text-[11px] text-zinc-500">Live voice interviews · 4 of 6 done</p>
-                    </div>
-                    <span className="flex shrink-0 items-center gap-1.5 rounded-full border border-accent/20 bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent">
-                      <Loader2 className="h-2.5 w-2.5 animate-spin" />
-                      Running
-                    </span>
-                  </div>
-                </div>
-
-                {/* 4. Human question */}
-                <div className="flex justify-end">
-                  <div className="max-w-[82%] rounded-2xl rounded-br-sm bg-white/10 px-3.5 py-2 text-[13px] leading-relaxed text-white">
-                    Nice — who&rsquo;s furthest along?
-                  </div>
-                </div>
-
-                {/* 5. Meera response */}
-                <div className="flex gap-2.5">
-                  <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border border-accent/30 bg-accent/15 text-[10px] font-bold text-accent">
-                    M
-                  </span>
-                  <p className="text-[13px] leading-relaxed text-zinc-300">
-                    Naira has wrapped 4 of 6 interviews. <span className="font-medium text-white">Alex
-                    Rivera</span> leads at a 96 fit — cleared system design and Go concurrency, strong
-                    on-call track record.{" "}
-                    <span className="font-medium text-white">
-                      I&rsquo;ll have the full ranked shortlist with scorecards ready for your review
-                      in ~20 minutes.
-                    </span>
-                  </p>
-                </div>
-              </div>
+              {/* Chat body — streams in on view */}
+              <ChatStream />
 
               {/* Chat input */}
               <div className="border-t border-white/10 p-3">

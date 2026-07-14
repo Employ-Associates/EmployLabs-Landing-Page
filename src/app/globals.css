@@ -86,6 +86,62 @@ h6 {
   box-shadow: 0 0 50px rgba(85, 234, 140, 0.06);
 }
 
+/* Liquid-glass — frosted control surface over cinematic video (FinalCTA).
+   Near-transparent fill + blur + inset highlight, with a gradient hairline
+   border drawn via a masked ::before ring. */
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.01);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.15) 20%,
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0.15) 80%,
+    rgba(255, 255, 255, 0.45) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Slow vertical "bob" for the overlay/parallax layer (train-bob). */
+@keyframes ctaBob {
+  0%, 100% { transform: translateY(0) scale(1.5); }
+  50%      { transform: translateY(-6px) scale(1.5); }
+}
+
+/* Flowing dashes along the radial spokes (ParadigmShift canvas) — data streaming
+   from the center agent out to each stage. */
+@keyframes dashFlow {
+  to { stroke-dashoffset: -16; }
+}
+
+/* Funnel connector — an accent "data packet" travels along the rail to the next stage. */
+@keyframes connPacket {
+  0%   { left: -6px; opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
 /* 3D isometric scene — ParadigmShift · The Autonomous Way (pure CSS 3D, GPU-composited) */
 @keyframes sceneSway {
   0%, 100% { transform: rotateX(15deg) rotateY(-22deg); }

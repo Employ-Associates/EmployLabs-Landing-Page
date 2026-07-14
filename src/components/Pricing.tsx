@@ -15,6 +15,7 @@ import { Check, ArrowRight } from "lucide-react";
 interface Plan {
   name: string;
   tag: string;
+  kind: string;
   price: string;
   priceNote?: string;
   features: string[];
@@ -25,56 +26,58 @@ interface Plan {
 const PLANS: Plan[] = [
   {
     name: "Freelancer",
+    kind: "Per action",
     tag: "Freelance recruiters & small agencies",
-    price: "₹9,999",
+    price: "$120",
     priceNote: "/month",
     features: [
-      "1,000 credits included",
-      "1 seat · 3 live pipelines",
-      "Full funnel: source → engage → assess",
-      "Contact reveals on · ₹8 overage",
-      "We never take a % of your fee",
+      "1,000 credits / month",
+      "1 seat · 3 pipelines",
+      "$0.12 per credit",
+      "No hire fee, ever",
     ],
     cta: "Start for free",
   },
   {
     name: "Company",
+    kind: "Per action",
     tag: "Startups with a hiring / TA lead",
-    price: "₹12K–55K",
+    price: "$150",
     priceNote: "/month",
     features: [
-      "1,500 · 4,500 · 10,000 credits",
-      "Rate drops ₹8 → ₹5.5 by tier",
-      "Reveals on → no hire fee, ever",
-      "+₹2K / extra seat · GST invoicing",
+      "1,500 · 4,500 · 10,000 credit packs",
+      "Unlimited pipelines · +$25 / seat",
+      "$0.10 → $0.07 per credit",
+      "No hire fee, ever",
     ],
     cta: "Start for free",
     highlight: true,
   },
   {
     name: "Success fee",
+    kind: "Per hire",
     tag: "Companies buying the outcome",
     price: "6%",
     priceNote: "of annual CTC",
     features: [
-      "Floor ₹60K · credits absorbed",
-      "Vetted introductions, done for you",
-      "Recruiter-in-the-loop",
-      "90-day full refund or replace",
       "Pay only when you hire",
+      "$750 floor per hire",
+      "Vetted intros · recruiter-in-loop",
+      "90-day refund or replace",
     ],
     cta: "Talk to us",
   },
   {
     name: "Enterprise",
+    kind: "Custom",
     tag: "Volume hirers & GCCs",
-    price: "₹6–15L",
+    price: "$7K–18K",
     priceNote: "/year",
     features: [
-      "Credits @ ₹4.5 · fee 5%",
-      "SLAs + dedicated recruiter",
-      "Managed hiring option 8–12%",
-      "SSO, DPA, bias-audit export",
+      "Custom credit volume",
+      "$0.05 per credit · 5% fee",
+      "SLAs · dedicated recruiter",
+      "SSO · DPA · managed option",
     ],
     cta: "Contact sales",
   },
@@ -93,10 +96,10 @@ export function Pricing() {
       <div className="max-w-[1400px] mx-auto px-6 md:px-8 relative z-10">
         {/* Top Center: Title and Subtext */}
         <div className="text-center max-w-4xl mx-auto mb-16 md:mb-20">
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-medium text-white mb-6 tracking-tight leading-tight">
-            Priced for every level of company, <br />
-            from <span className="text-accent italic">freelancer</span> to{" "}
-            <span className="text-accent italic">enterprise</span>.
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-display font-medium text-white mb-6 tracking-tight leading-[1.05]">
+            Priced for every <span className="text-accent italic">level</span>
+            <br />
+            of company.
           </h2>
 
           <p className="text-zinc-400 text-sm md:text-base leading-relaxed max-w-xl mx-auto">
@@ -119,39 +122,49 @@ export function Pricing() {
                 plan.highlight ? "glass-card-accent" : ""
               }`}
             >
-              {plan.highlight && (
-                <span className="absolute -top-3 left-6 rounded-none bg-accent px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-black">
-                  Most popular
+              {/* top row: pricing-model eyebrow + popular badge */}
+              <div className="mb-6 flex items-center justify-between">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                  {plan.kind}
                 </span>
-              )}
-
-              <h3 className="text-lg font-display font-medium text-white mb-1.5">
-                {plan.name}
-              </h3>
-              <p className="text-xs text-zinc-500 leading-relaxed mb-5 min-h-[32px]">
-                {plan.tag}
-              </p>
-
-              <div className="mb-6">
-                <span className="text-3xl font-display font-semibold text-white tracking-tight">
-                  {plan.price}
-                </span>
-                {plan.priceNote && (
-                  <span className="text-sm text-zinc-500 ml-1">
-                    {plan.priceNote}
+                {plan.highlight && (
+                  <span className="rounded-full border border-accent/40 bg-accent/[0.12] px-2 py-0.5 text-[10px] font-medium text-accent">
+                    Popular
                   </span>
                 )}
               </div>
 
-              <ul className="space-y-2.5 flex-1 mb-6">
+              <h3 className="text-xl font-display font-medium text-white">
+                {plan.name}
+              </h3>
+              <p className="mt-1.5 mb-6 text-xs text-zinc-500 leading-relaxed min-h-[32px]">
+                {plan.tag}
+              </p>
+
+              <div className="mb-6 flex items-baseline gap-1.5">
+                <span className="text-4xl font-display font-semibold text-white tracking-tight">
+                  {plan.price}
+                </span>
+                {plan.priceNote && (
+                  <span className="text-sm text-zinc-500">{plan.priceNote}</span>
+                )}
+              </div>
+
+              <div className="mb-6 border-t border-white/10" />
+
+              <ul className="space-y-3 flex-1 mb-7">
                 {plan.features.map((f) => (
                   <li
                     key={f}
-                    className="flex items-start gap-2 text-[13px] text-zinc-400 leading-snug"
+                    className="flex items-start gap-2.5 text-[13px] text-zinc-300 leading-snug"
                   >
-                    <Check
-                      className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${plan.highlight ? "text-accent" : "text-zinc-600"}`}
-                    />
+                    <span
+                      className={`mt-px grid h-4 w-4 shrink-0 place-items-center rounded-full ${
+                        plan.highlight ? "bg-accent/15 text-accent" : "bg-white/5 text-zinc-400"
+                      }`}
+                    >
+                      <Check className="h-2.5 w-2.5" strokeWidth={3} />
+                    </span>
                     {f}
                   </li>
                 ))}
@@ -159,17 +172,24 @@ export function Pricing() {
 
               <a
                 href="https://app.employlabs.ai"
-                className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-sm text-sm font-medium transition-colors cursor-pointer ${
+                className={`group/cta w-full flex items-center justify-center gap-2 py-2.5 rounded-sm text-sm font-medium transition-colors cursor-pointer ${
                   plan.highlight
                     ? "bg-accent text-black hover:bg-white"
-                    : "border border-white/10 text-white hover:bg-white/5"
+                    : "border border-white/15 text-white hover:bg-white/5"
                 }`}
               >
-                {plan.cta} <ArrowRight className="w-3.5 h-3.5" />
+                {plan.cta}
+                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/cta:translate-x-0.5" />
               </a>
             </motion.div>
           ))}
         </div>
+
+        {/* Regional credit-value note — full width */}
+        <p className="mt-10 w-full text-center text-[13px] text-zinc-500 leading-relaxed">
+          Credit value scales with the hiring market — higher in tier-1 regions
+          (US / EU), lower in tier-2 like India.
+        </p>
       </div>
     </section>
   );
