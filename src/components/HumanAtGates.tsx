@@ -42,7 +42,7 @@ function BudgetMock() {
       <div className="flex items-center gap-2.5 rounded-sm border border-orange-200 bg-orange-50/70 px-3.5 py-2.5">
         <Wallet className="w-4 h-4 text-orange-600 shrink-0" />
         <p className="text-[12.5px] text-zinc-700 leading-snug">
-          Meera pauses at the cap and asks before spending more.
+          Stays within your cap — asks before spending beyond it.
         </p>
       </div>
     </div>
@@ -124,7 +124,7 @@ function GatesMock() {
         <div className="border-l-[3px] border-l-green-500 p-3.5 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-[11px] font-medium text-green-700">
+              <span className="inline-flex items-center gap-1 rounded-full border border-green-600/40 bg-green-600/[0.12] px-2 py-0.5 text-[11px] font-medium text-green-700">
                 <Check className="w-3 h-3" />
                 Running
               </span>
@@ -137,19 +137,21 @@ function GatesMock() {
               Meera is running the Lead SRE pipeline
             </p>
           </div>
-          <span className="text-[12px] text-zinc-500 hidden md:block">2 gates need your call</span>
+          <span className="text-[12px] text-zinc-500 hidden md:block">running on its own · 2 for you</span>
         </div>
       </div>
 
       {GATES.map((g) => {
         const edge = g.tone === "amber" ? "border-l-orange-400" : "border-l-green-500";
         const badge =
-          g.tone === "amber" ? "bg-orange-100 text-orange-700" : "bg-green-100 text-green-700";
+          g.tone === "amber"
+            ? "border-amber-500/40 bg-amber-500/[0.15] text-amber-700"
+            : "border-green-600/40 bg-green-600/[0.12] text-green-700";
         return (
           <div key={g.title} className="rounded-sm border border-zinc-200 bg-white overflow-hidden">
             <div className={`border-l-[3px] ${edge} p-3.5`}>
               <div className="flex items-center gap-2">
-                <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${badge}`}>
+                <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium ${badge}`}>
                   {g.label}
                 </span>
                 <span className="text-[11.5px] text-zinc-400">Meera · {g.age}</span>
@@ -212,7 +214,7 @@ export function HumanAtGates() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-display text-zinc-900 tracking-tight leading-tight mb-6"
+            className="text-5xl md:text-6xl lg:text-7xl font-display text-zinc-900 tracking-tight leading-[1.05] mb-6"
           >
             Autonomous by default.
             <br />
@@ -225,8 +227,8 @@ export function HumanAtGates() {
             transition={{ delay: 0.2 }}
             className="text-lg text-zinc-600 leading-relaxed"
           >
-            The agents do the heavy lifting — but they never hire without you.
-            Meera pauses at every consequential step and waits for your call.
+            You decide how hands-off to be. It runs the whole funnel on its own
+            — and only checks in where you asked, or when a call genuinely needs you.
           </motion.p>
         </div>
 
@@ -276,11 +278,11 @@ export function HumanAtGates() {
               <div className="w-10 h-10 rounded-sm bg-zinc-900 text-white flex items-center justify-center mb-4">
                 <ShieldCheck className="w-5 h-5" />
               </div>
-              <h3 className="text-xl font-display text-zinc-900 mb-1.5">Approval gates</h3>
+              <h3 className="text-xl font-display text-zinc-900 mb-1.5">Step in when it matters</h3>
               <p className="text-sm text-zinc-600 leading-relaxed">
-                Every actuating step — outreach, scheduling, offers — pauses for your one-click
-                approval. The agent literally cannot send without you. Meera surfaces each gate the
-                moment it&rsquo;s ready, with everything you need to decide in a glance.
+                It keeps running on its own. It only pauses where you&rsquo;ve asked for a say —
+                or when a decision genuinely needs a human. Everything you need to decide is right
+                there; approve in a click and it keeps moving.
               </p>
             </div>
             <div className="lg:col-span-3">

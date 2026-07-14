@@ -15,7 +15,7 @@ import {
   FileText, Upload, Check, Mail, MessageSquare, Paperclip,
   Calendar, Mic, Award, Sparkles, Box, ArrowUp,
   BarChart, FileSearch,
-  ClipboardList, Target, Lightbulb, Activity,
+  ClipboardList, Target, Lightbulb, Activity, ChevronRight,
 } from "lucide-react";
 
 interface StepMeta {
@@ -149,12 +149,8 @@ export function Funnel() {
                         </div>
                         <div className="relative h-[600px] w-full">
                           <div className="absolute inset-0 flex items-center justify-center">
-                            {/* Step0 (JD) + Step2 (Persona) read `progress` as a
-                                live MotionValue and scrub their own reveal off
-                                scroll position — no remount needed there. Every
-                                other step ignores `progress` and instead replays
-                                its fixed-duration entrance animation on activate,
-                                via the `key` flip below (remount = replay). */}
+                            {/* Step0 (JD) + Step2 (Persona) scrub `progress`; the
+                                rest replay their entrance on activate via the key flip. */}
                             <Ill key={isActive ? `on-${i}` : `off-${i}`} progress={localT} />
                           </div>
                         </div>
@@ -210,8 +206,12 @@ export function Funnel() {
 function Connector() {
   return (
     <div className="flex shrink-0 items-center justify-center" style={{ width: CONNECTOR_W }}>
-      <div className="relative h-px w-full border-t border-dashed border-white/20">
-        <span className="absolute right-0 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-white/50" />
+      <div className="relative flex w-full items-center">
+        {/* rail with a traveling accent "data packet" toward the next stage */}
+        <div className="relative h-px flex-1 overflow-hidden bg-white/12">
+          <span className="absolute top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-accent shadow-[0_0_8px_var(--color-accent)] animate-[connPacket_1.8s_ease-in-out_infinite]" />
+        </div>
+        <ChevronRight className="-ml-1 h-3.5 w-3.5 text-accent/60" />
       </div>
     </div>
   );

@@ -28,9 +28,9 @@ export function Trust() {
     },
     {
       icon: FileKey,
-      title: "Enterprise Compliance",
-      desc: "SOC2 Type II, GDPR, and CCPA compliant infrastructure. Role-based access controls ensure only authorized reviewers can access final interview recordings.",
-      status: "Certified",
+      title: "Your Data, Private",
+      desc: "We never sell or share your data, and personal data stays yours. Role-based access ensures only your authorized reviewers can open final interview recordings.",
+      status: "Protected",
       accent: "#f87171"
     }
   ];
@@ -80,33 +80,33 @@ export function Trust() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="group flex flex-col justify-between p-8 rounded-sm bg-surface border border-zinc-800/80 hover:bg-surface-900 transition-colors relative overflow-hidden"
+              className="group relative flex flex-col p-7 rounded-sm bg-surface border border-white/[0.08] overflow-hidden transition-colors hover:border-white/15"
             >
-              <div className="absolute -top-10 -right-10 w-40 h-40 opacity-5 blur-3xl rounded-full transition-opacity group-hover:opacity-20" style={{ backgroundColor: item.accent }} />
+              {/* subtle per-card accent glow (restrained) */}
+              <div className="absolute -top-16 right-0 w-40 h-40 rounded-full blur-3xl opacity-[0.06] transition-opacity group-hover:opacity-[0.16]" style={{ background: item.accent }} />
 
-              <div>
-                <div className="flex justify-between items-start mb-8">
-                  <div className="w-12 h-12 rounded-sm bg-zinc-950 border border-white/5 flex items-center justify-center shrink-0 shadow-inner group-hover:scale-110 transition-transform">
-                    <item.icon className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10">
-                    <CheckCircle2 className="w-3 h-3" style={{ color: item.accent }} />
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400">{item.status}</span>
-                  </div>
+              {/* icon + status */}
+              <div className="relative flex items-center justify-between mb-6">
+                <div className="grid h-11 w-11 place-items-center rounded-sm bg-white transition-transform group-hover:-translate-y-0.5">
+                  <item.icon className="w-5 h-5 text-black" />
                 </div>
-
-                <h3 className="text-xl font-display text-white mb-4">{item.title}</h3>
-                <p className="text-sm text-zinc-400 leading-relaxed">{item.desc}</p>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-zinc-400">
+                  <CheckCircle2 className="w-3 h-3" style={{ color: item.accent }} />
+                  {item.status}
+                </span>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-white/5">
-                <div className="h-1 w-full bg-black/50 rounded-full overflow-hidden">
-                  <div className="h-full w-full rounded-full" style={{ backgroundColor: item.accent }} />
-                </div>
+              <h3 className="relative text-lg font-display text-white mb-2">{item.title}</h3>
+              <p className="relative flex-1 text-[13px] text-zinc-400 leading-relaxed">{item.desc}</p>
+
+              {/* footer hairline — fills with the accent on hover */}
+              <div className="relative mt-6 h-px w-full overflow-hidden bg-white/[0.08]">
+                <div className="absolute inset-y-0 left-0 w-0 transition-all duration-500 ease-out group-hover:w-full" style={{ background: item.accent }} />
               </div>
             </motion.div>
           ))}
         </div>
+
       </div>
     </section>
   );

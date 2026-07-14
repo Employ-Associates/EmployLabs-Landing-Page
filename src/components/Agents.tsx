@@ -3,8 +3,8 @@
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import {
-  Code, MessageSquare, Mic, Layers, PenTool, Sparkles,
-  Smile, Pause, Terminal, Database, CheckCircle2, Zap
+  Code, MessageSquare, Mic, CheckCircle2, Zap,
+  Code2, ClipboardCheck
 } from "lucide-react";
 
 interface AgentFeature {
@@ -79,21 +79,22 @@ function AgentCard({ agent, index, total }: AgentCardProps) {
         </div>
 
         {/* Agent Main Content (Image/Widget + Side Info) */}
-        <div className="flex flex-col lg:flex-row bg-surface border border-white/5 rounded-2xl overflow-hidden w-full shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] hover:shadow-[0_30px_70px_rgba(0,0,0,0.95)] transition-shadow duration-500 min-h-[420px] lg:min-h-[500px] relative group">
+        <div className="flex flex-col lg:flex-row bg-surface border border-white/5 rounded-2xl overflow-hidden w-full shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] hover:shadow-[0_30px_70px_rgba(0,0,0,0.95)] transition-shadow duration-500 min-h-[500px] lg:h-[500px] relative group">
 
           {/* Subtle gradient hover effect */}
           <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.01] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
 
-          {/* Visual Area */}
-          <div className="w-full lg:w-[60%] relative min-h-[400px] lg:min-h-0 flex items-center justify-center bg-surface lg:border-r border-white/5 overflow-hidden">
+          {/* Visual Area — the product screen as a browser window docked to the
+              bottom edge (margin top/left/right, flush at the bottom). */}
+          <div className="w-full lg:w-[60%] relative min-h-[420px] lg:min-h-0 flex items-end justify-center bg-surface lg:border-r border-white/5 overflow-hidden pt-6 px-6 sm:px-10">
             <img
               src={agent.bgImage}
               alt="Background"
               className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-[1.03] transition-transform duration-[4000ms] ease-out"
             />
 
-            {/* Center Widget */}
-            <div className="relative z-20 w-full max-w-md flex justify-center p-4">
+            {/* Product screen — uniform fixed height, docked to the bottom */}
+            <div className="relative z-20 flex h-[416px] w-full max-w-2xl flex-col rounded-t-xl border border-b-0 border-white/10 bg-[#151515]/95 backdrop-blur-2xl shadow-[0_-12px_60px_-15px_rgba(0,0,0,0.85)] overflow-hidden">
               {agent.renderWidget()}
             </div>
           </div>
@@ -109,7 +110,7 @@ function AgentCard({ agent, index, total }: AgentCardProps) {
               {agent.desc}
             </p>
 
-            <button className="self-start rounded-full border border-white/10 px-6 py-2.5 text-xs font-medium text-white hover:bg-white/5 hover:border-white/20 transition-colors mb-12 cursor-pointer">
+            <button className="self-start rounded-full border border-white/10 px-6 py-2.5 text-xs font-medium text-white hover:bg-white/5 hover:border-white/20 transition-colors mb-8 cursor-pointer">
               Explore {agent.name}
             </button>
 
@@ -140,172 +141,216 @@ export function Agents() {
   const agents = [
     {
       id: "meera",
+      screenUrl: "employlabs.ai / sourcing",
       name: "Meera",
       role: "The Recruiter Brain",
       icon: Code,
       accent: "var(--color-accent)",
-      desc: "Meera turns every job description into clarity. She surfaces patterns, uncovers core requirements, and quantifies fit, then recommends candidates that drive outcomes.",
+      desc: "Meera reads the market before she reads résumés. She maps talent supply and comp, turns the role into sharp candidate personas, and sources the strongest matches from 800M+ profiles.",
       bgImage: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop",
       features: [
-        { title: "Parse the Job Description", active: false, detail: "Extracts hard constraints and implicit signals." },
-        { title: "Build Candidate Personas", active: false, detail: "Maps raw requirements into actionable profiles." },
-        { title: "Source from 800M+ profiles", active: false, detail: "Scans globally to identify top 1% matches." },
-        { title: "Score and rank matches", active: false },
+        { title: "Market Mapping", active: false, detail: "Maps live talent supply, comp bands, and where the top 1% sit." },
+        { title: "Build Candidate Personas", active: false, detail: "Turns the role into sharp, sourceable ideal-candidate profiles." },
+        { title: "Source from LinkedIn", active: false, detail: "Scans 800M+ profiles to surface the strongest matches." },
         {
-          title: "Monitor and improve",
+          title: "Monitor & Improve",
           active: true,
-          detail: "Track outcomes in production and continuously refine sourcing policies using performance and hiring insights."
+          detail: "Tracks outcomes in production and continuously refines sourcing on real hiring signal."
         }
       ],
       renderWidget: () => (
-        <div className="bg-[#1a1a1a]/90 backdrop-blur-2xl border border-white/10 rounded-sm w-[90%] max-w-lg shadow-2xl overflow-hidden text-left mt-8 lg:mt-0">
-          <div className="p-4 border-b border-white/10 flex items-center justify-between">
-            <span className="text-white font-medium text-sm">Agent Canvas</span>
-            <span className="text-zinc-400 text-xs px-2 py-1 rounded-full bg-white/5">Parsing JD</span>
+        <div className="flex h-full flex-col text-left">
+          {/* capability tabs */}
+          <div className="flex items-center gap-1 px-4 pt-3 text-[11px]">
+            <span className="px-2.5 py-1 text-zinc-500">Market map</span>
+            <span className="px-2.5 py-1 text-zinc-500">Persona</span>
+            <span className="rounded-md bg-white/10 px-2.5 py-1 text-white">Candidates</span>
+            <span className="ml-auto font-mono text-zinc-500">Lead SRE</span>
           </div>
-          <div className="p-5">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center">
-                <Database className="w-5 h-5 text-accent"/>
+          {/* market map stats */}
+          <div className="grid grid-cols-3 gap-2 px-4 py-3">
+            {[
+              { k: "Talent pool", v: "4,120" },
+              { k: "Median comp", v: "$205k" },
+              { k: "Hiring now", v: "38" },
+            ].map((s) => (
+              <div key={s.k} className="rounded-md border border-white/10 bg-white/[0.03] p-2.5">
+                <div className="text-[10px] uppercase tracking-wider text-zinc-500">{s.k}</div>
+                <div className="text-sm text-white mt-1">{s.v}</div>
               </div>
-              <div>
-                <h4 className="text-white text-sm">Lead Staff SRE</h4>
-                <p className="text-xs text-zinc-400">Extracting requirements...</p>
+            ))}
+          </div>
+          {/* persona chips */}
+          <div className="flex flex-wrap items-center gap-1.5 px-4 pb-3 text-[11px]">
+            <span className="mr-1 uppercase tracking-wider text-zinc-500">Persona</span>
+            {["Staff-level", "Go + K8s", "Scale-up", "Remote"].map((c) => (
+              <span key={c} className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-zinc-300">{c}</span>
+            ))}
+          </div>
+          {/* candidates */}
+          <div className="border-t border-white/10 px-2 py-2">
+            {[
+              { n: "Alex Rivera", r: "Stripe · Infrastructure", s: 96, top: true },
+              { n: "Priya Nair", r: "Razorpay · SRE", s: 91 },
+              { n: "Marcus Webb", r: "Datadog · Platform", s: 88 },
+              { n: "Sana Kapoor", r: "Cloudflare · Edge", s: 85 },
+            ].map((c) => (
+              <div key={c.n} className="flex items-center gap-3 rounded-md px-2.5 py-2 hover:bg-white/[0.04] transition-colors">
+                <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-[11px] font-semibold ${c.top ? "bg-accent/15 text-accent" : "bg-white/5 text-zinc-300"}`}>
+                  {c.n.split(" ").map((w) => w[0]).join("")}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[13px] text-white leading-tight">{c.n}</div>
+                  <div className="text-[11px] text-zinc-500 truncate">{c.r}</div>
+                </div>
+                <span className="hidden shrink-0 rounded border border-white/10 px-1.5 py-0.5 text-[10px] text-zinc-500 sm:inline">LinkedIn</span>
+                <div className="flex shrink-0 items-center gap-2.5">
+                  <div className="hidden h-1 w-14 overflow-hidden rounded-full bg-white/10 md:block">
+                    <div className="h-full rounded-full" style={{ width: `${c.s}%`, background: c.top ? "var(--color-accent)" : "rgba(255,255,255,0.35)" }} />
+                  </div>
+                  <span className={`font-mono text-sm ${c.top ? "text-accent" : "text-zinc-300"}`}>{c.s}</span>
+                </div>
               </div>
-            </div>
-            <div className="space-y-2 text-xs">
-              <div className="flex justify-between items-center bg-white/5 p-2.5 rounded-sm border border-white/5">
-                <span className="text-zinc-300">Kubernetes Architecture</span>
-                <span className="text-accent bg-accent/10 px-2 py-0.5 rounded">Must-have</span>
-              </div>
-              <div className="flex justify-between items-center bg-white/5 p-2.5 rounded-sm border border-white/5">
-                <span className="text-zinc-300">Golang Concurrency</span>
-                <span className="text-accent bg-accent/10 px-2 py-0.5 rounded">Must-have</span>
-              </div>
-              <div className="flex justify-between items-center bg-white/5 p-2.5 rounded-sm border border-white/5">
-                <span className="text-zinc-300">Rust</span>
-                <span className="text-zinc-500 bg-zinc-800 px-2 py-0.5 rounded">Nice-to-have</span>
-              </div>
-            </div>
+            ))}
+          </div>
+          {/* footer */}
+          <div className="mt-auto flex items-center justify-between border-t border-white/10 px-4 py-2.5 text-[11px] text-zinc-500">
+            <span>812 scanned · sourced from LinkedIn</span>
+            <span className="text-zinc-400">24 shortlisted</span>
           </div>
         </div>
       )
     },
     {
       id: "zia",
+      screenUrl: "employlabs.ai / outreach",
       name: "Zia",
       role: "The Candidate Engager",
       icon: MessageSquare,
       accent: "var(--color-gold)",
-      desc: "Zia handles the outreach lifecycle. She initiates contact, answers complex candidate queries, handles objections, and seamlessly schedules interviews with interested talent.",
+      desc: "Zia owns the outreach lifecycle. She initiates contact across channels, handles objections in real time, and books interviews with interested talent — no back-and-forth.",
       bgImage: "https://images.unsplash.com/photo-1472396961693-142e6e269027?q=80&w=2052&auto=format&fit=crop",
       features: [
-        { title: "Multi-channel Outreach", active: false, detail: "Contacts candidates where they are most responsive." },
-        { title: "Dynamic Follow-ups", active: false, detail: "Adjusts messaging based on applicant engagement." },
-        { title: "Objection Handling", active: false, detail: "Addresses concerns and answers questions directly." },
-        { title: "Answer Queries", active: false },
+        { title: "Multi-channel Outreach", active: false, detail: "Reaches candidates on email + WhatsApp where they reply." },
+        { title: "Dynamic Follow-ups", active: false, detail: "Adjusts timing and message to each candidate's engagement." },
+        { title: "Objection Handling", active: false, detail: "Answers comp, role, and process questions instantly." },
         {
           title: "Autonomous Scheduling",
           active: true,
-          detail: "Automatically reads back interest and handles complex calendar coordination without any back-and-forth emails."
+          detail: "Reads back interest and books the interview — zero calendar back-and-forth."
         }
       ],
       renderWidget: () => (
-        <div className="bg-[#1a1a1a]/90 backdrop-blur-2xl border border-white/10 rounded-sm w-[90%] max-w-lg shadow-2xl overflow-hidden text-left mt-8 lg:mt-0">
-          <div className="p-4 border-b border-white/10 flex items-center justify-between">
-            <span className="text-white font-medium text-sm">Outreach Sequence</span>
-            <span className="text-gold text-xs px-2 py-1 rounded-full bg-gold/10 flex items-center gap-1"><CheckCircle2 className="w-3 h-3"/> Active</span>
+        <div className="flex h-full flex-col text-left">
+          {/* candidate + channel + status */}
+          <div className="flex items-center justify-between px-4 pt-3 text-[11px]">
+            <span className="text-zinc-500">Alex Rivera · <span className="text-zinc-400">Email + WhatsApp</span></span>
+            <span className="flex items-center gap-1 text-gold"><CheckCircle2 className="w-3.5 h-3.5" /> Replied</span>
           </div>
-          <div className="p-5 space-y-4">
-            <div className="bg-white/5 border border-white/5 rounded-sm p-3">
-              <div className="flex justify-between text-[10px] uppercase tracking-wider text-zinc-500 mb-2">
-                <span>To: Alex Rivera</span>
-                <span>Day 1</span>
+          {/* cadence funnel */}
+          <div className="grid grid-cols-4 gap-2 px-4 pb-3">
+            {[
+              { k: "Queued", v: 42 },
+              { k: "Sent", v: 38 },
+              { k: "Opened", v: 21 },
+              { k: "Replied", v: 6, on: true },
+            ].map((s) => (
+              <div key={s.k} className={`rounded-md border p-2 ${s.on ? "border-gold/30 bg-gold/10" : "border-white/10 bg-white/[0.03]"}`}>
+                <div className="text-[10px] uppercase tracking-wider text-zinc-500">{s.k}</div>
+                <div className={`text-sm ${s.on ? "text-gold" : "text-white"}`}>{s.v}</div>
               </div>
-              <div className="text-sm text-zinc-300 mb-1">Stripe &lt;-&gt; Acme Corp (Lead SRE)</div>
-              <div className="text-xs text-zinc-400 leading-relaxed">Hi Alex, saw your work on Stripe's ingress routing. We are solving similar scale issues at Acme Corp and I think your background is a perfect fit...</div>
+            ))}
+          </div>
+          {/* thread */}
+          <div className="border-t border-white/10 p-3 space-y-2">
+            <div className="max-w-[88%] rounded-lg rounded-tl-sm border border-white/10 bg-white/5 px-3 py-1.5">
+              <div className="text-[10px] uppercase tracking-wider text-zinc-500">Zia · Day 1</div>
+              <p className="text-[12.5px] text-zinc-300 leading-snug">Hi Alex — your Stripe ingress work stood out. Worth a quick chat?</p>
             </div>
-            <div className="pl-6 border-l border-white/10 space-y-4">
-              <div className="bg-white/5 border border-white/5 rounded-sm p-3">
-                <div className="flex justify-between text-[10px] uppercase tracking-wider text-zinc-500 mb-2">
-                  <span>Reply from Alex</span>
-                  <span>Day 2</span>
-                </div>
-                <div className="text-xs text-white">Sounds interesting. What's the comp band looking like?</div>
-              </div>
-              <div className="bg-gold/10 border border-gold/20 rounded-sm p-3">
-                <div className="flex justify-between text-[10px] uppercase tracking-wider text-gold mb-2">
-                  <span className="flex items-center gap-1"><Zap className="w-3 h-3"/> Zia Auto-reply</span>
-                  <span>Day 2</span>
-                </div>
-                <div className="text-xs text-zinc-300 leading-relaxed">The band is $180k-$220k base + equity. Should I send over some times for a quick intro call?</div>
-              </div>
+            <div className="ml-auto max-w-[88%] rounded-lg rounded-tr-sm bg-white/10 px-3 py-1.5">
+              <div className="text-right text-[10px] uppercase tracking-wider text-zinc-400">Alex · Day 2</div>
+              <p className="text-[12.5px] text-white leading-snug">Interested. What&rsquo;s the comp band?</p>
             </div>
+            <div className="max-w-[88%] rounded-lg rounded-tl-sm border border-gold/20 bg-gold/10 px-3 py-1.5">
+              <div className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-gold"><Zap className="w-3 h-3" /> Zia · auto-reply</div>
+              <p className="text-[12.5px] text-zinc-200 leading-snug">$180&ndash;220k + equity. Thu 3pm or Fri 11am — lock one in?</p>
+            </div>
+          </div>
+          {/* footer — booked */}
+          <div className="mt-auto flex items-center gap-2 border-t border-white/10 px-4 py-2.5 text-[12px] text-zinc-300">
+            <CheckCircle2 className="w-3.5 h-3.5 text-gold" /> Interview booked · Thu 3:00 PM
           </div>
         </div>
       )
     },
     {
       id: "naira",
+      screenUrl: "employlabs.ai / assessment",
       name: "Naira",
       role: "The Interviewer",
       icon: Mic,
       accent: "#a5b4fc",
-      desc: "Naira conducts live, conversational voice interviews. She probes on technical depth, evaluates against your rubric, and synthesizes the conversation into a scored report.",
+      desc: "Naira interviews like your best engineer would. She adapts the conversation to the role, spins up hands-on modules on the spot, and returns a structured, evidence-linked report you can actually trust.",
       bgImage: "https://images.unsplash.com/photo-1434394354979-a235cd36269d?q=80&w=2051&auto=format&fit=crop",
       features: [
-        { title: "Voice Generation", active: false, detail: "Lifelike, responsive audio for natural conversations." },
-        { title: "Technical Probing", active: false, detail: "Asks follow-up questions to test actual depth." },
-        { title: "Dynamic Context", active: false, detail: "Adapts to applicant's specific background instantly." },
-        { title: "Live Transcription", active: false },
+        { title: "Adaptive Interview", active: false, detail: "A live, role-specific conversation that probes what matters." },
+        { title: "Dynamic Modules", active: false, detail: "Spins up coding or system-design screens on the spot." },
+        { title: "Capability Assessment", active: false, detail: "Measures the candidate against the role's real jobs-to-be-done." },
         {
-          title: "Rubric Evaluation",
+          title: "Evidence-Based Report",
           active: true,
-          detail: "Grades the interview in real-time against your exact technical and cultural rubrics to ensure perfectly unbiased outcomes."
+          detail: "A structured scorecard with every score linked to interview evidence — so you decide with trust."
         }
       ],
       renderWidget: () => (
-        <div className="bg-[#1a1a1a]/90 backdrop-blur-2xl border border-white/10 rounded-sm w-[90%] max-w-lg shadow-2xl overflow-hidden text-left mt-8 lg:mt-0">
-          <div className="p-4 border-b border-white/10 flex items-center justify-between">
-             <span className="text-white font-medium text-sm">Voice call details</span>
-             <div className="flex gap-2">
-                <span className="text-accent text-[10px] uppercase tracking-wider px-2 py-1 rounded border border-accent/20 bg-accent/10 flex items-center gap-1"><Smile className="w-3 h-3"/> Happy</span>
-                <span className="text-zinc-400 text-[10px] uppercase tracking-wider px-2 py-1 rounded border border-white/10 bg-white/5 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-orange-500 rounded-full"/> Transferred</span>
-             </div>
+        <div className="flex h-full flex-col text-left">
+          {/* candidate + verdict */}
+          <div className="flex items-center justify-between px-4 pt-3 text-[11px]">
+            <span className="text-zinc-500">Alex Rivera · <span className="text-zinc-400">Lead SRE</span></span>
+            <span className="rounded border border-indigo-400/30 bg-indigo-400/10 px-2 py-1 text-[10px] uppercase tracking-wider text-indigo-300">Strong hire</span>
           </div>
-          <div className="p-5 space-y-4">
-             <div className="text-xs text-zinc-400 space-y-1">
-                <div>Ticket ID: <span className="text-zinc-500">(call_+1747...)</span></div>
-                <div>Aug 18, 2025 23:56 <span className="text-zinc-500">(2m 7s)</span></div>
-             </div>
-             {/* Scrubber */}
-             <div className="flex items-center gap-3 text-xs text-zinc-500 bg-black/40 border border-white/5 rounded-sm p-2.5 px-3">
-                <span>0:19</span>
-                <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
-                   <div className="w-1/3 h-full bg-zinc-400" />
+          {/* dynamic modules */}
+          <div className="flex flex-wrap items-center gap-1.5 px-4 py-3">
+            <span className="mr-1 text-[10px] uppercase tracking-wider text-zinc-500">Modules</span>
+            {["Coding", "System Design", "Behavioral"].map((m) => (
+              <span key={m} className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-zinc-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-indigo-300" /> {m}
+              </span>
+            ))}
+          </div>
+          {/* overall score */}
+          <div className="flex items-center justify-between border-t border-white/10 px-4 py-3">
+            <div className="flex items-end gap-1.5">
+              <span className="text-3xl font-display text-white leading-none">4.6</span>
+              <span className="mb-0.5 text-sm text-zinc-500">/ 5.0 overall</span>
+            </div>
+            <span className="flex items-center gap-1.5 rounded border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white">
+              <Code2 className="w-3.5 h-3.5 text-indigo-300" /> Evidence-linked
+            </span>
+          </div>
+          {/* dimensions with evidence */}
+          <div className="border-t border-white/10 px-4 py-1">
+            {[
+              { d: "System design", s: 5, e: "Partitioned ingress cleanly past 40k rps." },
+              { d: "Go concurrency", s: 4, e: "Explained worker-pool backpressure precisely." },
+              { d: "Communication", s: 5, e: "Led the trade-off discussion end to end." },
+            ].map((row) => (
+              <div key={row.d} className="border-b border-white/[0.06] py-2.5 last:border-0">
+                <div className="mb-1.5 flex items-center justify-between">
+                  <span className="text-[13px] text-white">{row.d}</span>
+                  <span className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((p) => (
+                      <span key={p} className={`h-1.5 w-1.5 rounded-full ${p <= row.s ? "bg-indigo-300" : "bg-white/15"}`} />
+                    ))}
+                  </span>
                 </div>
-                <span>-1:48</span>
-                <Pause className="w-3 h-3" />
-             </div>
-             {/* Tabs */}
-             <div className="flex text-xs">
-                <button className="px-4 py-2 bg-white text-black font-medium rounded-sm text-[11px] uppercase tracking-wider">Transcript</button>
-                <button className="px-4 py-2 text-zinc-400 hover:text-white transition-colors text-[11px] uppercase tracking-wider">Details</button>
-                <button className="px-4 py-2 text-zinc-400 hover:text-white transition-colors text-[11px] uppercase tracking-wider">Latency</button>
-             </div>
-             {/* Logs */}
-             <div className="bg-green-950/30 border border-green-500/20 text-green-400 text-[11px] p-2 rounded flex items-center gap-2">
-                <Terminal className="w-3 h-3" /> Initialization code <span className="bg-green-500/20 px-1.5 rounded ml-1">4 logs</span>
-             </div>
-             {/* Chat */}
-             <div className="space-y-4 text-xs mt-4">
-                <div className="text-zinc-300 leading-relaxed">Hello! You're speaking with Naira, your AI interviewer. How are you doing today?</div>
-                <div className="text-[10px] text-zinc-500">2s</div>
-                <div className="flex justify-end">
-                   <div className="bg-white text-black px-4 py-2.5 rounded-sm font-medium shadow-sm">I'm doing well, ready to get started.</div>
-                </div>
-                <div className="text-right text-[10px] text-zinc-500">4s</div>
-             </div>
+                <p className="text-[11px] leading-snug text-zinc-500">&ldquo;{row.e}&rdquo;</p>
+              </div>
+            ))}
+          </div>
+          {/* recommendation */}
+          <div className="mt-auto flex items-center gap-2 border-t border-white/10 px-4 py-2.5 text-[12px] text-zinc-300">
+            <ClipboardCheck className="w-3.5 h-3.5 text-indigo-300" /> Recommendation: advance to final
           </div>
         </div>
       )
@@ -322,7 +367,7 @@ export function Agents() {
             <span className="w-1.5 h-1.5 rounded-full bg-white" />
             ENTITY GRID
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display text-white tracking-tight leading-tight">
+          <h2 className="text-6xl md:text-7xl lg:text-8xl font-display text-white tracking-tight leading-[1.02]">
             Meet your AI team
           </h2>
         </div>
