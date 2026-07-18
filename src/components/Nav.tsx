@@ -36,10 +36,9 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
             <Link href="/naira-ai-interviewer" className="hover:text-white transition-colors w-fit">Naira</Link>
           </div>
 
-          {/* Center: logo */}
-          <div className={`flex items-center gap-3 justify-self-center ${isDark ? "text-white" : "text-zinc-900"}`}>
-            <div className={`w-8 h-8 flex items-center justify-center font-display font-black text-lg tracking-tighter leading-none rounded-none ${isDark ? "bg-white text-black" : "bg-zinc-900 text-white"}`}>EL</div>
-            <span className="font-display font-bold text-xl tracking-tight">Employlabs</span>
+          {/* Center: wordmark (dot mark, no square logo) */}
+          <div className={`flex items-center justify-self-center ${isDark ? "text-white" : "text-zinc-900"}`}>
+            <span className="font-display font-bold text-2xl tracking-tight">Employlabs<span className="text-accent">.</span></span>
           </div>
 
           <div className="flex items-center gap-4 justify-self-end">
@@ -63,9 +62,8 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="fixed top-4 left-1/2 z-50 bg-zinc-950/95 backdrop-blur-xl border border-white/10 rounded-lg pl-8 pr-3 py-2 flex items-center justify-between w-[90%] max-w-[800px] shadow-2xl"
           >
-            <div className="flex items-center gap-3 text-white cursor-pointer hover:text-accent transition-colors" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              <div className="bg-white text-black w-8 h-8 flex items-center justify-center font-display font-black text-lg tracking-tighter leading-none rounded-none">EL</div>
-              <span className="font-display font-bold text-sm tracking-tight pr-2">Employlabs</span>
+            <div className="flex items-center text-white cursor-pointer hover:text-accent transition-colors" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+              <span className="font-display font-bold text-base tracking-tight pr-2">Employlabs<span className="text-accent">.</span></span>
             </div>
 
             <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-300">

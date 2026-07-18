@@ -10,7 +10,7 @@ export function SocialProof() {
   ];
 
   return (
-    <section className="py-32 md:py-40 border-y border-white/5 bg-transparent relative z-20">
+    <section className="py-32 md:py-40 bg-transparent relative z-20">
       <div className="max-w-[1400px] mx-auto px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 

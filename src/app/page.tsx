@@ -1,6 +1,7 @@
 import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
 import { SocialProof } from "@/components/SocialProof";
+import { RolesStrip } from "@/components/RolesStrip";
 import { Funnel } from "@/components/Funnel";
 import { ParadigmShift } from "@/components/ParadigmShift";
 import { Agents } from "@/components/Agents";
@@ -21,6 +22,7 @@ export default function Home() {
         <div className="bg-zinc-950 text-zinc-100">
           <SocialProof />
           <ParadigmShift />
+          <RolesStrip />
           <Funnel />
           <Agents />
           <HumanAtGates />

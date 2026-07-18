@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, type ReactNode } from "react";
 import { motion, useInView } from "motion/react";
-import { Workflow, Folder, Search, ArrowUp, Loader2, ChevronDown, Check } from "lucide-react";
+import { Workflow, Folder, Search, ArrowUp, Loader2, ChevronDown, Check, Sparkles, History } from "lucide-react";
 
 /* -------------------------------------------------------------------------- */
 /* Streaming chat — Meera's messages type out, and each block reveals in       */
@@ -21,9 +21,12 @@ const SNAPSHOT = [
   { dot: "bg-accent", stage: "Shortlisted", owner: "for you", n: "3" },
 ];
 
-const ACTIVITY = [
-  { badge: "Z", cls: "bg-sky-400/15 text-sky-300", name: "Zia", detail: "Engaging 38 candidates · email + WhatsApp" },
-  { badge: "N", cls: "bg-violet-400/15 text-violet-300", name: "Naira", detail: "Live voice interviews · 4 of 6 done" },
+// Inline tool-status rows — mirrors the real copilot's humanized tool chips
+// (job_query → "Job query", sourcing_act → "Sourcing act", …).
+const TOOLS = [
+  { name: "Job query", state: "done" as const },
+  { name: "Sourcing act", state: "done" as const },
+  { name: "Scoring act", state: "running" as const },
 ];
 
 function Typewriter({ text, active, speed = 14 }: { text: string; active: boolean; speed?: number }) {
@@ -48,6 +51,24 @@ function Typewriter({ text, active, speed = 14 }: { text: string; active: boolea
         <span className="ml-px inline-block h-3.5 w-[3px] -mb-0.5 animate-pulse rounded-[1px] bg-accent/70 align-middle" />
       )}
     </span>
+  );
+}
+
+function ToolRow({ name, state }: { name: string; state: "done" | "running" }) {
+  return (
+    <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1.5">
+      {state === "done" ? (
+        <Check className="h-3 w-3 shrink-0 text-accent" strokeWidth={3} />
+      ) : (
+        <Loader2 className="h-3 w-3 shrink-0 animate-spin text-sky-300" />
+      )}
+      <span className={`text-[11px] ${state === "done" ? "text-zinc-400" : "text-zinc-200"}`}>
+        {name}
+      </span>
+      {state === "running" && (
+        <span className="ml-auto font-mono text-[10px] text-sky-300">running</span>
+      )}
+    </div>
   );
 }
 
@@ -94,8 +115,8 @@ function ChatStream() {
       {/* 1. Meera greeting (streams) */}
       <Reveal show={step >= 1}>
         <div className="flex gap-2.5">
-          <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border border-accent/30 bg-accent/15 text-[10px] font-bold text-accent">
-            M
+          <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border border-accent/30 bg-accent/15 text-accent">
+            <Sparkles className="h-3 w-3" />
           </span>
           <p className="text-[13px] leading-relaxed text-zinc-300">
             <Typewriter text={MEERA_1} active={step >= 1} />
@@ -103,8 +124,17 @@ function ChatStream() {
         </div>
       </Reveal>
 
-      {/* 2. Pipeline snapshot */}
+      {/* 2. Inline tool-status rows — Meera's tools landing */}
       <Reveal show={step >= 2}>
+        <div className="space-y-1.5 pl-8">
+          {TOOLS.map((t) => (
+            <ToolRow key={t.name} name={t.name} state={t.state} />
+          ))}
+        </div>
+      </Reveal>
+
+      {/* 3. Pipeline snapshot */}
+      <Reveal show={step >= 3}>
         <div className="pl-8">
           <div className="overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
             <div className="flex items-center justify-between border-b border-white/10 px-3.5 py-2">
@@ -130,27 +160,6 @@ function ChatStream() {
         </div>
       </Reveal>
 
-      {/* 3. Live agent activity */}
-      <Reveal show={step >= 3}>
-        <div className="space-y-2 pl-8">
-          {ACTIVITY.map((a) => (
-            <div key={a.name} className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5">
-              <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-md text-[10px] font-bold ${a.cls}`}>
-                {a.badge}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-xs font-medium text-white">{a.name}</p>
-                <p className="truncate text-[11px] text-zinc-500">{a.detail}</p>
-              </div>
-              <span className="flex shrink-0 items-center gap-1.5 rounded-full border border-accent/20 bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent">
-                <Loader2 className="h-2.5 w-2.5 animate-spin" />
-                Running
-              </span>
-            </div>
-          ))}
-        </div>
-      </Reveal>
-
       {/* 4. Human question */}
       <Reveal show={step >= 4}>
         <div className="flex justify-end">
@@ -163,8 +172,8 @@ function ChatStream() {
       {/* 5. Meera response (streams) */}
       <Reveal show={step >= 5}>
         <div className="flex gap-2.5">
-          <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border border-accent/30 bg-accent/15 text-[10px] font-bold text-accent">
-            M
+          <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border border-accent/30 bg-accent/15 text-accent">
+            <Sparkles className="h-3 w-3" />
           </span>
           <p className="text-[13px] leading-relaxed text-zinc-300">
             <Typewriter text={MEERA_2} active={step >= 5} />
@@ -213,9 +222,6 @@ const NODES = STAGES.map((s) => ({
   child: point(s.angle, 49, 47),
 }));
 
-// --- Right-panel chat data --------------------------------------------------
-const TABS = ["Home", "Roles", "Pipeline", "Tasks", "Library"] as const;
-
 export function ParadigmShift() {
   return (
     <section id="paradigm" className="py-32 md:py-40 relative overflow-hidden bg-zinc-950">
@@ -244,7 +250,7 @@ export function ParadigmShift() {
             Your whole funnel,
             <br />
             run by{" "}
-            <span className="font-title italic text-accent">agents.</span>
+            <span className="italic text-accent">agents.</span>
           </motion.h2>
         </div>
 
@@ -413,32 +419,32 @@ export function ParadigmShift() {
               </div>
             </div>
 
-            {/* ============ RIGHT: agent chat panel ============ */}
+            {/* ============ RIGHT: Meera copilot chat panel ============ */}
             <div className="hidden lg:flex w-[38%] shrink-0 flex-col border-l border-white/10 bg-surface min-w-0">
-              {/* Tabs */}
-              <div className="flex items-center gap-1 border-b border-white/10 px-3 py-2.5">
-                {TABS.map((tab) => (
-                  <span
-                    key={tab}
-                    className={
-                      tab === "Home"
-                        ? "rounded-md bg-white/5 px-2.5 py-1 text-xs font-medium text-white"
-                        : "rounded-md px-2.5 py-1 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
-                    }
-                  >
-                    {tab}
+              {/* Copilot header — Sparkles avatar + Meera / AI recruiter + history */}
+              <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+                <div className="flex items-center gap-2.5">
+                  <span className="grid h-7 w-7 place-items-center rounded-full border border-accent/25 bg-accent/15">
+                    <Sparkles className="h-3.5 w-3.5 text-accent" />
                   </span>
-                ))}
+                  <div className="leading-tight">
+                    <p className="text-[13px] font-semibold text-white">Meera</p>
+                    <p className="text-[10px] text-zinc-500">AI recruiter</p>
+                  </div>
+                </div>
+                <button className="grid h-7 w-7 place-items-center rounded-md text-zinc-500 hover:bg-white/5 hover:text-zinc-300 transition-colors">
+                  <History className="h-4 w-4" />
+                </button>
               </div>
 
               {/* Chat body — streams in on view */}
               <ChatStream />
 
-              {/* Chat input */}
+              {/* Composer */}
               <div className="border-t border-white/10 p-3">
                 <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
                   <span className="flex-1 truncate text-[13px] text-zinc-500">
-                    Ask Meera to adjust the pipeline…
+                    Message Meera…
                   </span>
                   <button className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-white/10 text-zinc-200 hover:bg-accent hover:text-black transition-colors">
                     <ArrowUp className="h-4 w-4" />
