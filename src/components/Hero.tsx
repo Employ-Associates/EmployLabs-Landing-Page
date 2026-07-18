@@ -208,10 +208,10 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative overflow-hidden text-[18px] md:text-[20px] text-zinc-100 font-normal leading-relaxed backdrop-blur-md bg-black/35 border border-white/15 rounded-sm p-5 before:absolute before:inset-x-4 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:content-['']"
+              className="relative overflow-hidden text-[16px] md:text-[18px] text-zinc-100/90 font-normal leading-relaxed backdrop-blur-md bg-black/35 border border-white/15 rounded-sm px-5 py-4 before:absolute before:inset-x-4 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:content-['']"
             >
-              Upload a job. Meera sources. Zia engages. Naira interviews. You
-              simply review the final shortlist at the gates.
+              Autonomous hiring — from JD to interviewed, explainable
+              candidates. You just pick from the shortlist.
             </motion.p>
 
             <motion.div
