@@ -68,7 +68,7 @@ export function Trust() {
             transition={{ delay: 0.2 }}
             className="text-lg text-zinc-400 max-w-md"
           >
-            AI that interviews humans requires a higher standard. We built EmployLabs with fairness and security as core architectural primitives.
+            AI that interviews humans requires a higher standard. We built Weemploy with fairness and security as core architectural primitives.
           </motion.p>
         </div>
 

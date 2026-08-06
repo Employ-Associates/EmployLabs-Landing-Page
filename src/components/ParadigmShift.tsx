@@ -317,7 +317,7 @@ export function ParadigmShift() {
               {/* Toolbar pill (top-left) */}
               <div className="absolute top-4 left-4 z-20 flex items-center gap-2 rounded-lg border border-white/10 bg-card/80 backdrop-blur px-2 py-1.5">
                 <span className="grid h-5 w-5 place-items-center rounded bg-accent text-[9px] font-bold text-black">EL</span>
-                <span className="font-mono text-xs text-zinc-300">EmployLabs Recruiter</span>
+                <span className="font-mono text-xs text-zinc-300">Weemploy Recruiter</span>
                 <ChevronDown className="h-3 w-3 text-zinc-500" />
                 <span className="mx-0.5 h-4 w-px bg-white/10" />
                 <span className="font-mono text-xs text-zinc-500">⌗ 60%</span>

@@ -171,7 +171,7 @@ export function Pricing() {
               </ul>
 
               <a
-                href="https://app.employlabs.ai"
+                href="https://app.weemploy.ai"
                 className={`group/cta w-full flex items-center justify-center gap-2 py-2.5 rounded-sm text-sm font-medium transition-colors cursor-pointer ${
                   plan.highlight
                     ? "bg-accent text-black hover:bg-white"

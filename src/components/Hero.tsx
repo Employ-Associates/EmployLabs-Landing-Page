@@ -185,7 +185,7 @@ export function Hero() {
               transition={{ duration: 0.5 }}
               className="inline-flex items-center gap-2 pl-4 pr-1 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-white text-[14px] font-medium mb-6 cursor-pointer hover:bg-white/20 transition-colors group"
             >
-              EmployLabs automates hiring end-to-end
+              Weemploy automates hiring end-to-end
               <div className="bg-white w-6 h-6 rounded-full flex items-center justify-center text-black group-hover:scale-105 transition-transform">
                 <ArrowRight className="w-3 h-3" />
               </div>
@@ -219,7 +219,7 @@ export function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <a href="https://app.employlabs.ai" className="font-sans h-12 flex items-center p-1 rounded-sm bg-white text-zinc-900 border-2 border-white/60 font-medium hover:bg-zinc-100 transition-colors shadow-xl shadow-black/20 group cursor-pointer">
+              <a href="https://app.weemploy.ai" className="font-sans h-12 flex items-center p-1 rounded-sm bg-white text-zinc-900 border-2 border-white/60 font-medium hover:bg-zinc-100 transition-colors shadow-xl shadow-black/20 group cursor-pointer">
                 <span className="flex-1 px-6 text-[16px] text-center">
                   Automate Hiring
                 </span>

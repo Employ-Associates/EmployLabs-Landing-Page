@@ -1,9 +1,9 @@
 ---
 name: landing-design
-description: The EmployLabs landing-page design system — theme tokens, fonts, the glass eyebrow-tag pattern, section conventions, animation stack. Use BEFORE styling any landing-page component (new section, tag/pill, card, headline, marquee) so the look stays consistent instead of re-derived. Scope = landing-page/ only (Next 16 + Tailwind v4 + motion/react).
+description: The Weemploy landing-page design system — theme tokens, fonts, the glass eyebrow-tag pattern, section conventions, animation stack. Use BEFORE styling any landing-page component (new section, tag/pill, card, headline, marquee) so the look stays consistent instead of re-derived. Scope = landing-page/ only (Next 16 + Tailwind v4 + motion/react).
 ---
 
-# EmployLabs landing — design system
+# Weemploy landing — design system
 
 Reference for `landing-page/` (Next 16, React 19, Tailwind v4 CSS-first, `motion/react`).
 Read this before adding/styling any section so new work matches. Source of truth:
@@ -82,4 +82,4 @@ HumanAtGates → Trust → Pricing → CustomerSpotlight → FinalCTA → Footer
 No SOC2/GDPR/CCPA/ISO — company has none; say "we don't sell/share your data" instead.
 Agents: **Meera** (recruiter copilot — sources/scores/orchestrates), **Zia** (candidate
 outreach), **Naira** (voice interviewer). On the hero, do NOT name agents (cold visitors
-don't know them); name them only in the agent-team sections. All CTAs → `https://app.employlabs.ai`.
+don't know them); name them only in the agent-team sections. All CTAs → `https://app.weemploy.ai`.
