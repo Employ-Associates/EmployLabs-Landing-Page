@@ -39,6 +39,7 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
           {/* Center: wordmark (dot mark, no square logo) */}
           <div className={`flex items-center justify-self-center ${isDark ? "text-white" : "text-zinc-900"}`}>
             <span className="font-display font-bold text-2xl tracking-tight">Weemploy<span className="text-accent">.</span></span>
+            <span className={`text-[10px] ml-2 self-end mb-0.5 ${isDark ? "text-white/50" : "text-zinc-500"}`}>Employlabs is handled by Weemploy Co.</span>
           </div>
 
           <div className="flex items-center gap-4 justify-self-end">
@@ -64,6 +65,7 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
           >
             <div className="flex items-center text-white cursor-pointer hover:text-accent transition-colors" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <span className="font-display font-bold text-base tracking-tight pr-2">Weemploy<span className="text-accent">.</span></span>
+              <span className="text-[9px] text-white/50 ml-1.5 self-end mb-0.5">Employlabs is handled by Weemploy Co.</span>
             </div>
 
             <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-300">
