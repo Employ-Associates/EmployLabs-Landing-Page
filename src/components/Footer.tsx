@@ -85,6 +85,7 @@ export function Footer() {
               <span className="font-display font-bold tracking-tight">WEEPLOY</span>
             </div>
             <span>© 2026</span>
+            <span className="text-zinc-500">Employlabs is handled by Weemploy Co.</span>
             <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-white transition-colors">Security</a>
           </div>
