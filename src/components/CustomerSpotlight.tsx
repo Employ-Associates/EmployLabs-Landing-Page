@@ -15,7 +15,7 @@ export function CustomerSpotlight() {
             CUSTOMER SPOTLIGHT
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-title text-zinc-900 tracking-tight leading-tight max-w-4xl">
-            See how enterprises scaled engineering hiring with Weemploy
+            See how enterprises scaled engineering hiring with EmployLabs
           </h2>
         </div>
 
@@ -57,7 +57,7 @@ export function CustomerSpotlight() {
             </div>
 
             <h3 className="text-2xl md:text-3xl lg:text-4xl font-display text-zinc-900 mb-8 leading-tight">
-              How ScaleTech scaled engineering hiring with Weemploy
+              How ScaleTech scaled engineering hiring with EmployLabs
             </h3>
 
             <button className="self-start bg-zinc-900 text-white font-medium px-6 py-2.5 rounded-sm text-sm hover:bg-zinc-800 transition-colors mb-12 flex items-center gap-2 group">
@@ -66,7 +66,7 @@ export function CustomerSpotlight() {
             </button>
 
             <blockquote className="text-zinc-600 text-sm md:text-base leading-relaxed mb-8">
-              "At ScaleTech, we operate at a massive scale across services, platforms, and languages. Weemploy leveraged usage data to deliver measurable improvements, including faster shortlisting, zero-bias screening, and more efficient workflows across our teams. As we continue to grow, partnerships like this are critical to delivering better outcomes on a global scale."
+              "At ScaleTech, we operate at a massive scale across services, platforms, and languages. EmployLabs leveraged usage data to deliver measurable improvements, including faster shortlisting, zero-bias screening, and more efficient workflows across our teams. As we continue to grow, partnerships like this are critical to delivering better outcomes on a global scale."
             </blockquote>
 
             <div className="flex items-center gap-4">

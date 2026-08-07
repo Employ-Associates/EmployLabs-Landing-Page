@@ -141,7 +141,7 @@ export function Agents() {
   const agents = [
     {
       id: "meera",
-      screenUrl: "weemploy.ai / sourcing",
+      screenUrl: "employlabs.ai / sourcing",
       name: "Meera",
       role: "The Recruiter Brain",
       icon: Code,
@@ -223,7 +223,7 @@ export function Agents() {
     },
     {
       id: "zia",
-      screenUrl: "weemploy.ai / outreach",
+      screenUrl: "employlabs.ai / outreach",
       name: "Zia",
       role: "The Candidate Engager",
       icon: MessageSquare,
@@ -285,7 +285,7 @@ export function Agents() {
     },
     {
       id: "naira",
-      screenUrl: "weemploy.ai / assessment",
+      screenUrl: "employlabs.ai / assessment",
       name: "Naira",
       role: "The Interviewer",
       icon: Mic,

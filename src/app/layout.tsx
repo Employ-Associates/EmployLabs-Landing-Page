@@ -22,7 +22,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Weemploy — The autonomous hiring company",
+  title: "EmployLabs — The autonomous hiring company",
   description: "The AI does the work — you decide at the gates.",
 };
 

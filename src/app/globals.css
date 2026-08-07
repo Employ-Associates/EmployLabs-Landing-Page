@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * Weemploy landing — unified theme.
+ * EmployLabs landing — unified theme.
  * Design is intentionally light by default; individual sections opt into a
  * dark surface (e.g. bg-surface / bg-zinc-950) for the premium look. There is
  * no prefers-color-scheme flip — light/dark is a per-section design choice.

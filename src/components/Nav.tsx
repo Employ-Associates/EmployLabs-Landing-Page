@@ -38,11 +38,11 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
 
           {/* Center: wordmark (dot mark, no square logo) */}
           <div className={`flex items-center justify-self-center ${isDark ? "text-white" : "text-zinc-900"}`}>
-            <span className="font-display font-bold text-2xl tracking-tight">Weemploy<span className="text-accent">.</span></span>
+            <span className="font-display font-bold text-2xl tracking-tight">Employlabs<span className="text-accent">.</span></span>
           </div>
 
           <div className="flex items-center gap-4 justify-self-end">
-            <a href="https://app.weemploy.ai" className="font-sans h-12 flex items-center p-1 rounded-sm bg-white text-zinc-900 border-2 border-white/60 font-medium hover:bg-zinc-100 transition-colors shadow-xl shadow-black/20 group cursor-pointer">
+            <a href="https://app.employlabs.ai" className="font-sans h-12 flex items-center p-1 rounded-sm bg-white text-zinc-900 border-2 border-white/60 font-medium hover:bg-zinc-100 transition-colors shadow-xl shadow-black/20 group cursor-pointer">
               <span className="flex-1 px-6 text-[16px] text-center">Go to Platform</span>
               <div className="bg-zinc-900 w-9 h-9 rounded-sm flex items-center justify-center text-white group-hover:scale-105 transition-transform shrink-0">
                 <ArrowRight className="w-5 h-5" />
@@ -63,7 +63,7 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
             className="fixed top-4 left-1/2 z-50 bg-zinc-950/95 backdrop-blur-xl border border-white/10 rounded-lg pl-8 pr-3 py-2 flex items-center justify-between w-[90%] max-w-[800px] shadow-2xl"
           >
             <div className="flex items-center text-white cursor-pointer hover:text-accent transition-colors" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              <span className="font-display font-bold text-base tracking-tight pr-2">Weemploy<span className="text-accent">.</span></span>
+              <span className="font-display font-bold text-base tracking-tight pr-2">Employlabs<span className="text-accent">.</span></span>
             </div>
 
             <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-300">
@@ -73,7 +73,7 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
               <Link href="/naira-ai-interviewer" className="hover:text-white transition-colors">Naira</Link>
             </div>
 
-            <a href="https://app.weemploy.ai" className="font-sans h-11 flex items-center p-1 rounded-sm bg-zinc-100 border border-zinc-200 text-zinc-900 hover:bg-white transition-all duration-300 text-sm font-bold group cursor-pointer">
+            <a href="https://app.employlabs.ai" className="font-sans h-11 flex items-center p-1 rounded-sm bg-zinc-100 border border-zinc-200 text-zinc-900 hover:bg-white transition-all duration-300 text-sm font-bold group cursor-pointer">
               <span className="flex-1 px-5 text-center">Go to Platform</span>
               <div className="bg-zinc-900 w-9 h-9 rounded-sm flex items-center justify-center text-white group-hover:scale-105 transition-transform shrink-0">
                 <ArrowRight className="w-4 h-4" />

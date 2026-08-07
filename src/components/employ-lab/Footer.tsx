@@ -5,7 +5,7 @@ export const Footer: React.FC = () => {
     <footer className="py-12 bg-black">
       <div className="max-w-[1400px] mx-auto px-6 flex flex-col md:flex-row justify-between gap-12 text-xs text-zinc-500">
         <div className="space-y-4">
-          <span className="text-lg font-bold text-white">Weemploy.</span>
+          <span className="text-lg font-bold text-white">EmployLabs.</span>
           <div className="max-w-xs text-zinc-600">
             3000 El Camino Real
             <br />
@@ -65,11 +65,11 @@ export const Footer: React.FC = () => {
         </div>
       </div>
       <div className="max-w-[1400px] mx-auto px-6 mt-12 pt-8 border-t border-zinc-900 flex justify-between items-center text-[10px] text-zinc-700">
-        <span>© 2026 Weemploy</span>
+        <span>© 2026 EmployLabs</span>
         <span>Security & Privacy First</span>
       </div>
 
-      {/* Large Weemploy Text at Bottom */}
+      {/* Large EmployLabs Text at Bottom */}
       <div className="max-w-8xl mx-auto px-6 mt-16 mb-8">
         <h2 className="text-6xl md:text-7xl lg:text-8xl font-bold bg-linear-to-b from-white to-zinc-900 bg-clip-text text-transparent text-center">
           Work Intelligence Starts Here

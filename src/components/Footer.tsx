@@ -32,7 +32,7 @@ export function Footer() {
           <div>
             <h4 className="text-lg text-white mb-6 font-display">Platform</h4>
             <ul className="space-y-4 text-gray-200">
-              <li><a href="#" className="hover:text-white transition-colors">Weemploy AI</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">EmployLabs AI</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Policy engine</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Data platform</a></li>
             </ul>
@@ -82,7 +82,7 @@ export function Footer() {
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="flex items-center gap-3 text-white">
               <div className="bg-white text-black w-8 h-8 flex items-center justify-center font-display font-black text-lg tracking-tighter leading-none rounded-none">EL</div>
-              <span className="font-display font-bold tracking-tight">WEEPLOY</span>
+              <span className="font-display font-bold tracking-tight">EMPLOYLABS</span>
             </div>
             <span>© 2026</span>
             <span className="text-zinc-500">Employlabs is handled by Weemploy Co.</span>
@@ -90,7 +90,7 @@ export function Footer() {
             <a href="#" className="hover:text-white transition-colors">Security</a>
           </div>
           <div className="flex items-center gap-5">
-            <span>Get an AI summary of Weemploy:</span>
+            <span>Get an AI summary of EmployLabs:</span>
             <div className="flex items-center gap-4 text-white">
               <Sparkles className="w-5 h-5 hover:text-accent cursor-pointer transition-colors" />
               <Bot className="w-5 h-5 hover:text-accent cursor-pointer transition-colors" />

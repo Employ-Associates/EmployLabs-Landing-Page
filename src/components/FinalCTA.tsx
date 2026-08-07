@@ -53,7 +53,7 @@ export function FinalCTA() {
 
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <a
-            href="https://app.weemploy.ai"
+            href="https://app.employlabs.ai"
             className="font-sans h-12 flex items-center p-1 rounded-sm bg-white text-zinc-900 border-2 border-white/60 font-medium hover:bg-zinc-100 transition-colors shadow-xl shadow-black/20 group cursor-pointer"
           >
             <span className="flex-1 px-6 text-[16px] text-center whitespace-nowrap">Automate Now</span>
@@ -62,7 +62,7 @@ export function FinalCTA() {
             </div>
           </a>
           <a
-            href="https://app.weemploy.ai"
+            href="https://app.employlabs.ai"
             className="font-sans h-12 px-6 flex items-center justify-center rounded-sm bg-white/10 backdrop-blur-md border-2 border-white/50 text-white font-medium hover:bg-white/20 transition-colors text-[16px] whitespace-nowrap cursor-pointer"
           >
             Book a Call
