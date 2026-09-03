@@ -168,3 +168,12 @@ h6 {
   0%, 100% { transform: rotateX(58deg) rotateZ(-42deg) translateZ(0); }
   50%      { transform: rotateX(58deg) rotateZ(-42deg) translateZ(16px); }
 }
+
+/* Blog index category filter. The cards are SERVER-rendered and merely hidden
+   here, so every post stays in the initial HTML for crawlers and assistants —
+   filtering by re-rendering a client list would hide them from both. */
+[data-blog-filter="update"] [data-category]:not([data-category="update"]),
+[data-blog-filter="article"] [data-category]:not([data-category="article"]),
+[data-blog-filter="compare"] [data-category]:not([data-category="compare"]) {
+  display: none;
+}

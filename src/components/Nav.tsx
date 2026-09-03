@@ -34,6 +34,7 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
             <Link href="/vision" className="hover:text-white transition-colors w-fit">Vision</Link>
             <Link href="/people-search-engine" className="hover:text-white transition-colors w-fit">People Search</Link>
             <Link href="/naira-ai-interviewer" className="hover:text-white transition-colors w-fit">Naira</Link>
+            <Link href="/blog" className="hover:text-white transition-colors w-fit">Blog</Link>
           </div>
 
           {/* Center: wordmark (dot mark, no square logo) */}
@@ -71,6 +72,7 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
               <Link href="/vision" className="hover:text-white transition-colors">Vision</Link>
               <Link href="/people-search-engine" className="hover:text-white transition-colors">People Search</Link>
               <Link href="/naira-ai-interviewer" className="hover:text-white transition-colors">Naira</Link>
+              <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
             </div>
 
             <a href="https://app.employlabs.ai" className="font-sans h-11 flex items-center p-1 rounded-sm bg-zinc-100 border border-zinc-200 text-zinc-900 hover:bg-white transition-all duration-300 text-sm font-bold group cursor-pointer">
