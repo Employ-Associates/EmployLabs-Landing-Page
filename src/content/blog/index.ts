@@ -14,6 +14,20 @@ import { post as sourceableJd } from "./posts/write-a-job-description-an-ai-can-
 import { post as vsAgency } from "./posts/employlabs-vs-a-recruitment-agency";
 import { post as bestAgents } from "./posts/best-ai-recruiting-agents-2026";
 
+import { post as multichannel } from "./posts/candidates-reply-where-they-want";
+import { post as emailThread } from "./posts/zia-replies-in-your-own-email-thread";
+import { post as ninetyDays } from "./posts/what-this-hire-needs-in-90-days";
+import { post as sampleFirst } from "./posts/see-real-profiles-before-you-spend";
+import { post as replyStops } from "./posts/the-moment-a-candidate-replies";
+import { post as rubricAnchors } from "./posts/interview-scoring-rubric-behavioural-anchors";
+import { post as screeningBar } from "./posts/set-a-screening-bar-you-can-trust";
+import { post as readingReport } from "./posts/reading-an-ai-interview-report";
+import { post as indiaGuide } from "./posts/high-volume-hiring-in-india";
+import { post as toolVsRecruiter } from "./posts/ai-sourcing-tool-vs-ai-recruiter";
+import { post as vsJuicebox } from "./posts/employlabs-vs-juicebox";
+import { post as vsInHouse } from "./posts/employlabs-vs-hiring-another-recruiter";
+
+
 /**
  * The post registry.
  *
@@ -38,6 +52,18 @@ const ALL_POSTS: BlogPost[] = [
   sourceableJd,
   vsAgency,
   bestAgents,
+  multichannel,
+  emailThread,
+  ninetyDays,
+  sampleFirst,
+  replyStops,
+  rubricAnchors,
+  screeningBar,
+  readingReport,
+  indiaGuide,
+  toolVsRecruiter,
+  vsJuicebox,
+  vsInHouse,
 ];
 
 /** Test-only view of the full set, including unpublished. Never used by a page. */
