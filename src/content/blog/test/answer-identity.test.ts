@@ -18,7 +18,7 @@ import { buildPostJsonLd, buildFeedXml, buildLlmsTxt, buildBlogIndexJsonLd } fro
  */
 
 const ALL = __allPostsForTests();
-const NOW = new Date("2026-09-30T12:00:00.000Z"); // everything published
+const NOW = new Date("2026-11-01T12:00:00.000Z"); // after the last scheduled post
 const LIVE = livePosts(NOW);
 
 describe("post.answer is the one source for every summary", () => {
