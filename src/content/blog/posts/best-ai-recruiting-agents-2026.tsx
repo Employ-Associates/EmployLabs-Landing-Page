@@ -74,8 +74,9 @@ function Body() {
           on this and integrate with dozens of systems. We do not yet.
         </li>
         <li>
-          <Strong>You are hiring one senior person.</Strong> See our comparison against agencies, which
-          reaches the same conclusion.
+          <Strong>You want software to run a senior search on its own.</Strong> The judgement at that
+          level is not automatable. We staff those searches with experienced recruiters and use the
+          platform underneath them, so if you are buying a tool rather than a search, this is not it.
         </li>
         <li>
           <Strong>You want the AI to decide.</Strong> Every send, spend and arming action here requires

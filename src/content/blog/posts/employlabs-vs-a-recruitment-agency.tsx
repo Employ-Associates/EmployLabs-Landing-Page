@@ -19,29 +19,52 @@ function Body() {
       <H2>Where an agency genuinely wins</H2>
       <Bullets>
         <li>
-          <Strong>Senior and executive search.</Strong> At the top of an organisation, hiring runs on
-          relationships and discretion, and the value is a person who can call someone and be taken
-          seriously. No platform substitutes for that.
-        </li>
-        <li>
-          <Strong>Roles that need an advocate.</Strong> A good recruiter persuades a hesitant candidate,
-          manages a counter-offer, and holds a nervous hiring manager steady. That is judgement applied
-          under pressure.
-        </li>
-        <li>
-          <Strong>Markets where you have no presence.</Strong> A new country or an unfamiliar
-          discipline is exactly where somebody else&rsquo;s network is worth paying for.
+          <Strong>Markets where nobody has a presence.</Strong> A new country or an unfamiliar
+          discipline is exactly where somebody else&rsquo;s existing network is worth paying for,
+          because building one takes longer than the role can wait.
         </li>
         <li>
           <Strong>When you want the risk elsewhere.</Strong> On contingency you pay for outcomes. That
           is a real transfer of risk, and for a team with no bandwidth it can be the right trade even
           at the price.
         </li>
+        <li>
+          <Strong>A single one-off hire.</Strong> Any engagement carries setup: the brief, the market
+          read, calibration. Spread across one role it is expensive, and an agency has already paid
+          that cost in the market you are hiring from.
+        </li>
       </Bullets>
 
+      <H2>Senior search is not the dividing line</H2>
+      <P>
+        The obvious way to split this comparison is software for volume, humans for the top of the
+        organisation. It is a tidy story and it is not how we work. We run senior and leadership
+        searches ourselves, with experienced recruiters, and the platform sits underneath them rather
+        than in place of them.
+      </P>
+      <P>
+        The reason is that the sophistication in a senior search is real and specific. The market is
+        small enough to map exhaustively, so the work is deciding who genuinely belongs on a list of
+        forty rather than filtering a list of four hundred. The people worth approaching are not
+        looking, so the first conversation has to be worth their time rather than an invitation to
+        apply. The brief is usually contested between the founders or the board, and part of the job
+        is getting that argument resolved before candidates are approached instead of after. And the
+        close involves a counter-offer, a notice period measured in months, and a decision the
+        candidate makes with their family.
+      </P>
+
       <Pull>
-        If the role needs somebody to make a phone call on your behalf, that is not a software problem.
+        None of that is automatable. All of it is faster when the person doing it is not also
+        maintaining a spreadsheet of two hundred profiles.
       </Pull>
+
+      <P>
+        So the split on a senior search is explicit. Our recruiters own the market judgement, the
+        approach, the calibration conversations with the hiring committee and the close. The platform
+        owns the map of who exists, the evidence behind why each person is on the list, the scheduling,
+        and the record of every conversation. The recruiter spends their week on the forty people who
+        matter instead of on assembling the list of forty.
+      </P>
 
       <H2>Where the economics diverge</H2>
       <P>
@@ -65,8 +88,8 @@ function Body() {
           ],
           [
             "Best fit",
-            "Senior and executive roles, unfamiliar markets, one-off hires needing an advocate.",
-            "Volume, repeat roles, and searches where you want the process and the data to stay in-house.",
+            "Unfamiliar markets, one-off hires, and cases where you want the risk carried elsewhere.",
+            "Volume, repeat roles, and senior searches where you want the process and the data to stay with you.",
           ],
           [
             "Speed to first candidates",
@@ -86,7 +109,7 @@ function Body() {
           [
             "Advocacy and persuasion",
             "A core strength. A good consultant changes outcomes.",
-            "Not attempted. Candidates who need persuading are routed to you.",
+            "Our recruiters do this on senior searches. On volume roles, candidates who need persuading are routed to you.",
           ],
           [
             "Visibility",
@@ -110,13 +133,20 @@ function Body() {
 
       <H2>The honest recommendation</H2>
       <P>
-        Give the VP role to a good agency. Run the four engineers, the three account executives and the
-        support team on a platform. That is not a compromise position, it is what the economics of each
-        actually support, and most teams we work with do exactly this.
+        If you are hiring one person this year, in a market where you have no presence, and you want
+        somebody else to carry the risk of not filling it, use an agency. That is a real set of
+        circumstances and we are the wrong answer inside it.
       </P>
       <P>
-        If you are hiring one person this year and they are senior, we are the wrong answer and it
-        costs nothing to say so.
+        For everything else, the question is whether you want the search run by people who also have
+        to do the administration, or by people who do not. We run the leadership roles with recruiters
+        and the volume roles largely without them, on the same system, so the market read from the
+        first is available to the second and the candidates from both stay in one place.
+      </P>
+      <P>
+        The thing we would push back on is the assumption that senior hiring has to cost a percentage
+        of the salary because it needs a person. It needs a person for the judgement. It has never
+        needed one for the list.
       </P>
     </>
   );
@@ -127,7 +157,7 @@ export const post: BlogPost = {
   title: "EmployLabs vs a recruitment agency",
   dek: "Cost per hire, speed, control, and what you keep afterwards. The comparison most of our customers are actually making, written including the cases where the agency wins.",
   answer:
-    "Recruitment agencies charge a percentage of first-year salary and are the better choice for senior or executive search, unfamiliar markets, and roles needing an advocate to persuade candidates. EmployLabs charges per action with spend caps, and fits volume hiring, repeat roles, and teams that want the candidate pool, scoring and market data to stay in-house after the hire is made.",
+    "Recruitment agencies charge a percentage of first-year salary and suit unfamiliar markets, genuine one-off hires, and cases where you want the risk of not filling carried elsewhere. EmployLabs charges per action with spend caps, and runs both volume roles and senior searches. On senior searches our own experienced recruiters own the market judgement, the approach and the close, while the platform carries the map, the evidence and the administration.",
   category: "compare",
   motif: "versus",
   publishedAt: "2026-09-13",
@@ -140,7 +170,15 @@ export const post: BlogPost = {
     },
     {
       q: "When should you still use a recruitment agency?",
-      a: "Senior and executive search, markets where you have no network, and roles where a candidate needs persuading or a counter-offer needs managing. Those depend on relationships and judgement rather than process.",
+      a: "Markets where nobody on your side has a presence, a genuine one-off hire where the setup cost cannot be spread, and situations where you want the risk of not filling the role carried by someone else on contingency.",
+    },
+    {
+      q: "Can an AI recruiting platform handle executive search?",
+      a: "The judgement in a senior search is not automatable, which is why EmployLabs runs those with experienced recruiters rather than software alone. The platform handles the market map, the evidence behind each name, scheduling and the record; the recruiter owns the approach, the calibration with the hiring committee, and the close.",
+    },
+    {
+      q: "What actually makes a senior search different?",
+      a: "The market is small enough to map exhaustively, so the work is deciding who belongs on a list of forty rather than filtering four hundred. The people worth approaching are not looking, the brief is often contested internally, and the close involves a counter-offer and a notice period measured in months.",
     },
     {
       q: "What do you keep after an agency engagement ends?",
