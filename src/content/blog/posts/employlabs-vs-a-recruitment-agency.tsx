@@ -43,6 +43,21 @@ function Body() {
         than in place of them.
       </P>
       <P>
+        That is not worth asserting abstractly. We run mandates for seventy-one client organisations
+        across nine countries, among them Deccan AI in California, Philogen in Italy, phamax in
+        Switzerland, Space Matrix in Singapore and Solinas in Chennai. The work spans deep-tech
+        robotics, biotechnology, consulting, design and enterprise software, which matters here only
+        because a senior search is unrecognisable between those sectors and the recruiter has to know
+        the difference.
+      </P>
+      <P>
+        Thirteen leadership searches are live at the time of writing: two Chief Business Officer
+        mandates, a VP Sales in the United States, a Chief of Staff, a Head of Growth, a regional head
+        for an agribusiness, and two founding-team hires for a seed-stage company. On one of the Chief
+        Business Officer searches, seventeen senior candidates were interviewed to produce three
+        finalists.
+      </P>
+      <P>
         The reason is that the sophistication in a senior search is real and specific. The market is
         small enough to map exhaustively, so the work is deciding who genuinely belongs on a list of
         forty rather than filtering a list of four hundred. The people worth approaching are not
