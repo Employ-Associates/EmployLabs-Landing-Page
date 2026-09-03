@@ -81,7 +81,8 @@ function Body() {
         </li>
         <li>
           <Strong>Senior and executive roles.</Strong> Low volume, high judgement, relationship-driven.
-          Exactly the wrong shape for automation.
+          We run these with our own experienced recruiters for exactly that reason, with the platform
+          carrying the market map and the administration underneath them.
         </li>
         <li>
           <Strong>Accountability.</Strong> Someone has to own whether the role gets filled. That is
