@@ -90,7 +90,7 @@ export const post: BlogPost = {
   category: "update",
   motif: "channels",
   publishedAt: "2026-09-08",
-  readingMinutes: 5,
+  readingMinutes: 2,
   topics: ["candidate experience", "recruiter productivity", "offer stage", "notice period", "candidate communication"],
   faq: [
     {

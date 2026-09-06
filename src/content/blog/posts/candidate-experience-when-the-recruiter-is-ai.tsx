@@ -107,7 +107,7 @@ export const post: BlogPost = {
   category: "article",
   motif: "consent",
   publishedAt: "2026-09-09",
-  readingMinutes: 8,
+  readingMinutes: 3,
   topics: ["candidate experience", "AI recruiting ethics", "employer brand", "recruiting transparency", "candidate consent"],
   faq: [
     {

@@ -158,7 +158,7 @@ export const post: BlogPost = {
   category: "article",
   motif: "bars",
   publishedAt: "2026-09-02",
-  readingMinutes: 9,
+  readingMinutes: 4,
   topics: ["hiring criteria", "job requirements", "candidate scoring", "recruiting strategy", "ICP"],
   faq: [
     {

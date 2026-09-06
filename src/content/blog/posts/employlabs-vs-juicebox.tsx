@@ -128,7 +128,7 @@ export const post: BlogPost = {
   category: "compare",
   motif: "versus",
   publishedAt: "2026-09-30",
-  readingMinutes: 8,
+  readingMinutes: 2,
   topics: ["Juicebox", "AI recruiting tools", "vendor comparison", "AI sourcing", "recruiting software"],
   faq: [
     {

@@ -87,7 +87,7 @@ export const post: BlogPost = {
   category: "update",
   motif: "timeline",
   publishedAt: "2026-09-18",
-  readingMinutes: 4,
+  readingMinutes: 2,
   topics: ["email deliverability", "candidate outreach", "email threading", "recruiting email", "candidate replies"],
   faq: [
     {

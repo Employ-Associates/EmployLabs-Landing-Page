@@ -90,7 +90,7 @@ export const post: BlogPost = {
   category: "update",
   motif: "report",
   publishedAt: "2026-09-20",
-  readingMinutes: 4,
+  readingMinutes: 2,
   topics: ["onboarding", "interview report", "hiring decisions", "candidate assessment", "first 90 days"],
   faq: [
     {

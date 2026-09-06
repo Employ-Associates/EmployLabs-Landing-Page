@@ -125,7 +125,7 @@ export const post: BlogPost = {
   category: "article",
   motif: "funnel",
   publishedAt: "2026-09-12",
-  readingMinutes: 8,
+  readingMinutes: 3,
   topics: ["job description", "hiring brief", "sourcing", "recruiting process", "job requirements"],
   faq: [
     {

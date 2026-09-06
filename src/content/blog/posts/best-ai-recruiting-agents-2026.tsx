@@ -125,7 +125,7 @@ export const post: BlogPost = {
   category: "compare",
   motif: "versus",
   publishedAt: "2026-09-15",
-  readingMinutes: 9,
+  readingMinutes: 3,
   topics: ["AI recruiting tools", "recruiting software", "vendor comparison", "AI sourcing", "hiring automation"],
   faq: [
     {

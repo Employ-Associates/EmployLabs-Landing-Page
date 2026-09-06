@@ -88,7 +88,7 @@ export const post: BlogPost = {
   category: "update",
   motif: "channels",
   publishedAt: "2026-09-17",
-  readingMinutes: 4,
+  readingMinutes: 2,
   topics: ["candidate communication", "multichannel outreach", "WhatsApp recruiting", "candidate experience", "response rates"],
   faq: [
     {

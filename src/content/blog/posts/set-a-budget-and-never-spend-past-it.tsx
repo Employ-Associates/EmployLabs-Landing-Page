@@ -93,7 +93,7 @@ export const post: BlogPost = {
   category: "update",
   motif: "ceiling",
   publishedAt: "2026-09-10",
-  readingMinutes: 4,
+  readingMinutes: 2,
   topics: ["recruiting budget", "spend control", "hiring automation", "cost per hire", "automation safety"],
   faq: [
     {

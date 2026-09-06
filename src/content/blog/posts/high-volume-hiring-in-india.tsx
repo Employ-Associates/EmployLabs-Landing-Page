@@ -116,7 +116,7 @@ export const post: BlogPost = {
   category: "article",
   motif: "calendar",
   publishedAt: "2026-09-28",
-  readingMinutes: 11,
+  readingMinutes: 3,
   topics: ["India hiring", "high-volume recruiting", "notice period", "WhatsApp recruiting", "counter-offers"],
   faq: [
     {

@@ -87,7 +87,7 @@ export const post: BlogPost = {
   category: "update",
   motif: "timeline",
   publishedAt: "2026-09-22",
-  readingMinutes: 4,
+  readingMinutes: 2,
   topics: ["candidate outreach", "recruiting sequences", "candidate experience", "employer brand", "recruiting metrics"],
   faq: [
     {

@@ -114,7 +114,7 @@ export const post: BlogPost = {
   category: "compare",
   motif: "versus",
   publishedAt: "2026-10-02",
-  readingMinutes: 7,
+  readingMinutes: 2,
   topics: ["recruiting team", "hiring costs", "in-house recruiting", "recruiter productivity", "hiring automation"],
   faq: [
     {

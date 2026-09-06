@@ -92,7 +92,7 @@ export const post: BlogPost = {
   category: "update",
   motif: "market",
   publishedAt: "2026-09-06",
-  readingMinutes: 4,
+  readingMinutes: 2,
   topics: ["market mapping", "talent intelligence", "job brief", "sourcing strategy", "compensation benchmarking"],
   faq: [
     {
