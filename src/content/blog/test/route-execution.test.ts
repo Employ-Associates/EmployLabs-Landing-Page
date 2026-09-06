@@ -5,7 +5,7 @@ import { isLive } from "../schedule";
 import { GET as feedGET } from "@/app/blog/feed.xml/route";
 import { revalidate as feedRevalidate } from "@/app/blog/feed.xml/route";
 import { GET as llmsGET } from "@/app/llms.txt/route";
-import sitemap, { revalidate as sitemapRevalidate } from "@/app/sitemap";
+import sitemap, { dynamic as sitemapDynamic } from "@/app/sitemap";
 import robots from "@/app/robots";
 import { revalidate as indexRevalidate } from "@/app/blog/page";
 import {
@@ -63,8 +63,20 @@ describe("ISR is wired on the real route modules", () => {
   it("the feed revalidates hourly", () => {
     expect(feedRevalidate).toBe(3600);
   });
-  it("the sitemap revalidates hourly", () => {
-    expect(sitemapRevalidate).toBe(3600);
+
+  /**
+   * ⛔ THE SITEMAP IS THE EXCEPTION, AND IT COST US THREE DAYS OF STALE OUTPUT.
+   *
+   * `sitemap.ts` is a metadata file rather than a route handler. Next caches it
+   * at build time and IGNORES `revalidate`, so the first version shipped with
+   * `revalidate = 3600` and never regenerated: three posts published while the
+   * sitemap kept serving the build-time three, silently. `force-dynamic` is the
+   * documented escape hatch.
+   *
+   * RED-by-mutation: swap this back to `revalidate = 3600` and this fails.
+   */
+  it("the sitemap is force-dynamic, because revalidate is ignored on metadata files", () => {
+    expect(sitemapDynamic).toBe("force-dynamic");
   });
 });
 
