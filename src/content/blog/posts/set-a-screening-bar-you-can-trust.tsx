@@ -88,7 +88,7 @@ export const post: BlogPost = {
   category: "article",
   motif: "funnel",
   publishedAt: "2026-09-25",
-  readingMinutes: 8,
+  readingMinutes: 2,
   topics: ["candidate scoring", "screening", "hiring criteria", "recruiting metrics", "shortlisting"],
   faq: [
     {

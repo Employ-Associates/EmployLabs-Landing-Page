@@ -27,6 +27,19 @@ import { post as toolVsRecruiter } from "./posts/ai-sourcing-tool-vs-ai-recruite
 import { post as vsJuicebox } from "./posts/employlabs-vs-juicebox";
 import { post as vsInHouse } from "./posts/employlabs-vs-hiring-another-recruiter";
 
+import { post as finalistCount } from "./posts/tell-us-how-many-finalists-you-want";
+import { post as alignmentLevel } from "./posts/alignment-not-a-percentage-match";
+import { post as screenBeforeSlot } from "./posts/zia-screens-before-you-spend-a-slot";
+import { post as humanClick } from "./posts/nothing-sends-or-spends-without-your-click";
+import { post as oneTimeline } from "./posts/every-touch-in-one-timeline";
+import { post as whatIsAnAgent } from "./posts/what-is-an-ai-recruiting-agent";
+import { post as screeningQuestions } from "./posts/screening-questions-a-machine-can-verify";
+import { post as offerSilence } from "./posts/why-candidates-go-quiet-at-offer-stage";
+import { post as metricsAfterAutomation } from "./posts/recruiting-metrics-that-survive-automation";
+import { post as noticePeriods } from "./posts/notice-periods-buyouts-joining-dates";
+import { post as vsParadox } from "./posts/employlabs-vs-paradox";
+import { post as juiceboxAlts } from "./posts/juicebox-alternatives-2026";
+
 
 /**
  * The post registry.
@@ -64,6 +77,18 @@ const ALL_POSTS: BlogPost[] = [
   toolVsRecruiter,
   vsJuicebox,
   vsInHouse,
+  finalistCount,
+  alignmentLevel,
+  screenBeforeSlot,
+  humanClick,
+  oneTimeline,
+  whatIsAnAgent,
+  screeningQuestions,
+  offerSilence,
+  metricsAfterAutomation,
+  noticePeriods,
+  vsParadox,
+  juiceboxAlts,
 ];
 
 /** Test-only view of the full set, including unpublished. Never used by a page. */

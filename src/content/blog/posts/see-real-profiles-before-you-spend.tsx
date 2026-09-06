@@ -86,7 +86,7 @@ export const post: BlogPost = {
   category: "update",
   motif: "market",
   publishedAt: "2026-09-21",
-  readingMinutes: 4,
+  readingMinutes: 2,
   topics: ["sourcing strategy", "talent pockets", "recruiting spend", "candidate sourcing", "hiring brief"],
   faq: [
     {

@@ -176,7 +176,7 @@ export const post: BlogPost = {
   category: "compare",
   motif: "versus",
   publishedAt: "2026-09-13",
-  readingMinutes: 7,
+  readingMinutes: 5,
   topics: ["recruitment agency", "cost per hire", "in-house recruiting", "hiring costs", "AI recruiting"],
   faq: [
     {

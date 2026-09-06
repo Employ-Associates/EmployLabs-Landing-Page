@@ -152,7 +152,7 @@ export const post: BlogPost = {
   category: "update",
   motif: "rows",
   publishedAt: "2026-09-02",
-  readingMinutes: 5,
+  readingMinutes: 3,
   topics: ["candidate scoring", "AI recruiting", "shortlisting", "hiring criteria", "recruiter workflow"],
   faq: [
     {

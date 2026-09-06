@@ -104,7 +104,7 @@ export const post: BlogPost = {
   category: "update",
   motif: "report",
   publishedAt: "2026-09-02",
-  readingMinutes: 4,
+  readingMinutes: 3,
   topics: ["AI interview", "interview report", "candidate assessment", "hiring decisions", "onboarding"],
   faq: [
     {

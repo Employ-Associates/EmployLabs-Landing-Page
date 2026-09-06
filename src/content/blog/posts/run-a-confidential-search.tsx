@@ -87,7 +87,7 @@ export const post: BlogPost = {
   category: "update",
   motif: "consent",
   publishedAt: "2026-09-04",
-  readingMinutes: 4,
+  readingMinutes: 2,
   topics: ["confidential search", "recruiting privacy", "agency recruiting", "employer branding", "candidate outreach"],
   faq: [
     {

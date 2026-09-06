@@ -121,7 +121,7 @@ export const post: BlogPost = {
   category: "article",
   motif: "report",
   publishedAt: "2026-09-24",
-  readingMinutes: 9,
+  readingMinutes: 2,
   topics: ["interview scorecard", "hiring criteria", "structured interview", "hiring bias", "candidate assessment"],
   faq: [
     {

@@ -130,7 +130,7 @@ export const post: BlogPost = {
   category: "article",
   motif: "report",
   publishedAt: "2026-09-05",
-  readingMinutes: 10,
+  readingMinutes: 3,
   topics: ["AI interview", "voice AI", "candidate screening", "structured interview", "hiring bias"],
   faq: [
     {
