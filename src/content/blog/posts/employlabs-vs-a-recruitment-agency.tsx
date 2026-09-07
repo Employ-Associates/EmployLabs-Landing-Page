@@ -81,68 +81,82 @@ function Body() {
         matter instead of on assembling the list of forty.
       </P>
 
-      <H2>Where the economics diverge</H2>
-      <P>
-        Agency fees are commonly quoted as a percentage of first-year salary, which means the cost of a
-        hire scales with the salary rather than with the work involved. Two roles taking identical
-        effort cost very different amounts, and a role you fill twice in a year costs twice.
-      </P>
-      <P>
-        A platform charges for the work: sourcing, contact data, outreach, interviews. That maps badly
-        to a single senior hire and extremely well to volume, to repeat roles, and to any search where
-        you want to know what each stage actually cost.
-      </P>
-
       <CompareTable
-        head={["", "Recruitment agency", "EmployLabs"]}
+        head={["Outcome", "Recruitment agency", "EmployLabs"]}
         rows={[
           [
-            "Cost basis",
-            "Percentage of the hire's first-year salary, usually paid on placement.",
-            "Per action: sourcing, contact lookup, outreach, interviews. Capped per role and per account.",
+            "What lands on your desk",
+            "A shortlist the consultant selected, with their read on each person.",
+            "The whole pool with scores and evidence, plus interviewed finalists with a report.",
           ],
           [
-            "Best fit",
-            "Unfamiliar markets, one-off hires, and cases where you want the risk carried elsewhere.",
-            "Volume, repeat roles, and senior searches where you want the process and the data to stay with you.",
+            "What you still do yourself",
+            "Interview and decide. The search itself is handed over entirely.",
+            "The judgement. On leadership searches our recruiters carry the approach and the close.",
           ],
           [
-            "Speed to first candidates",
-            "Depends on the consultant's current desk and priorities.",
-            "Sourcing starts as soon as the brief is confirmed and runs continuously.",
-          ],
-          [
-            "Consistency",
-            "Varies by consultant, by their workload, and by how the week is going.",
-            "Every candidate gets the same screen and the same interview against a rubric you set.",
+            "Time to the first useful thing",
+            "Depends on the consultant's current desk and where you sit among their priorities.",
+            "Sourcing starts as soon as the brief is confirmed, and runs continuously.",
           ],
           [
             "What you keep afterwards",
-            "The hire. The pipeline, the market map and the rejected candidates usually stay with the agency.",
-            "Everything. The candidates, the scoring and the evidence stay in your system for the next role.",
+            "The hire. The pipeline, the market map and the assessed candidates usually stay with the agency.",
+            "All of it. The candidates, the market read, the scoring and the evidence, for the next role too.",
           ],
           [
-            "Advocacy and persuasion",
-            "A core strength. A good consultant changes outcomes.",
-            "Our recruiters do this on senior searches. On volume roles, candidates who need persuading are routed to you.",
-          ],
-          [
-            "Visibility",
-            "You see the candidates the consultant chooses to send.",
-            "You see the whole pool, the scores and the evidence behind each.",
+            "Where it fails you",
+            "A consultant carrying twelve other mandates. You find out through silence.",
+            "A brief nobody thought hard about. Confident activity, no hires.",
           ],
         ]}
       />
 
-      <H2>The row that decides it most often</H2>
+      <H2>The capabilities, plainly</H2>
       <P>
-        In practice the deciding line is the last-but-two: what you keep. An agency engagement ends
-        with one hire and, usually, nothing else. The forty people who were assessed and passed over
-        were real candidates for a role you will likely open again, and they are not in your system.
+        An agency brings a network you do not have, judgement applied under pressure, and a consultant
+        who can call somebody and be taken seriously. Those are real and they are not software
+        features. Consistency is the trade: the shortlist varies with the consultant, their workload
+        and how their week is going.
       </P>
       <P>
-        Teams hiring the same shapes repeatedly feel this most sharply. The third time you pay full
-        price to re-find a market you have already mapped twice is usually the moment the decision gets
+        We bring sourcing that runs continuously, a written standard applied identically to every
+        candidate, a conversation that answers at any hour across four channels, and a structured
+        interview with evidence. On leadership searches our own recruiters carry the approach and the
+        close, with the platform underneath them. On volume roles, a candidate who needs persuading is
+        routed to you.
+      </P>
+
+      <H2>What a TA lead actually wants to know</H2>
+      <Bullets>
+        <li>
+          <Strong>What do I see?</Strong> With an agency, the candidates the consultant chose to send.
+          With us, the whole pool and the reasoning behind every verdict, including the rejections.
+        </li>
+        <li>
+          <Strong>What happens when the role changes?</Strong> An agency re-runs the search. We
+          re-score the pool you already have against the new brief.
+        </li>
+        <li>
+          <Strong>What do I tell my hiring manager?</Strong> A consultant&rsquo;s recommendation, or the
+          evidence per requirement plus an interview report they can read themselves.
+        </li>
+        <li>
+          <Strong>What happens the second time I hire this role?</Strong> The question that decides it
+          for most teams, and the reason the row above about what you keep is the one to read twice.
+        </li>
+      </Bullets>
+
+
+      <H2>The row that decides it most often</H2>
+      <P>
+        In practice the deciding line is what you keep afterwards. An agency engagement ends with one
+        hire and, usually, nothing else. The forty people who were assessed and passed over were real
+        candidates for a role you will likely open again, and they are not in your system.
+      </P>
+      <P>
+        Teams hiring the same shapes repeatedly feel this most sharply. The third time you commission a
+        fresh search of a market you have already mapped twice is usually the moment the decision gets
         made.
       </P>
 
@@ -170,18 +184,18 @@ function Body() {
 export const post: BlogPost = {
   slug: "employlabs-vs-a-recruitment-agency",
   title: "EmployLabs vs a recruitment agency",
-  dek: "Cost per hire, speed, control, and what you keep afterwards. The comparison most of our customers are actually making, written including the cases where the agency wins.",
+  dek: "What lands on your desk, what you still do yourself, and what you keep afterwards. The comparison most of our customers are actually making, written including the cases where the agency wins.",
   answer:
-    "Recruitment agencies charge a percentage of first-year salary and suit unfamiliar markets, genuine one-off hires, and cases where you want the risk of not filling carried elsewhere. EmployLabs charges per action with spend caps, and runs both volume roles and senior searches. On senior searches our own experienced recruiters own the market judgement, the approach and the close, while the platform carries the map, the evidence and the administration.",
+    "A recruitment agency hands back a shortlist its consultant selected and keeps the pipeline, the market map and the assessed candidates. EmployLabs returns the whole pool with evidence behind every verdict, plus interviewed finalists, and all of it stays with you for the next role. On senior searches our own experienced recruiters own the market judgement, the approach and the close, with the platform underneath them.",
   category: "compare",
   motif: "versus",
   publishedAt: "2026-09-13",
   readingMinutes: 5,
-  topics: ["recruitment agency", "cost per hire", "in-house recruiting", "hiring costs", "AI recruiting"],
+  topics: ["recruitment agency", "executive search", "in-house recruiting", "recruiting outcomes", "AI recruiting"],
   faq: [
     {
-      q: "Is an AI recruiting platform cheaper than a recruitment agency?",
-      a: "For volume and repeat roles, usually yes, because a platform charges for work done rather than a percentage of salary. For a single senior hire the comparison is much closer, and the agency often wins on outcome.",
+      q: "What do you get from an AI recruiting platform that an agency does not give you?",
+      a: "Visibility of the whole pool rather than the shortlist a consultant chose to send, the reasoning behind every verdict including rejections, and a pipeline plus market read that stays with you for the next role.",
     },
     {
       q: "When should you still use a recruitment agency?",

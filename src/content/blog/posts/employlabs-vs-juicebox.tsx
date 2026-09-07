@@ -21,42 +21,72 @@ function Body() {
       </P>
 
       <CompareTable
-        head={["", "Juicebox", "EmployLabs"]}
+        head={["Outcome", "Juicebox", "EmployLabs"]}
         rows={[
           [
-            "Core strength",
-            "Discovery. Search across a very large profile index, with strong ranking.",
-            "Running the role end to end, with the interview and the report as the output.",
+            "What lands on your desk",
+            "A ranked list of candidates matching your description, ready to be worked.",
+            "Candidates who have been contacted, screened against your must-asks and interviewed, with evidence.",
           ],
           [
-            "Candidate conversation",
-            "Automated email sequencing; the recruiter holds the conversation.",
-            "An agent holds it over email, WhatsApp, phone and web, and screens against your must-asks.",
+            "What you still do yourself",
+            "Contact them, follow up, screen them, interview them. The list is the starting point.",
+            "The judgement: closing, the hiring-manager conversation, the decision.",
           ],
           [
-            "Interviewing",
-            "Not part of the product.",
-            "A structured voice interview per role, with a rubric you set before it runs.",
+            "Time to the first useful thing",
+            "Minutes. Type a description, get people. This is genuinely fast.",
+            "Days. The brief has to be confirmed before anything runs.",
           ],
           [
-            "Scoring",
-            "Ranking against your search description.",
-            "Judged against a written standard per requirement, with the evidence line that decided each one.",
+            "What you keep afterwards",
+            "The candidates you saved, inside their system, plus whatever your ATS captured.",
+            "The pipeline, the market read, the scoring and the evidence behind each verdict.",
           ],
           [
-            "ATS integrations",
-            "Extensive. A core part of the offering.",
-            "None yet. The clearest gap against them.",
-          ],
-          [
-            "Profile index size",
-            "Very large, and central to how the product works.",
-            "Sourced per role rather than browsed. Not a search index you explore.",
+            "Where it fails you",
+            "When capacity is the constraint. More names is the wrong medicine for a team that cannot work the names it has.",
+            "When the brief is wrong. Automation aimed at a badly specified role produces confident activity and no hires.",
           ],
         ]}
       />
 
       <Pull>If your team is strong and just needs better discovery, buy the search product.</Pull>
+
+      <H2>The capabilities, plainly</H2>
+      <P>
+        Juicebox searches a very large profile index and ranks against your description, with email
+        sequencing, a CRM and extensive ATS integrations around it. Its index is central to how the
+        product works, and it is genuinely good at the thing it is for.
+      </P>
+      <P>
+        EmployLabs sources per role rather than giving you an index to browse, judges each candidate
+        against a written standard per requirement with the evidence attached, holds the candidate
+        conversation across email, WhatsApp, phone and web, and runs a structured voice interview
+        against a rubric you set. We have no ATS integrations today, and we will not out-search a
+        product built around a large index with years of ranking work behind it.
+      </P>
+
+      <H2>What a TA lead actually wants to know</H2>
+      <Bullets>
+        <li>
+          <Strong>Can I run it on Monday?</Strong> Both, yes. Neither is an implementation project,
+          which separates them both from enterprise talent platforms.
+        </li>
+        <li>
+          <Strong>Which part of my week does it fix?</Strong> Juicebox fixes the hour spent building a
+          list. We fix the two days spent working one.
+        </li>
+        <li>
+          <Strong>What do I tell my hiring manager?</Strong> With a search tool, your own read of the
+          candidates. With us, the evidence per requirement and an interview report.
+        </li>
+        <li>
+          <Strong>Who owns the candidate relationship?</Strong> With a search tool, your recruiters,
+          which many teams want. With us, an agent holds the routine conversation and hands you the
+          moments that need a person.
+        </li>
+      </Bullets>
 
       <H2>Choose Juicebox when</H2>
       <Bullets>
@@ -128,7 +158,7 @@ export const post: BlogPost = {
   category: "compare",
   motif: "versus",
   publishedAt: "2026-09-30",
-  readingMinutes: 2,
+  readingMinutes: 4,
   topics: ["Juicebox", "AI recruiting tools", "vendor comparison", "AI sourcing", "recruiting software"],
   faq: [
     {
