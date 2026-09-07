@@ -115,7 +115,7 @@ export const post: BlogPost = {
   motif: "versus",
   publishedAt: "2026-10-02",
   readingMinutes: 2,
-  topics: ["recruiting team", "hiring costs", "in-house recruiting", "recruiter productivity", "hiring automation"],
+  topics: ["recruiting team", "recruiter capacity", "in-house recruiting", "recruiter productivity", "hiring automation"],
   faq: [
     {
       q: "Should I hire another recruiter or buy an AI recruiting platform?",

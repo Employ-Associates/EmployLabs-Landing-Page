@@ -35,40 +35,69 @@ function Body() {
       </Pull>
 
       <CompareTable
-        head={["", "Paradox", "EmployLabs"]}
+        head={["Outcome", "Paradox", "EmployLabs"]}
         rows={[
           [
-            "Designed for",
-            "High-volume hourly and frontline hiring, where applicants arrive in numbers.",
-            "Roles with few or no inbound applicants, where candidates must be found and approached.",
+            "What lands on your desk",
+            "Applicants qualified and scheduled into your interviews, fast, at very high completion.",
+            "Candidates found, approached, screened and interviewed, with a report on each.",
           ],
           [
-            "Where the conversation starts",
-            "With someone who already applied.",
-            "With someone who was not looking, after sourcing found them.",
+            "What you still do yourself",
+            "The interviewing and the decision. Finding candidates is not the problem being solved.",
+            "The judgement: closing, the hiring-manager conversation, the decision.",
           ],
           [
-            "Core strength",
-            "Qualifying and scheduling at scale, fast, with very high completion.",
-            "Sourcing, evidence-backed scoring, and a structured interview with a report.",
+            "Time to the first useful thing",
+            "As fast as your applicants arrive, which for a known employer is immediately.",
+            "Days. Somebody has to be found before anything else happens.",
           ],
           [
-            "Sourcing",
-            "Not the product's job. Candidates come to you.",
-            "The starting point. There is no queue to work from.",
+            "What you keep afterwards",
+            "A qualified, scheduled applicant flow and the throughput to handle it.",
+            "The pipeline, the market read, the scoring and the interview evidence.",
           ],
           [
-            "Interviewing",
-            "Screening and scheduling into human interviews.",
-            "A structured voice interview against a rubric you set, with a report.",
-          ],
-          [
-            "Maturity",
-            "Years of deployment at very large scale.",
-            "Considerably younger, and we would not claim otherwise.",
+            "Where it fails you",
+            "When nobody applies. A conversational front door answers a question you do not have.",
+            "When candidates are already queuing. We would be building a pipeline you already had.",
           ],
         ]}
       />
+
+      <H2>The capabilities, plainly</H2>
+      <P>
+        Paradox conversationally qualifies and schedules candidates who have already applied, and has
+        been doing it at very large scale for years. Sourcing is not the product&rsquo;s job, because in
+        the hiring it serves the candidates come to you.
+      </P>
+      <P>
+        EmployLabs sources per role, scores each candidate against a written standard with the evidence
+        attached, holds the conversation across email, WhatsApp, phone and web, and runs a structured
+        voice interview against a rubric you set. We are considerably younger and have nothing like
+        their deployment scale, and we would not claim otherwise.
+      </P>
+
+      <H2>What a TA lead actually wants to know</H2>
+      <Bullets>
+        <li>
+          <Strong>Which part of my week does it fix?</Strong> Paradox removes the qualifying and
+          scheduling load when applicants arrive in numbers. We remove the finding and screening load
+          when they do not arrive at all.
+        </li>
+        <li>
+          <Strong>What happens when the brief is wrong?</Strong> With an applicant flow, a bad brief
+          wastes screening. With us it wastes sourcing spend, which is why the caps exist.
+        </li>
+        <li>
+          <Strong>Who owns the candidate relationship?</Strong> Both put an agent in front of the
+          candidate. The difference is only whether that candidate came looking.
+        </li>
+        <li>
+          <Strong>Can I run both?</Strong> Yes, and a team doing hourly and specialist hiring
+          side by side probably should. They barely overlap.
+        </li>
+      </Bullets>
 
       <H2>Choose Paradox when</H2>
       <Bullets>
@@ -124,7 +153,7 @@ export const post: BlogPost = {
   category: "compare",
   motif: "versus",
   publishedAt: "2026-10-17",
-  readingMinutes: 2,
+  readingMinutes: 3,
   topics: ["Paradox", "conversational AI recruiting", "high-volume hiring", "vendor comparison", "AI recruiting tools"],
   faq: [
     {
