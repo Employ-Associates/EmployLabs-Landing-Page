@@ -6,8 +6,7 @@ function Body() {
     <>
       <H2>Autonomy and spend are the same conversation</H2>
       <P>
-        Anything that sources, enriches and contacts candidates on its own is spending money on its
-        own. That is the whole promise, and it is also the reason most teams hesitate. A system that
+        Anything that contacts candidates and interviews them on its own is spending money on its own. That is the whole promise, and it is also the reason most teams hesitate. A system that
         works while you sleep can also spend while you sleep, and the failure mode people imagine is
         waking up to a bill for a search that was never going to work.
       </P>
@@ -33,8 +32,9 @@ function Body() {
 
       <H2>What each action costs, before you run it</H2>
       <P>
-        Sourcing, contact lookup, outreach and interviews each draw from a balance you can see, with a
-        ledger you can reconcile line by line. The point is not the accounting. It is that you can
+        Sourcing itself costs you nothing — you can search the market as widely as you like. What draws
+        from a balance is the work that produces something: reaching a candidate, and interviewing
+        them. Each is visible, with a ledger you can reconcile line by line. The point is not the accounting. It is that you can
         answer &ldquo;what did this role cost us&rdquo; without an invoice arriving three weeks later to
         tell you.
       </P>

@@ -68,14 +68,19 @@ function Body() {
       <H2>The capabilities, plainly</H2>
       <P>
         Paradox conversationally qualifies and schedules candidates who have already applied, and has
-        been doing it at very large scale for years. Sourcing is not the product&rsquo;s job, because in
-        the hiring it serves the candidates come to you.
+        been doing it at very large scale for years, in many languages, across some of the biggest
+        frontline workforces there are. Sourcing is not the product&rsquo;s job, because in the hiring
+        it serves the candidates come to you.
       </P>
       <P>
-        EmployLabs sources per role, scores each candidate against a written standard with the evidence
-        attached, holds the conversation across email, WhatsApp, phone and web, and runs a structured
-        voice interview against a rubric you set. We are considerably younger and have nothing like
-        their deployment scale, and we would not claim otherwise.
+        EmployLabs sources per role across 800M+ professional profiles, then builds a governed decision
+        engine for that role: deterministic kill-switches, a weighted ranking budget across skill match,
+        ownership and domain depth, and every score citing the line of evidence that produced it rather
+        than a similarity figure. One conversation engine runs across email, WhatsApp, voice and web,
+        so the candidate is reached where they answer. The interview is multi-module with phases
+        enforced, live code execution inside the session for technical roles, and it ends in an
+        alignment rank with written rationale and a four-part report on a link you can send to the
+        hiring manager.
       </P>
 
       <H2>What a TA lead actually wants to know</H2>
@@ -87,7 +92,7 @@ function Body() {
         </li>
         <li>
           <Strong>What happens when the brief is wrong?</Strong> With an applicant flow, a bad brief
-          wastes screening. With us it wastes sourcing spend, which is why the caps exist.
+          wastes screening. With us it wastes outreach on people who were never right, which is why the sample gate exists.
         </li>
         <li>
           <Strong>Who owns the candidate relationship?</Strong> Both put an agent in front of the
@@ -110,8 +115,9 @@ function Body() {
           solved it for a long time.
         </li>
         <li>
-          <Strong>You need proven scale.</Strong> They have deployments larger than our entire client
-          base, and that is a legitimate reason to buy.
+          <Strong>You need a front door proven at volume.</Strong> They have run this for years at
+          enterprise scale, and on a funnel measured in hundreds of thousands of applicants that is a
+          legitimate reason to buy.
         </li>
       </Bullets>
 
