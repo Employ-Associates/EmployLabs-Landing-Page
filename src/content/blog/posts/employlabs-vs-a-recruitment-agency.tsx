@@ -51,11 +51,11 @@ function Body() {
         the difference.
       </P>
       <P>
-        Thirteen leadership searches are live at the time of writing: two Chief Business Officer
-        mandates, a VP Sales in the United States, a Chief of Staff, a Head of Growth, a regional head
-        for an agribusiness, and two founding-team hires for a seed-stage company. On one of the Chief
-        Business Officer searches, seventeen senior candidates were interviewed to produce three
-        finalists.
+        Leadership searches run continuously across those domains: Chief Business Officer mandates, a
+        VP Sales in the United States, a Chief of Staff, a Head of Growth, a regional head for an
+        agribusiness, founding-team hires for seed-stage companies. On a search at that level the work
+        is interviewing deep into a senior market to produce a handful of people worth putting in front
+        of a board.
       </P>
       <P>
         The reason is that the sophistication in a senior search is real and specific. The market is

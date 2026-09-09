@@ -71,8 +71,8 @@ function Body() {
       <H2>What you still control</H2>
       <Bullets>
         <li>
-          <Strong>The ceiling.</Strong> Derived targets propose; your spend cap disposes. If the maths
-          says source four hundred and your cap says two hundred, the cap wins and you are told.
+          <Strong>The ceiling.</Strong> Derived targets propose; your spend cap disposes. Sourcing is free,
+          so the cap bites on the stages that cost something, and it tells you when it does.
         </li>
         <li>
           <Strong>Any single stage.</Strong> Override one number and the rest still derive around it.
@@ -119,8 +119,8 @@ export const post: BlogPost = {
       a: "It depends on the role's difficulty and your own conversion at each stage, which is why the number should be derived rather than guessed. Working backwards from the finalist count through sourcing, outreach and interview conversion gives a figure specific to your role.",
     },
     {
-      q: "What happens if the derived sourcing target exceeds my budget?",
-      a: "The spend cap wins and you are told. Derived targets propose; the ceiling disposes, so a role whose maths requires more than you will fund surfaces that on day one rather than at the end.",
+      q: "What happens if the derived outreach target exceeds my budget?",
+      a: "The spend cap wins and you are told. Sourcing itself is free, so the ceiling bites on the stages that cost something, and a role whose maths requires more contact than you will fund surfaces that on day one rather than at the end.",
     },
     {
       q: "Do the pipeline targets adjust over time?",

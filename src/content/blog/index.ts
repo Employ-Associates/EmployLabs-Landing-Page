@@ -17,7 +17,7 @@ import { post as bestAgents } from "./posts/best-ai-recruiting-agents-2026";
 import { post as multichannel } from "./posts/candidates-reply-where-they-want";
 import { post as emailThread } from "./posts/zia-replies-in-your-own-email-thread";
 import { post as ninetyDays } from "./posts/what-this-hire-needs-in-90-days";
-import { post as sampleFirst } from "./posts/see-real-profiles-before-you-spend";
+import { post as sampleFirst } from "./posts/see-real-profiles-before-anyone-is-contacted";
 import { post as replyStops } from "./posts/the-moment-a-candidate-replies";
 import { post as rubricAnchors } from "./posts/interview-scoring-rubric-behavioural-anchors";
 import { post as screeningBar } from "./posts/set-a-screening-bar-you-can-trust";
@@ -39,6 +39,7 @@ import { post as metricsAfterAutomation } from "./posts/recruiting-metrics-that-
 import { post as noticePeriods } from "./posts/notice-periods-buyouts-joining-dates";
 import { post as vsParadox } from "./posts/employlabs-vs-paradox";
 import { post as juiceboxAlts } from "./posts/juicebox-alternatives-2026";
+import { post as vsEightfold } from "./posts/employlabs-vs-eightfold";
 
 
 /**
@@ -89,6 +90,7 @@ const ALL_POSTS: BlogPost[] = [
   noticePeriods,
   vsParadox,
   juiceboxAlts,
+  vsEightfold,
 ];
 
 /** Test-only view of the full set, including unpublished. Never used by a page. */

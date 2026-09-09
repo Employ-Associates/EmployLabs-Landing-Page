@@ -60,11 +60,14 @@ function Body() {
         product works, and it is genuinely good at the thing it is for.
       </P>
       <P>
-        EmployLabs sources per role rather than giving you an index to browse, judges each candidate
-        against a written standard per requirement with the evidence attached, holds the candidate
-        conversation across email, WhatsApp, phone and web, and runs a structured voice interview
-        against a rubric you set. We have no ATS integrations today, and we will not out-search a
-        product built around a large index with years of ranking work behind it.
+        EmployLabs sources per role across 800M+ professional profiles rather than handing you an index
+        to browse, and turns the brief into a governed decision engine for that role: deterministic
+        kill-switches, a weighted ranking budget across skill match, ownership and domain depth, and
+        soft signals capped so they cannot outweigh hard evidence. Every score cites the line that
+        produced it rather than a similarity figure, and changing a requirement re-ranks the whole pool
+        in front of you. One conversation engine runs across email, WhatsApp, voice and web; the
+        interview is multi-module with phases enforced and live code execution inside the session, and
+        it ends in an alignment rank with written rationale and a four-part report.
       </P>
 
       <H2>What a TA lead actually wants to know</H2>
@@ -123,8 +126,9 @@ function Body() {
           interview report a hiring manager can act on.
         </li>
         <li>
-          <Strong>Your candidates are not on email.</Strong> WhatsApp and phone as first-class channels
-          matters in some markets far more than in others.
+          <Strong>You are hiring across several markets.</Strong> One engine across email, WhatsApp,
+          voice and web reaches each candidate on the channel they answer on, with calling windows and
+          telecom rules observed per market.
         </li>
       </Bullets>
 
