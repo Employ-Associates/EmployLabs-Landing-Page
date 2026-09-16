@@ -41,6 +41,30 @@ import { post as vsParadox } from "./posts/employlabs-vs-paradox";
 import { post as juiceboxAlts } from "./posts/juicebox-alternatives-2026";
 import { post as vsEightfold } from "./posts/employlabs-vs-eightfold";
 
+import { post as interventionInbox } from "./posts/when-the-ai-needs-you";
+import { post as outreachLadder } from "./posts/four-touches-then-a-call";
+import { post as callLast } from "./posts/we-call-last-on-purpose";
+import { post as silenceVsDecline } from "./posts/no-reply-is-not-a-no";
+import { post as optOutOnce } from "./posts/one-tap-to-stop";
+import { post as linkLifetime } from "./posts/a-link-that-dies-with-the-job";
+import { post as coverageAware } from "./posts/unanswered-is-not-zero";
+import { post as marketExhausted } from "./posts/when-the-market-is-empty-we-stop";
+import { post as decisionLog } from "./posts/every-decision-and-every-override";
+import { post as personaCarve } from "./posts/one-role-is-rarely-one-search";
+
+import { post as intakeOneTurn } from "./posts/every-question-in-one-turn";
+import { post as learnedTargets } from "./posts/targets-that-learn-from-your-data";
+import { post as poolRefills } from "./posts/the-pool-that-refills-itself";
+import { post as briefToSearch } from "./posts/from-a-brief-to-a-real-search";
+import { post as dryRun } from "./posts/dry-run-by-default";
+import { post as autonomyPresets } from "./posts/four-presets-one-switch";
+import { post as staleScores } from "./posts/when-the-brief-changes-the-scores-know";
+import { post as idempotentRetry } from "./posts/a-retry-that-never-double-sends";
+import { post as hmLink } from "./posts/the-hiring-manager-needs-no-login";
+import { post as enrichmentMiss } from "./posts/when-enrichment-misses";
+import { post as interviewResilience } from "./posts/an-interview-that-survives-a-dropped-call";
+import { post as funnelAnalytics } from "./posts/where-candidates-actually-stop";
+
 
 /**
  * The post registry.
@@ -91,6 +115,28 @@ const ALL_POSTS: BlogPost[] = [
   vsParadox,
   juiceboxAlts,
   vsEightfold,
+  interventionInbox,
+  outreachLadder,
+  callLast,
+  silenceVsDecline,
+  optOutOnce,
+  linkLifetime,
+  coverageAware,
+  marketExhausted,
+  decisionLog,
+  personaCarve,
+  intakeOneTurn,
+  learnedTargets,
+  poolRefills,
+  briefToSearch,
+  dryRun,
+  autonomyPresets,
+  staleScores,
+  idempotentRetry,
+  hmLink,
+  enrichmentMiss,
+  interviewResilience,
+  funnelAnalytics,
 ];
 
 /** Test-only view of the full set, including unpublished. Never used by a page. */
