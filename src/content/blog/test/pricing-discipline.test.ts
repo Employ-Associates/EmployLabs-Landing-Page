@@ -4,43 +4,45 @@ import { join } from "node:path";
 import { __allPostsForTests } from "..";
 
 /**
- * Pricing is not an axis — as a gate rather than a memory.
+ * Pricing MODELS may be discussed. Specific COMMERCIALS may not.
  *
- * ⛔ `COMPARISON-POSTS.md` has said this in prose since #10: *"No fee
- * percentages, no per-seat costs, no cost-per-hire tables, no 'cheaper
- * than…'"*. It was written down and nothing enforced it, so the removal had to
- * be done BY HAND in a388101 ("take pricing out"), long after the text had
- * shipped in the launch commit. A rule that lives only in a document is a rule
- * that comes back — which is the exact reasoning `comparison-discipline.test.ts`
- * already records for its own two rules: they "survived a full review and
- * shipped broken anyway, which is why they are enforced here rather than
- * remembered". Pricing was left in the remembered category. This closes it.
+ * ⭐ THE LINE, set by the founder: *"The pricing models can and should be talked
+ * about, but not specific commercials."* Explaining how agencies charge — a
+ * percentage of first-year salary — or how a platform charges — per action,
+ * per seat, by subscription — is useful to a buyer and is exactly the kind of
+ * thing this blog should be good at. What may never appear is a NUMBER attached
+ * to money: a rate, an amount, a fee percentage, a price list.
+ *
+ * ⚠ An earlier version of this file banned the model vocabulary itself and was
+ * wrong. It would have refused "agencies commonly charge a percentage of
+ * first-year salary", which is a true and helpful sentence about the market.
+ * The discriminator is the figure, not the concept.
  *
  * TWO SCOPES, deliberately different:
  *
- *  1. HARD COMMERCIAL CLAIMS — checked on EVERY post, not just `compare`.
- *     `comparison-discipline` only inspects `category === "compare"`, so a fee
- *     percentage in an `update` post was invisible to the suite. A price claim
- *     is a price claim wherever it is made.
+ *  1. SPECIFIC COMMERCIALS — refused on EVERY post. `comparison-discipline.ts`
+ *     only inspects `category === "compare"`, so a rate quoted in a product post
+ *     was invisible to the whole suite. A price is a price wherever it is named.
  *
- *  2. THE PRICE AXIS ("cheaper than") — checked on `compare` posts ONLY,
- *     because the ban is about refusing to compete on price with a named
- *     alternative. Product posts legitimately use the word about waste rather
- *     than about us: "cheaper than leaving the seat empty"
- *     (notice-periods-buyouts-joining-dates) and "cheaper than finding it in
- *     the replies three weeks later" (every-question-in-one-turn) are both
- *     correct English and neither is a pricing claim. Banning the phrase
- *     everywhere would have failed on real, good prose — the patterns below
- *     were designed against the actual corpus, not guessed.
+ *  2. THE PRICE AXIS — refused on `compare` posts only, which is the standing
+ *     rule in `COMPARISON-POSTS.md`: *"Pricing is not an axis… a buyer who chose
+ *     on price leaves on price."* This is not about naming figures; it is about
+ *     refusing to make cost the dimension a comparison turns on, whether as a
+ *     "Cost basis" table row or a "cheaper than" sentence. a388101 removed
+ *     exactly that from `employlabs-vs-a-recruitment-agency` by hand.
+ *     ⛔ Product posts are NOT in this scope on purpose: "cheaper than leaving
+ *     the seat empty" (notice-periods-…) and "cheaper than finding it in the
+ *     replies three weeks later" (every-question-in-one-turn) are about waste,
+ *     not about us, and a blanket ban fails on correct prose. Verified against
+ *     the real corpus, not guessed.
  *
- * ⚠ `topics` is stripped before matching. It is an SEO keyword field, and
- * "cost per hire" is a legitimate search term there (`set-a-budget-…`,
- * `recruiting-metrics-…`) while being nothing a reader is told.
+ * ⚠ `topics` is stripped before matching: it is an SEO keyword field, where
+ * "cost per hire" is a legitimate search term (`set-a-budget-…`,
+ * `recruiting-metrics-…`) and not something a reader is ever told.
  *
- * RED-by-mutation: restore the `Cost basis` row or the "percentage of the
- * hire's first-year salary" sentence that a388101 deleted from
- * `employlabs-vs-a-recruitment-agency`, and the matching spec fails naming the
- * file and the phrase.
+ * RED-by-mutation: put a figure on it — "a fee of 8.33% of the hire's first-year
+ * salary", "₹2,50,000 per hire" — and the matching spec fails, naming the file
+ * and quoting the phrase. Removing the figure passes again, which is the line.
  */
 
 const POSTS_DIR = join(import.meta.dirname, "..", "posts");
@@ -58,39 +60,53 @@ const SOURCES = __allPostsForTests().map((p) => {
   };
 });
 
-/** Naming a price, a fee basis, or a unit we bill by. */
-const COMMERCIAL_CLAIMS: RegExp[] = [
-  /percentage of (?:the )?(?:hire(?:'|&rsquo;)?s )?first-year salary/i,
-  /\bper[- ]seat\b/i,
-  /\b\d+\s?%\s+(?:fee|of the (?:salary|hire))/i,
+/**
+ * A figure attached to money. The concept is allowed; the number is not.
+ * Each pattern requires a digit, so model vocabulary passes untouched.
+ */
+const SPECIFIC_COMMERCIALS: RegExp[] = [
   /[$£₹€]\s?\d/,
-  /\bcost basis\b/i,
-  /\b(?:subscription|licen[cs]e|platform) fee\b/i,
-  /\bcost[- ]per[- ]hire table\b/i,
+  /\b\d[\d,.]*\s?(?:USD|INR|GBP|EUR|dollars|rupees|pounds|lakh|lakhs|crore|crores)\b/i,
+  /\b\d+(?:\.\d+)?\s?%\s*(?:fee|commission|of (?:the )?(?:hire(?:'|&rsquo;)?s )?(?:first-year )?(?:salary|CTC|compensation|fee))/i,
+  /\b(?:fee|commission|retainer|rate)\s+of\s+\d/i,
+  /\b\d[\d,.]*\s*per\s+(?:seat|user|licence|license|hire|placement)\b/i,
+  /\b(?:rate card|price list|pricing page)\b/i,
+  /\bour (?:prices?|rates?|fees?) (?:are|is|start)\b/i,
 ];
 
-/** Competing on price with the alternative the post is weighed against. */
-const PRICE_AXIS: RegExp[] = [/\bcheaper than\b/i, /\bcosts less than\b/i];
+/** Making cost the dimension a comparison turns on. */
+const PRICE_AXIS: RegExp[] = [
+  /\bcheaper than\b/i,
+  /\bcosts? less than\b/i,
+  /\bundercuts?\b/i,
+  /\bcost basis\b/i,
+];
 
-describe("pricing is not an axis", () => {
+describe("pricing models are allowed, specific commercials are not", () => {
   it("there are posts to check", () => {
     expect(SOURCES.length).toBeGreaterThan(0);
   });
 
   for (const { slug, source } of SOURCES) {
-    it(`${slug}: names no price, fee basis or billing unit`, () => {
-      for (const pattern of COMMERCIAL_CLAIMS) {
+    it(`${slug}: names no figure attached to money`, () => {
+      for (const pattern of SPECIFIC_COMMERCIALS) {
         const hit = source.match(pattern);
-        expect(hit?.[0], `${slug} makes a pricing claim: "${hit?.[0]}"`).toBeUndefined();
+        expect(hit?.[0], `${slug} names a specific commercial: "${hit?.[0]}"`).toBeUndefined();
       }
     });
   }
 
-  for (const { slug, source } of SOURCES.filter((s) => s.category === "compare")) {
-    it(`${slug}: does not compare on price`, () => {
+  const comparePosts = SOURCES.filter((s) => s.category === "compare");
+
+  it("there are compare posts to check", () => {
+    expect(comparePosts.length).toBeGreaterThan(0);
+  });
+
+  for (const { slug, source } of comparePosts) {
+    it(`${slug}: does not turn the comparison on cost`, () => {
       for (const pattern of PRICE_AXIS) {
         const hit = source.match(pattern);
-        expect(hit?.[0], `${slug} compares on price: "${hit?.[0]}"`).toBeUndefined();
+        expect(hit?.[0], `${slug} makes cost the axis: "${hit?.[0]}"`).toBeUndefined();
       }
     });
   }

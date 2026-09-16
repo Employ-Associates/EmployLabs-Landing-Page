@@ -108,17 +108,32 @@ The buyer's own questions, in their words:
 The last one usually favours the other side. Ask it anyway — a question list
 that only we can answer well is a question list nobody believes.
 
-## ⛔ Pricing is not an axis
+## ⛔ Pricing is not an axis — but pricing MODELS are fair game
 
-No fee percentages, no per-seat costs, no cost-per-hire tables, no "cheaper
-than" framing. Not as a comparison row, not as a section.
+Two different rules, and an earlier version of this section ran them together.
 
-Two reasons. It dates instantly and it invites a race we do not want to run —
-a buyer who chose on price leaves on price. And on a cost axis the comparison
-stops being about whether the work gets done.
+**Everywhere, including product posts: no specific commercials.** No rate, no
+amount, no fee percentage, no price list. A figure attached to money dates
+instantly and is the one thing we cannot correct once an assistant has quoted
+it.
 
-"What you keep afterwards" carries the commercial argument honestly, because
-it describes value rather than a number.
+**Pricing MODELS can and should be discussed.** How agencies charge — a
+percentage of first-year salary — or how platforms charge — per action, per
+seat, by subscription — is genuinely useful to a buyer working out what a
+hire will cost them, and explaining it well is something this blog should be
+good at. The line is the figure, not the concept.
+
+**In `compare` posts only: cost is not the dimension the comparison turns
+on.** Not as a comparison row, not as a section, no "cheaper than" framing.
+It invites a race we do not want to run — a buyer who chose on price leaves on
+price — and on a cost axis the comparison stops being about whether the work
+gets done. "What you keep afterwards" carries the commercial argument
+honestly, because it describes value rather than a number.
+
+⚠ Both halves are now ENFORCED by `test/pricing-discipline.test.ts`, not
+remembered. This section said "no pricing" in prose for weeks and the text was
+still removed by hand in #10, after it had shipped — which is the same failure
+`comparison-discipline.test.ts` was created to stop.
 
 ## How to frame the buyer
 
