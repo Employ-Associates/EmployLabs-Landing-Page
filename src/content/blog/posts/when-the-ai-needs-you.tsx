@@ -36,10 +36,10 @@ function Body() {
       <P>
         When the pipeline on EmployLabs needs a person, it does not post a message. It opens an
         intervention, and an intervention has a type. It is attached to the role and to the specific
-        piece of work it is holding, and the type is drawn from a closed set rather than written out
+        piece of work it is holding, and the type is drawn from a defined set rather than written out
         in prose each time.
       </P>
-      <P>The kinds are named, and each one is a different question:</P>
+      <P>Some of the kinds, each a different question:</P>
       <Bullets>
         <li>
           <Strong>Low yield.</Strong> The search is returning too little to be worth continuing in the
@@ -65,8 +65,12 @@ function Body() {
           say so.
         </li>
         <li>
-          <Strong>Clarify a brief.</Strong> Something in the role is ambiguous enough that guessing
-          would be worse than asking.
+          <Strong>Approve an outreach send.</Strong> A batch is ready to go to real people and wants a
+          person to say so first.
+        </li>
+        <li>
+          <Strong>A reply that needs reading.</Strong> A candidate has said something the pipeline will
+          not act on by itself.
         </li>
         <li>
           <Strong>Confirm a placement.</Strong> A hire appears to have happened and needs confirming.
@@ -125,12 +129,12 @@ function Body() {
           waiting, which a list of roles is not.
         </li>
         <li>
-          Read the kind before the detail. Nine types, each a different question, and the type usually
+          Read the kind before the detail. Each kind is a different question, and the kind usually
           tells you whether this is ten seconds or a conversation.
         </li>
         <li>
-          Treat a repeated kind on one role as information. A brief that has asked to be clarified
-          twice is telling you something about the brief, not about the pipeline.
+          Treat a repeated kind on one role as information. A search that has twice reported it cannot
+          clear its pool is telling you something about the brief, not about the pipeline.
         </li>
         <li>
           Resolve rather than dismiss. The thing that was blocked stays blocked until the question is
@@ -146,7 +150,7 @@ export const post: BlogPost = {
   title: "When the AI needs you, it asks a specific question",
   dek: "The pipeline runs on its own until it genuinely cannot. At that point it opens a typed request naming what is blocked and what answering will release, rather than sending you a notification.",
   answer:
-    "EmployLabs runs the recruiting pipeline autonomously and, when it needs a person, opens a typed intervention rather than a notification. Kinds include low yield, pool unclearable, needs ceiling, no new supply, budget exhausted, assessment approval, clarify a brief, confirm a placement and raise an invoice. Each names what is blocked and what resolving it releases.",
+    "EmployLabs runs the recruiting pipeline autonomously and, when it needs a person, opens a typed intervention rather than a notification. Kinds include low yield, pool unclearable, needs ceiling, no new supply, budget exhausted, approving an outreach send, approving an assessment, confirming a placement and raising an invoice. Each names what is blocked and what resolving it releases.",
   category: "update",
   motif: "rows",
   publishedAt: "2026-09-16",
