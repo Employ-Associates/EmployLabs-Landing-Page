@@ -41,6 +41,17 @@ import { post as vsParadox } from "./posts/employlabs-vs-paradox";
 import { post as juiceboxAlts } from "./posts/juicebox-alternatives-2026";
 import { post as vsEightfold } from "./posts/employlabs-vs-eightfold";
 
+import { post as interventionInbox } from "./posts/when-the-ai-needs-you";
+import { post as outreachLadder } from "./posts/four-touches-then-a-call";
+import { post as callLast } from "./posts/we-call-last-on-purpose";
+import { post as silenceVsDecline } from "./posts/no-reply-is-not-a-no";
+import { post as optOutOnce } from "./posts/one-tap-to-stop";
+import { post as linkLifetime } from "./posts/a-link-that-dies-with-the-job";
+import { post as coverageAware } from "./posts/unanswered-is-not-zero";
+import { post as marketExhausted } from "./posts/when-the-market-is-empty-we-stop";
+import { post as decisionLog } from "./posts/every-decision-and-every-override";
+import { post as personaCarve } from "./posts/one-role-is-rarely-one-search";
+
 
 /**
  * The post registry.
@@ -91,6 +102,16 @@ const ALL_POSTS: BlogPost[] = [
   vsParadox,
   juiceboxAlts,
   vsEightfold,
+  interventionInbox,
+  outreachLadder,
+  callLast,
+  silenceVsDecline,
+  optOutOnce,
+  linkLifetime,
+  coverageAware,
+  marketExhausted,
+  decisionLog,
+  personaCarve,
 ];
 
 /** Test-only view of the full set, including unpublished. Never used by a page. */
