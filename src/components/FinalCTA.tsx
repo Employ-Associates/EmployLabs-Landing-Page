@@ -51,22 +51,27 @@ export function FinalCTA() {
           Don&rsquo;t get left behind.
         </h2>
 
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <a
-            href="https://app.employlabs.ai"
-            className="font-sans h-12 flex items-center p-1 rounded-sm bg-white text-zinc-900 border-2 border-white/60 font-medium hover:bg-zinc-100 transition-colors shadow-xl shadow-black/20 group cursor-pointer"
-          >
-            <span className="flex-1 px-6 text-[16px] text-center whitespace-nowrap">Automate Now</span>
-            <div className="bg-zinc-900 w-9 h-9 rounded-sm flex items-center justify-center text-white group-hover:scale-105 transition-transform shrink-0">
-              <ArrowRight className="w-5 h-5" />
-            </div>
-          </a>
-          <a
-            href="https://app.employlabs.ai"
-            className="font-sans h-12 px-6 flex items-center justify-center rounded-sm bg-white/10 backdrop-blur-md border-2 border-white/50 text-white font-medium hover:bg-white/20 transition-colors text-[16px] whitespace-nowrap cursor-pointer"
-          >
-            Book a Call
-          </a>
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <a
+              href="https://app.employlabs.ai"
+              className="font-sans h-12 flex items-center p-1 rounded-sm bg-white text-zinc-900 border-2 border-white/60 font-medium hover:bg-zinc-100 transition-colors shadow-xl shadow-black/20 group cursor-pointer"
+            >
+              <span className="flex-1 px-6 text-[16px] text-center whitespace-nowrap">Automate Now</span>
+              <div className="bg-zinc-900 w-9 h-9 rounded-sm flex items-center justify-center text-white group-hover:scale-105 transition-transform shrink-0">
+                <ArrowRight className="w-5 h-5" />
+              </div>
+            </a>
+            <a
+              href="https://app.employlabs.ai"
+              className="font-sans h-12 px-6 flex items-center justify-center rounded-sm bg-white/10 backdrop-blur-md border-2 border-white/50 text-white font-medium hover:bg-white/20 transition-colors text-[16px] whitespace-nowrap cursor-pointer"
+            >
+              Book a Call
+            </a>
+          </div>
+          <p className="text-[13px] leading-relaxed text-white/70">
+            Invited to an interview? Open the link in your invitation email — no sign-in needed.
+          </p>
         </div>
       </div>
     </section>
