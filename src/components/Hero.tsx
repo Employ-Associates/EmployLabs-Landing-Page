@@ -227,6 +227,9 @@ export function Hero() {
                   <ArrowRight className="w-5 h-5" />
                 </div>
               </a>
+              <p className="mt-3 text-[13px] leading-relaxed text-white/70">
+                Invited to an interview? Open the link in your invitation email — no sign-in needed.
+              </p>
             </motion.div>
           </div>
         </div>
