@@ -1,4 +1,7 @@
 import Script from "next/script";
+import { Suspense } from "react";
+
+import { PageViewTracker } from "./PageViewTracker";
 import { isValidMeasurementId } from "@/lib/analytics";
 
 /**
@@ -34,8 +37,13 @@ export function GoogleAnalytics() {
         {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', '${measurementId}');`}
+gtag('config', '${measurementId}', {send_page_view:false});`}
       </Script>
+      {/* `useSearchParams()` inside needs a boundary or the whole tree opts out
+          of static rendering. */}
+      <Suspense fallback={null}>
+        <PageViewTracker />
+      </Suspense>
     </>
   );
 }
