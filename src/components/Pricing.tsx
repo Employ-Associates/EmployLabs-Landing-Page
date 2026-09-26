@@ -3,6 +3,8 @@
 import { motion } from "motion/react";
 import { Check, ArrowRight } from "lucide-react";
 
+import { track, type CtaId } from "@/lib/analytics-events";
+
 /**
  * Sourced from the founder-locked pricing plan:
  *   docs/pricing/el-pricing-plan.html (el-platform) — the 4-lane plan copy/prices.
@@ -14,6 +16,15 @@ import { Check, ArrowRight } from "lucide-react";
 
 interface Plan {
   name: string;
+  /**
+   * ⛔ The analytics id for this tile, carried on the plan rather than derived
+   * from `name`. This section renders FOUR identical CTAs, all pointing at the
+   * same url; without a per-plan id they are one number and the pricing page
+   * tells you nothing about which lane people pick. Typing it as `CtaId` means
+   * adding a fifth plan without registering its id fails `tsc`, rather than
+   * quietly reporting the new tile as whatever string was pasted in.
+   */
+  ctaId: CtaId;
   tag: string;
   kind: string;
   price: string;
@@ -26,6 +37,7 @@ interface Plan {
 const PLANS: Plan[] = [
   {
     name: "Freelancer",
+    ctaId: "pricing_plan_freelancer",
     kind: "Per action",
     tag: "Freelance recruiters & small agencies",
     price: "$120",
@@ -40,6 +52,7 @@ const PLANS: Plan[] = [
   },
   {
     name: "Company",
+    ctaId: "pricing_plan_company",
     kind: "Per action",
     tag: "Startups with a hiring / TA lead",
     price: "$150",
@@ -55,6 +68,7 @@ const PLANS: Plan[] = [
   },
   {
     name: "Success fee",
+    ctaId: "pricing_plan_success_fee",
     kind: "Per hire",
     tag: "Companies buying the outcome",
     price: "6%",
@@ -69,6 +83,7 @@ const PLANS: Plan[] = [
   },
   {
     name: "Enterprise",
+    ctaId: "pricing_plan_enterprise",
     kind: "Custom",
     tag: "Volume hirers & GCCs",
     price: "$7K–18K",
@@ -172,6 +187,12 @@ export function Pricing() {
 
               <a
                 href="https://app.employlabs.ai"
+                onClick={() =>
+                  track({
+                    name: "cta_clicked",
+                    params: { cta_id: plan.ctaId, cta_location: "home_pricing", destination: "app" },
+                  })
+                }
                 className={`group/cta w-full flex items-center justify-center gap-2 py-2.5 rounded-sm text-sm font-medium transition-colors cursor-pointer ${
                   plan.highlight
                     ? "bg-accent text-black hover:bg-white"

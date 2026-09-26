@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
+import { track } from "@/lib/analytics-events";
+
 const faqs = [
   {
     question: "Who can use EmployLabs?",
@@ -40,7 +42,12 @@ export const FAQSection: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+    const isClosing = openIndex === index;
+    setOpenIndex(isClosing ? null : index);
+    // The event is `faq_opened`, so it must not fire on the click that CLOSES a
+    // panel — otherwise collapsing a question reads as asking it again and the
+    // count is roughly double the truth.
+    if (!isClosing) track({ name: "faq_opened", params: { faq_index: index } });
   };
 
   return (

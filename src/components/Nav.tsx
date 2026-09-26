@@ -5,6 +5,8 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight } from "lucide-react";
 
+import { track } from "@/lib/analytics-events";
+
 export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
   const [isScrolled, setIsScrolled] = useState(false);
   // "light" = the un-scrolled top bar sits on a light hero → dark text.
@@ -43,7 +45,19 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
           </div>
 
           <div className="flex items-center gap-4 justify-self-end">
-            <a href="https://app.employlabs.ai" className="font-sans h-12 flex items-center p-1 rounded-sm bg-white text-zinc-900 border-2 border-white/60 font-medium hover:bg-zinc-100 transition-colors shadow-xl shadow-black/20 group cursor-pointer">
+            {/* ⛔ `nav_top` and `nav_capsule` are BOTH in the DOM once scrolled.
+                Same cta_id, different cta_location — merge them and there is no
+                way to tell whether the sticky capsule earns its place. */}
+            <a
+              href="https://app.employlabs.ai"
+              onClick={() =>
+                track({
+                  name: "cta_clicked",
+                  params: { cta_id: "recruiter_sign_in", cta_location: "nav_top", destination: "app" },
+                })
+              }
+              className="font-sans h-12 flex items-center p-1 rounded-sm bg-white text-zinc-900 border-2 border-white/60 font-medium hover:bg-zinc-100 transition-colors shadow-xl shadow-black/20 group cursor-pointer"
+            >
               <span className="flex-1 px-6 text-[16px] text-center">Recruiter sign-in</span>
               <div className="bg-zinc-900 w-9 h-9 rounded-sm flex items-center justify-center text-white group-hover:scale-105 transition-transform shrink-0">
                 <ArrowRight className="w-5 h-5" />
@@ -75,7 +89,16 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
               <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
             </div>
 
-            <a href="https://app.employlabs.ai" className="font-sans h-11 flex items-center p-1 rounded-sm bg-zinc-100 border border-zinc-200 text-zinc-900 hover:bg-white transition-all duration-300 text-sm font-bold group cursor-pointer">
+            <a
+              href="https://app.employlabs.ai"
+              onClick={() =>
+                track({
+                  name: "cta_clicked",
+                  params: { cta_id: "recruiter_sign_in", cta_location: "nav_capsule", destination: "app" },
+                })
+              }
+              className="font-sans h-11 flex items-center p-1 rounded-sm bg-zinc-100 border border-zinc-200 text-zinc-900 hover:bg-white transition-all duration-300 text-sm font-bold group cursor-pointer"
+            >
               <span className="flex-1 px-5 text-center">Recruiter sign-in</span>
               <div className="bg-zinc-900 w-9 h-9 rounded-sm flex items-center justify-center text-white group-hover:scale-105 transition-transform shrink-0">
                 <ArrowRight className="w-4 h-4" />

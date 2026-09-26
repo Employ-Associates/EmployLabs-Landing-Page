@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { track } from "@/lib/analytics-events";
 import { BLOG_CATEGORIES, CATEGORY_LABEL, type BlogCategory } from "@/content/blog/types";
 
 /**
@@ -25,7 +26,10 @@ export function BlogFilter({ children }: { children: ReactNode }) {
             key={o}
             type="button"
             aria-pressed={active === o}
-            onClick={() => setActive(o)}
+            onClick={() => {
+              setActive(o);
+              track({ name: "blog_filtered", params: { category: o } });
+            }}
             className={`rounded-full border px-4 py-1.5 font-display text-[13.5px] font-medium transition-colors ${
               active === o
                 ? "border-white bg-white text-zinc-950"
