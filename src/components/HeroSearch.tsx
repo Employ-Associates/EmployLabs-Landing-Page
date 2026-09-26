@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
+import { track } from "@/lib/analytics-events";
 import { motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, ArrowRight, Building2, FileText, Globe, Link2, Loader2, Mail } from "lucide-react";
 
@@ -70,6 +71,13 @@ export function HeroSearch() {
     setTouched((t) => ({ ...t, url: true, domain: true }));
     if (!jobReady) return;
     if (mode === "url") setUrl(normalizeUrl(url));
+    // ⛔ AFTER the readiness gate, never on the click. A visitor stabbing at a
+    // disabled button has not submitted a job, and counting that would make the
+    // step-1 → step-2 drop-off — the only thing this funnel is for — meaningless.
+    track({
+      name: "hero_job_submitted",
+      params: { mode, has_company_name: companyName.trim() !== "" },
+    });
     setStep("email");
     // After the swap renders.
     requestAnimationFrame(() => emailRef.current?.focus());
@@ -85,9 +93,24 @@ export function HeroSearch() {
     if (!res.ok) {
       setBusy(false);
       setServerError({ message: res.message, suggestion: res.suggestion });
+      // ⛔ NO MESSAGE, EVER. `res.message` and `res.suggestion` are server prose
+      // that can echo what the visitor typed — an address, a domain. Whether a
+      // correction was offered is the only part a funnel needs.
+      track({
+        name: "hero_run_failed",
+        params: { mode, has_suggestion: res.suggestion !== undefined },
+      });
       emailRef.current?.focus();
       return;
     }
+    // ⛔ ON THE SERVER'S ANSWER, BEFORE THE NAVIGATION. Firing on the click would
+    // count every visitor who typed an address the endpoint then refused.
+    // ⚠️ `email` is in scope on this very line and is deliberately absent — the
+    // closed param union makes attaching it a compile error.
+    track({
+      name: "hero_run_started",
+      params: { mode, has_company_name: companyName.trim() !== "" },
+    });
     // Stays "busy" through the navigation.
     window.location.assign(runUrl(res.path, job()));
   };

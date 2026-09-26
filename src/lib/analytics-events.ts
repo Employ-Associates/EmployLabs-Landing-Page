@@ -92,6 +92,9 @@ export type PostLinkSurface = "card" | "cover" | "title" | "button";
 /** How far through a post the reader got. Four latched thresholds, nothing else. */
 export type ReadDepthPct = 25 | 50 | 75 | 100;
 
+/** The hero accepts a job as a link or as pasted text; mirrors `JobSource["mode"]`. */
+export type HeroJobMode = "url" | "text";
+
 export type AnalyticsEvent =
   | {
       name: "cta_clicked";
@@ -111,6 +114,27 @@ export type AnalyticsEvent =
       params: { post_slug: string; depth_pct: ReadDepthPct; reading_minutes: number };
     }
   | { name: "blog_filtered"; params: { category: PostCategory | "all" } }
+  /**
+   * ⭐ THE HERO IS A TWO-STEP FUNNEL, AND THE STEP BETWEEN THEM IS THE POINT.
+   * Both buttons read "Start run": the first takes the job (a url or pasted
+   * text) and advances, the second takes the email, calls the self-serve
+   * endpoint and navigates into the app. Somebody who gives a job and then
+   * balks at the email is the most interesting visitor on this site, and
+   * nothing recorded them — the app only ever hears about the ones who finish.
+   *
+   * ⛔ `email` AND `companyName` ARE BOTH IN LEXICAL SCOPE at the call site for
+   * `hero_run_started`. They are not here, and cannot be: `has_company_name` is
+   * a boolean, and the closed union makes attaching the address a compile error.
+   */
+  | { name: "hero_job_submitted"; params: { mode: HeroJobMode; has_company_name: boolean } }
+  | { name: "hero_run_started"; params: { mode: HeroJobMode; has_company_name: boolean } }
+  /**
+   * ⛔ THE FAILURE ARM CARRIES NO MESSAGE. `res.message` and `res.suggestion`
+   * are server prose that can echo what the visitor typed — an address, a
+   * domain. `has_suggestion` says whether the server offered a correction, which
+   * is the only part of it a funnel needs.
+   */
+  | { name: "hero_run_failed"; params: { mode: HeroJobMode; has_suggestion: boolean } }
   | { name: "faq_opened"; params: { faq_index: number } };
 
 /** The exact signature of the global the inline GA4 snippet installs. */

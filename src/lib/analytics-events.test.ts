@@ -171,3 +171,34 @@ const typeContract = () => {
   };
   track(allowed);
 };
+
+describe("the hero funnel carries no address and no server prose", () => {
+  // ⛔ `email` and `companyName` are both in lexical scope at the call site for
+  // `hero_run_started` — the one event on this site where a real identifier sits
+  // within reach. The closed union is what stops it.
+  it("reports only a mode and a boolean for a started run", () => {
+    const layer = installRealSnippetGtag();
+    track({ name: "hero_run_started", params: { mode: "url", has_company_name: true } });
+    const entry = layer[0] as IArguments;
+    expect(JSON.stringify(entry[2])).not.toMatch(/@/);
+    expect(entry[2]).toEqual({ mode: "url", has_company_name: true });
+  });
+
+  // ⛔ `res.message` / `res.suggestion` are server prose that can echo the address
+  // the visitor typed. Only whether a correction was offered survives.
+  it("reports a failure without the server's message", () => {
+    const layer = installRealSnippetGtag();
+    track({ name: "hero_run_failed", params: { mode: "text", has_suggestion: true } });
+    expect((layer[0] as IArguments)[2]).toEqual({ mode: "text", has_suggestion: true });
+  });
+
+  it("distinguishes step one from step two, which is the whole point", () => {
+    const layer = installRealSnippetGtag();
+    track({ name: "hero_job_submitted", params: { mode: "url", has_company_name: false } });
+    track({ name: "hero_run_started", params: { mode: "url", has_company_name: false } });
+    expect(layer.map((e) => (e as IArguments)[1])).toEqual([
+      "hero_job_submitted",
+      "hero_run_started",
+    ]);
+  });
+});
