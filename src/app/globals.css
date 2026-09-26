@@ -122,6 +122,23 @@ h6 {
   pointer-events: none;
 }
 
+/* Hero search card — stack AFTER .liquid-glass (keeps its gradient ring) for a
+   deeper frost: the video stays visible through it, the white text carries it. */
+.hero-glass {
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.03) 45%,
+    rgba(0, 0, 0, 0.14) 100%
+  );
+  background-blend-mode: normal;
+  /* The frost itself is the Tailwind utilities on the element (backdrop-blur-xl
+     backdrop-saturate-150): a raw backdrop-filter here is dropped by the build. */
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.14),
+    0 30px 70px -24px rgba(0, 0, 0, 0.6);
+}
+
 /* Slow vertical "bob" for the overlay/parallax layer (train-bob). */
 @keyframes ctaBob {
   0%, 100% { transform: translateY(0) scale(1.5); }

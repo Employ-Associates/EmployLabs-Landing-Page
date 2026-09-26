@@ -2,6 +2,9 @@
 
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
+
+import { HeroSearch } from "./HeroSearch";
+
 // const heroImg = "/assets/images/custom_hero_bg.png";
 const heroVideo = "/assets/videos/hero_bg.mp4";
 
@@ -174,11 +177,11 @@ export function Hero() {
         }}
       />
 
-      {/* Content anchored to the bottom: title bottom-left, description + CTA bottom-right */}
+      {/* Content anchored to the bottom: title bottom-left, search card bottom-right.
+          Title size and placement match main. */}
       <div className="absolute inset-0 z-10 flex items-end">
         <div className="w-full px-6 md:px-12 pb-20 md:pb-28 flex flex-col md:flex-row md:items-end md:justify-between gap-10 md:gap-12">
-          {/* Left bottom: badge + title */}
-          <div className="max-w-2xl">
+          <div className="max-w-2xl shrink-0">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -202,36 +205,22 @@ export function Hero() {
             </motion.h1>
           </div>
 
-          {/* Right bottom: description + CTA */}
-          <div className="max-w-md flex flex-col items-start gap-8 md:pb-3">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative overflow-hidden text-[16px] md:text-[18px] text-zinc-100/90 font-normal leading-relaxed backdrop-blur-md bg-black/35 border border-white/15 rounded-sm px-5 py-4 before:absolute before:inset-x-4 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/30 before:to-transparent before:content-['']"
-            >
-              Autonomous hiring — from JD to interviewed, explainable
-              candidates. You just pick from the shortlist.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <a href="https://app.employlabs.ai" className="font-sans h-12 flex items-center p-1 rounded-sm bg-white text-zinc-900 border-2 border-white/60 font-medium hover:bg-zinc-100 transition-colors shadow-xl shadow-black/20 group cursor-pointer">
-                <span className="flex-1 px-6 text-[16px] text-center">
-                  Automate Hiring
-                </span>
-                <div className="bg-zinc-900 w-9 h-9 rounded-sm flex items-center justify-center text-white group-hover:scale-105 transition-transform shrink-0">
-                  <ArrowRight className="w-5 h-5" />
-                </div>
-              </a>
-              <p className="mt-3 text-[13px] leading-relaxed text-white/70">
-                Invited to an interview? Open the link in your invitation email — no sign-in needed.
-              </p>
-            </motion.div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="relative w-full min-w-0 max-w-[560px] md:flex-1"
+          >
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -inset-10 -z-10 rounded-full opacity-70 blur-3xl"
+              style={{
+                background:
+                  "radial-gradient(60% 55% at 30% 30%, rgba(85,234,140,0.18), transparent 70%), radial-gradient(55% 50% at 75% 75%, rgba(255,255,255,0.10), transparent 70%)",
+              }}
+            />
+            <HeroSearch />
+          </motion.div>
         </div>
       </div>
 
