@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight } from "lucide-react";
 
 import { track } from "@/lib/analytics-events";
+import { ziaCandidateUrl } from "@/lib/zia";
 
 export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -37,6 +38,16 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
             <Link href="/people-search-engine" className="hover:text-white transition-colors w-fit">People Search</Link>
             <Link href="/naira-ai-interviewer" className="hover:text-white transition-colors w-fit">Naira</Link>
             <Link href="/blog" className="hover:text-white transition-colors w-fit">Blog</Link>
+            {/* Candidates arrive from our outreach; this is their exit to Zia. */}
+            <a
+              href={ziaCandidateUrl("nav_top")}
+              target="_blank"
+              rel="noopener"
+              onClick={() => track({ name: "candidate_cta_clicked", params: { cta_location: "nav_top" } })}
+              className="hover:text-white transition-colors w-fit rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            >
+              For candidates<span className="sr-only"> — talk to Zia (opens itszia.ai in a new tab)</span>
+            </a>
           </div>
 
           {/* Center: wordmark (dot mark, no square logo) */}
@@ -44,7 +55,7 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
             <span className="font-display font-bold text-2xl tracking-tight">Employlabs<span className="text-accent">.</span></span>
           </div>
 
-          <div className="flex items-center gap-4 justify-self-end">
+          <div className="flex flex-col items-end gap-2 md:flex-row md:items-center md:gap-4 justify-self-end">
             {/* ⛔ `nav_top` and `nav_capsule` are BOTH in the DOM once scrolled.
                 Same cta_id, different cta_location — merge them and there is no
                 way to tell whether the sticky capsule earns its place. */}
@@ -62,6 +73,17 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
               <div className="bg-zinc-900 w-9 h-9 rounded-sm flex items-center justify-center text-white group-hover:scale-105 transition-transform shrink-0">
                 <ArrowRight className="w-5 h-5" />
               </div>
+            </a>
+            {/* Mobile only: the link lists above are hidden below md and there
+                is no mobile menu, so this is the candidate exit on a phone. */}
+            <a
+              href={ziaCandidateUrl("nav_mobile")}
+              target="_blank"
+              rel="noopener"
+              onClick={() => track({ name: "candidate_cta_clicked", params: { cta_location: "nav_mobile" } })}
+              className={`md:hidden text-sm font-medium underline underline-offset-4 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${isDark ? "text-white/80 decoration-white/30 hover:text-white" : "text-zinc-800 decoration-zinc-400 hover:text-zinc-950"}`}
+            >
+              Job seeker? Talk to Zia<span className="sr-only"> (opens itszia.ai in a new tab)</span>
             </a>
           </div>
         </div>
@@ -87,6 +109,15 @@ export function Nav({ variant = "light" }: { variant?: "light" | "dark" }) {
               <Link href="/people-search-engine" className="hover:text-white transition-colors">People Search</Link>
               <Link href="/naira-ai-interviewer" className="hover:text-white transition-colors">Naira</Link>
               <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
+              <a
+                href={ziaCandidateUrl("nav_capsule")}
+                target="_blank"
+                rel="noopener"
+                onClick={() => track({ name: "candidate_cta_clicked", params: { cta_location: "nav_capsule" } })}
+                className="hover:text-white transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
+                For candidates<span className="sr-only"> — talk to Zia (opens itszia.ai in a new tab)</span>
+              </a>
             </div>
 
             <a

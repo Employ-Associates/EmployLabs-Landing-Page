@@ -13,7 +13,7 @@ import { track, type CtaDestination, type CtaId, type CtaLocation } from "@/lib/
  * somewhere, and one shared child is cheaper than turning four pages into
  * client components and dragging their whole subtree into the bundle.
  *
- * Components that are ALREADY `"use client"` (Nav, Hero, FinalCTA, Pricing)
+ * Components that are ALREADY `"use client"` (Nav, FinalCTA, Pricing)
  * call `track` inline instead of wrapping their markup in this. That is the
  * rule, not an inconsistency: this component's only job is the boundary, and
  * adding it where no boundary is needed would rewrite working markup for

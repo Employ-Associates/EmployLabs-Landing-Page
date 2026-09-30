@@ -7,6 +7,9 @@ import {
   Code2, ClipboardCheck
 } from "lucide-react";
 
+import { track } from "@/lib/analytics-events";
+import { ziaCandidateUrl } from "@/lib/zia";
+
 interface AgentFeature {
   title: string;
   detail?: string;
@@ -109,6 +112,20 @@ function AgentCard({ agent, index, total }: AgentCardProps) {
             <p className="text-zinc-400 text-sm leading-relaxed mb-8">
               {agent.desc}
             </p>
+
+            {/* The card describes Zia to recruiters; a candidate reading it
+                needs the other door — Zia is free for job seekers. */}
+            {agent.id === "zia" && (
+              <a
+                href={ziaCandidateUrl("agents_zia")}
+                target="_blank"
+                rel="noopener"
+                onClick={() => track({ name: "candidate_cta_clicked", params: { cta_location: "agents_zia" } })}
+                className="self-start -mt-4 mb-6 text-sm text-gold underline underline-offset-4 decoration-gold/40 hover:decoration-gold transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+              >
+                Job seeker? Talk to Zia →<span className="sr-only"> (opens itszia.ai in a new tab)</span>
+              </a>
+            )}
 
             <button className="self-start rounded-full border border-white/10 px-6 py-2.5 text-xs font-medium text-white hover:bg-white/5 hover:border-white/20 transition-colors mb-8 cursor-pointer">
               Explore {agent.name}

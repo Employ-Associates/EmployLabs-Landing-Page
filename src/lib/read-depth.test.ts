@@ -1,38 +1,55 @@
 import { describe, expect, it } from "vitest";
 
-import { READ_DEPTH_THRESHOLDS, crossedThresholds, scrollDepthPct } from "@/lib/read-depth";
+import { READ_DEPTH_THRESHOLDS, articleDepthPct, crossedThresholds } from "@/lib/read-depth";
 
-describe("scrollDepthPct", () => {
-  it("measures to the bottom of the viewport, so an unscrolled 2-viewport page is half read", () => {
-    expect(scrollDepthPct({ scrollY: 0, innerHeight: 800, scrollHeight: 1600 })).toBe(50);
+describe("articleDepthPct", () => {
+  const at = (articleTop: number, articleHeight = 4000, viewportHeight = 800) =>
+    articleDepthPct({ articleTop, articleHeight, viewportHeight });
+
+  it("measures the article to the bottom of the viewport", () => {
+    // Top 200px down an 800px viewport: 600px of a 4000px article is in view.
+    expect(at(200)).toBe(15);
+    // Scrolled so the article's top is 1200px above the viewport: 2000 / 4000.
+    expect(at(-1200)).toBe(50);
   });
 
-  it("reports 100 at the true bottom", () => {
-    expect(scrollDepthPct({ scrollY: 800, innerHeight: 800, scrollHeight: 1600 })).toBe(100);
+  it("reports 100 only once the article's END reaches the viewport bottom", () => {
+    expect(at(-3200)).toBe(100); // 800 - (-3200) = 4000
+    expect(at(-3199)).toBeLessThan(100);
   });
 
-  it("reports 100 for a document that cannot scroll — the whole post is on screen", () => {
-    expect(scrollDepthPct({ scrollY: 0, innerHeight: 900, scrollHeight: 900 })).toBe(100);
-    expect(scrollDepthPct({ scrollY: 0, innerHeight: 900, scrollHeight: 400 })).toBe(100);
+  it("ignores the page around the article: a 600px footer below cannot add depth", () => {
+    // Same article position, whatever follows it — the old document-wide ratio
+    // moved with scrollHeight; this has no input for it at all.
+    expect(at(-1200, 4000, 800)).toBe(50);
   });
 
-  it("never divides by zero on a not-yet-laid-out document", () => {
-    const pct = scrollDepthPct({ scrollY: 0, innerHeight: 0, scrollHeight: 0 });
-    expect(Number.isNaN(pct)).toBe(false);
-    expect(pct).toBe(100);
+  it("is 0 while the article is still below the fold", () => {
+    expect(at(900)).toBe(0);
+    expect(at(800)).toBe(0);
   });
 
-  it("clamps overscroll bounce at both ends", () => {
-    expect(scrollDepthPct({ scrollY: -120, innerHeight: 100, scrollHeight: 1000 })).toBe(0);
-    expect(scrollDepthPct({ scrollY: 5000, innerHeight: 800, scrollHeight: 1600 })).toBe(100);
+  it("is 100 for a short article wholly in view — a genuine read on load", () => {
+    expect(at(100, 500, 800)).toBe(100);
   });
 
-  it("is monotonic in scrollY down a long post", () => {
-    const at = (scrollY: number) => scrollDepthPct({ scrollY, innerHeight: 800, scrollHeight: 8000 });
-    const samples = [0, 1000, 2000, 4000, 7200].map(at);
+  it.each([
+    ["not laid out", 0, 0, 0],
+    ["zero height", 100, 0, 800],
+    ["negative height", 100, -5, 800],
+    ["zero viewport", 0, 4000, 0],
+    ["NaN top", Number.NaN, 4000, 800],
+    ["infinite height", 0, Number.POSITIVE_INFINITY, 800],
+  ])("an unmeasurable article (%s) is 0, never 100", (_label, articleTop, articleHeight, viewportHeight) => {
+    const pct = articleDepthPct({ articleTop, articleHeight, viewportHeight });
+    expect(pct).toBe(0);
+    expect(crossedThresholds(pct, [])).toEqual([]);
+  });
+
+  it("is monotonic as the reader scrolls down a long post", () => {
+    const samples = [200, -500, -1500, -2500, -3200, -5000].map((top) => at(top));
     expect(samples).toEqual([...samples].sort((a, b) => a - b));
-    expect(at(0)).toBeCloseTo(10);
-    expect(at(7200)).toBe(100);
+    expect(samples.at(-1)).toBe(100);
   });
 });
 

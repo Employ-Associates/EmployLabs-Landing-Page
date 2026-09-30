@@ -98,7 +98,7 @@ export function HeroSearch() {
       // correction was offered is the only part a funnel needs.
       track({
         name: "hero_run_failed",
-        params: { mode, has_suggestion: res.suggestion !== undefined },
+        params: { mode, has_suggestion: Boolean(res.suggestion) },
       });
       emailRef.current?.focus();
       return;

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 import { track } from "@/lib/analytics-events";
-import { READ_DEPTH_THRESHOLDS, crossedThresholds, scrollDepthPct } from "@/lib/read-depth";
+import { READ_DEPTH_THRESHOLDS, articleDepthPct, crossedThresholds } from "@/lib/read-depth";
 
 /**
  * Emits `post_read_depth` at 25 / 50 / 75 / 100%, once each per pageview.
@@ -24,23 +24,33 @@ import { READ_DEPTH_THRESHOLDS, crossedThresholds, scrollDepthPct } from "@/lib/
  * mounted: Lenis runs in real-scroll mode, so it moves the actual document
  * scroll position. `Nav.tsx:15-23` already relies on exactly this.
  *
+ * ⭐ DEPTH IS MEASURED ON THE PROSE, found by `articleId`, not on the whole
+ * document — see `articleDepthPct`. If the element is missing or has no height
+ * the reading is 0 and nothing is reported: a missing anchor must never look
+ * like a finished read.
+ *
  * ⚠ `post.readingMinutes` rides along so a report can separate "read 100% of a
  * 2-minute update" from "read 100% of a 12-minute comparison" without a join.
  */
 export type ReadDepthTrackerProps = {
   postSlug: string;
   readingMinutes: number;
+  /** The `id` of the element that holds the post's prose — nothing around it. */
+  articleId: string;
 };
 
-export function ReadDepthTracker({ postSlug, readingMinutes }: ReadDepthTrackerProps) {
+export function ReadDepthTracker({ postSlug, readingMinutes, articleId }: ReadDepthTrackerProps) {
   useEffect(() => {
     const fired: number[] = [];
 
     const report = () => {
-      const pct = scrollDepthPct({
-        scrollY: window.scrollY,
-        innerHeight: window.innerHeight,
-        scrollHeight: document.documentElement.scrollHeight,
+      const article = document.getElementById(articleId);
+      if (!article) return;
+      const rect = article.getBoundingClientRect();
+      const pct = articleDepthPct({
+        articleTop: rect.top,
+        articleHeight: rect.height,
+        viewportHeight: window.innerHeight,
       });
 
       for (const depth of crossedThresholds(pct, fired)) {
@@ -51,18 +61,23 @@ export function ReadDepthTracker({ postSlug, readingMinutes }: ReadDepthTrackerP
         });
       }
 
-      if (fired.length === READ_DEPTH_THRESHOLDS.length) {
-        window.removeEventListener("scroll", report);
-      }
+      if (fired.length === READ_DEPTH_THRESHOLDS.length) detach();
     };
 
-    // Measure once on mount: a post shorter than the viewport is fully read
-    // without a single scroll event ever firing, and would otherwise report
-    // nothing at all.
+    const detach = () => {
+      window.removeEventListener("scroll", report);
+      window.removeEventListener("resize", report);
+    };
+
+    // Measure once on mount: an article already fully in view is read without
+    // a single scroll event ever firing. This reports only what is genuinely on
+    // screen — an unlaid-out article measures 0 and reports nothing.
+    // `resize` catches the viewport growing past the article with no scroll.
     report();
     window.addEventListener("scroll", report, { passive: true });
-    return () => window.removeEventListener("scroll", report);
-  }, [postSlug, readingMinutes]);
+    window.addEventListener("resize", report, { passive: true });
+    return detach;
+  }, [postSlug, readingMinutes, articleId]);
 
   return null;
 }

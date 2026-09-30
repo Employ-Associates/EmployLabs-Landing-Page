@@ -79,7 +79,7 @@ export default async function BlogPostPage({ params }: Params) {
           this `"use client"` child. GA4's automatic scroll tracking is OFF for
           this property, so without it a finished 12-minute read and a two-second
           bounce are the same single `page_view`. */}
-      <ReadDepthTracker postSlug={post.slug} readingMinutes={post.readingMinutes} />
+      <ReadDepthTracker postSlug={post.slug} readingMinutes={post.readingMinutes} articleId="post-prose" />
 
       <main className="mx-auto max-w-[1180px] px-6 md:px-8">
         <article className="mx-auto max-w-[720px] pt-52 md:pt-56">
@@ -115,23 +115,27 @@ export default async function BlogPostPage({ params }: Params) {
             <CoverArt motif={post.motif} category={post.category} className="aspect-video w-full" />
           </div>
 
-          <Answer>{post.answer}</Answer>
+          {/* The prose read-depth measures: answer, body and FAQ. Everything around
+              it — header, related reading, the CTA — is not reading. */}
+          <div id="post-prose">
+            <Answer>{post.answer}</Answer>
 
-          <post.Body />
+            <post.Body />
 
-          {post.faq?.length ? (
-            <section className="mt-16 border-t border-border pt-10">
-              <h2 className="font-display text-2xl font-semibold tracking-tight">Common questions</h2>
-              <dl className="mt-6 space-y-7">
-                {post.faq.map((f) => (
-                  <div key={f.q}>
-                    <dt className="font-display text-[17px] font-semibold text-white">{f.q}</dt>
-                    <dd className="mt-2 font-title text-[17px] leading-relaxed text-zinc-400">{f.a}</dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
-          ) : null}
+            {post.faq?.length ? (
+              <section className="mt-16 border-t border-border pt-10">
+                <h2 className="font-display text-2xl font-semibold tracking-tight">Common questions</h2>
+                <dl className="mt-6 space-y-7">
+                  {post.faq.map((f) => (
+                    <div key={f.q}>
+                      <dt className="font-display text-[17px] font-semibold text-white">{f.q}</dt>
+                      <dd className="mt-2 font-title text-[17px] leading-relaxed text-zinc-400">{f.a}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            ) : null}
+          </div>
 
           {related.length > 0 && (
             <section className="mt-16 border-t border-border pt-10">

@@ -2,12 +2,13 @@
  * The typed event contract for the marketing site.
  *
  * ── WHY A CLOSED UNION AND NOT A `Record<string, unknown>` ───────────────
- * This site has zero forms, zero inputs and zero fetch calls, so its PII
- * surface is genuinely empty today and nothing here could leak a person.
- * The discipline is not for today: it is the wall the next person hits when
- * they add a form. A free-form params bag is how a name, an email or a
- * search term reaches Google reports, and nobody notices because it looks
- * like a convention rather than a rule. So every param is a literal union,
+ * The homepage hero (`HeroSearch`) takes a job link or pasted JD, a company
+ * name and a work email, and `search-prospects.ts` posts that email to the
+ * app's self-serve endpoint. So a visitor's address and the server's replies
+ * are in lexical scope wherever the hero calls `track`, and every form added
+ * later will put more there. A free-form params bag is how a name, an email
+ * or a search term reaches Google reports, and nobody notices because it
+ * looks like a convention rather than a rule. So every param is a literal union,
  * a number or a boolean — and `post_slug` is the ONLY permitted free string,
  * because a slug is public content we WANT in reports.
  *
@@ -40,13 +41,10 @@ export type PostCategory = BlogCategory;
  */
 export type CtaId =
   | "recruiter_sign_in"
-  // ⛔ `home_hero_automate` WAS REMOVED, NOT FORGOTTEN. The homepage hero no
-  // longer has a CTA link at all — `main` replaced that block with <HeroSearch>,
-  // an interactive widget, while this layer was being built. Keeping a literal
-  // for a button that does not exist would leave a bucket that can never fill,
-  // which reads as "nobody clicks the hero" rather than "there is no hero CTA".
-  // ⭐ The hero is now the most interesting UNinstrumented surface on the site;
-  // see the handoff doc.
+  // ⛔ The homepage hero has NO id here, because it has no CTA link: it is the
+  // <HeroSearch> widget, and it reports through its own `hero_*` funnel events
+  // below. An id for a link that does not exist is a bucket that can never
+  // fill, which reads as "nobody clicks the hero".
   | "final_cta_primary"
   | "final_cta_secondary"
   | "pricing_plan_freelancer"
@@ -70,7 +68,6 @@ export type CtaId =
 export type CtaLocation =
   | "nav_top"
   | "nav_capsule"
-  | "home_hero"
   | "home_final_cta"
   | "home_pricing"
   | "blog_post_footer"
@@ -91,6 +88,15 @@ export type PostLinkSurface = "card" | "cover" | "title" | "button";
 
 /** How far through a post the reader got. Four latched thresholds, nothing else. */
 export type ReadDepthPct = 25 | 50 | 75 | 100;
+
+/**
+ * Where on the site the "send candidates to Zia" CTA sits. Separate from
+ * `CtaLocation` because it is a different audience's offer: these links are for
+ * job seekers, and every `cta_clicked` is a recruiter heading into the app.
+ * `nav_top` and `nav_capsule` are distinct for the same reason as there — both
+ * are mounted at once past 70vh.
+ */
+export type CandidateCtaLocation = "nav_top" | "nav_capsule" | "nav_mobile" | "footer_band" | "agents_zia";
 
 /** The hero accepts a job as a link or as pasted text; mirrors `JobSource["mode"]`. */
 export type HeroJobMode = "url" | "text";
@@ -113,6 +119,11 @@ export type AnalyticsEvent =
       name: "post_read_depth";
       params: { post_slug: string; depth_pct: ReadDepthPct; reading_minutes: number };
     }
+  /**
+   * A job candidate clicked through to Zia at itszia.ai. Its own event, not a
+   * `cta_clicked`, so candidate traffic can never inflate the recruiter funnel.
+   */
+  | { name: "candidate_cta_clicked"; params: { cta_location: CandidateCtaLocation } }
   | { name: "blog_filtered"; params: { category: PostCategory | "all" } }
   /**
    * ⭐ THE HERO IS A TWO-STEP FUNNEL, AND THE STEP BETWEEN THEM IS THE POINT.

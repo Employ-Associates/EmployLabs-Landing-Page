@@ -159,6 +159,18 @@ const typeContract = () => {
   // @ts-expect-error "nav" is not a CtaLocation
   track({ name: "cta_clicked", params: { cta_id: "recruiter_sign_in", cta_location: "nav", destination: "app" } });
 
+  // The candidate CTA takes only its own locations — never a recruiter one…
+  // @ts-expect-error "home_final_cta" is not a CandidateCtaLocation
+  track({ name: "candidate_cta_clicked", params: { cta_location: "home_final_cta" } });
+
+  // …and carries no destination url or label.
+  // @ts-expect-error `href` is not in the contract
+  track({ name: "candidate_cta_clicked", params: { cta_location: "nav_top", href: "https://itszia.ai/" } });
+
+  // The dead hero location stays dead.
+  // @ts-expect-error "home_hero" is not a CtaLocation
+  track({ name: "cta_clicked", params: { cta_id: "final_cta_primary", cta_location: "home_hero", destination: "app" } });
+
   // …while `post_slug` IS a free string, deliberately: slugs are public content.
   const allowed: AnalyticsEvent = {
     name: "post_opened",
@@ -201,4 +213,16 @@ describe("the hero funnel carries no address and no server prose", () => {
       "hero_run_started",
     ]);
   });
+});
+
+describe("candidate_cta_clicked", () => {
+  it.each(["nav_top", "nav_capsule", "nav_mobile", "footer_band", "agents_zia"] as const)(
+    "delivers %s as its only param",
+    (cta_location) => {
+      const layer = installRealSnippetGtag();
+      track({ name: "candidate_cta_clicked", params: { cta_location } });
+      const entry = layer[0] as IArguments;
+      expect([entry[0], entry[1], entry[2]]).toEqual(["event", "candidate_cta_clicked", { cta_location }]);
+    },
+  );
 });

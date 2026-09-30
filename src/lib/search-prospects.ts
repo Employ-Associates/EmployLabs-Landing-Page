@@ -109,10 +109,15 @@ export const requestInvite = async (email: string, companyName: string): Promise
   } catch {
     return { ok: false, message: "We couldn't reach EmployLabs. Check your connection and try again." };
   }
-  const body = (await res.json().catch(() => ({}))) as { path?: string; error?: string; suggestion?: string };
-  if (res.ok && body.path) return { ok: true, path: body.path };
+  const body = (await res.json().catch(() => ({}))) as { path?: unknown; error?: unknown; suggestion?: unknown };
+  if (res.ok && typeof body.path === "string" && body.path) return { ok: true, path: body.path };
   if (res.status === 400 || res.status === 429) {
-    return { ok: false, message: body.error ?? "That email address doesn't look right.", suggestion: body.suggestion };
+    // The body is server JSON, so any field can be `null` or the wrong type.
+    // Only a non-empty string is a suggestion; anything else is "none", which is
+    // exactly what `suggestion?: string` promises every caller.
+    const suggestion = typeof body.suggestion === "string" && body.suggestion.trim() ? body.suggestion : undefined;
+    const message = typeof body.error === "string" && body.error ? body.error : "That email address doesn't look right.";
+    return suggestion ? { ok: false, message, suggestion } : { ok: false, message };
   }
   return { ok: false, message: "Searches can't start from here right now. Try again in a few minutes." };
 };

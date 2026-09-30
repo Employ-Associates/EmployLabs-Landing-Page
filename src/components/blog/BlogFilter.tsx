@@ -27,6 +27,9 @@ export function BlogFilter({ children }: { children: ReactNode }) {
             type="button"
             aria-pressed={active === o}
             onClick={() => {
+              // Re-clicking the active filter changes nothing, so it is not a
+              // filter event.
+              if (o === active) return;
               setActive(o);
               track({ name: "blog_filtered", params: { category: o } });
             }}
