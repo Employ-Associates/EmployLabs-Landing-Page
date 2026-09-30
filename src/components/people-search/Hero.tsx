@@ -39,7 +39,7 @@ export const Hero: React.FC = () => {
           style={{ animationDelay: "0.2s" }}
         >
           Our proprietary AI system automatically discovers and ranks the best
-          talent from 80 million+ profiles. Behind the scenes, it fetches
+          talent from 800 million+ profiles. Behind the scenes, it fetches
           candidates, maps competencies, and delivers comprehensive insights
           that other search engines can't match.
         </p>

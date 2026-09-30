@@ -247,7 +247,7 @@ const DiscoverySection: React.FC = () => {
             </h2>
 
             <div className="max-w-3xl text-base sm:text-lg text-zinc-400 lg:w-[35%] lg:text-right">
-              Our AI automatically fetches and analyzes 80M+ profiles,
+              Our AI automatically fetches and analyzes 800M+ profiles,
               delivering complete candidate intelligence including LinkedIn,
               GitHub, skills, companies, and competency assessments - far beyond
               traditional search engines.

@@ -46,7 +46,7 @@ spend and arming decision.
 - [Vision](https://employlabs.ai/vision) — why EmployLabs is building AI infrastructure
   for workforce intelligence, and the near-term roadmap.
 - [AI people search engine](https://employlabs.ai/people-search-engine) — search that
-  discovers and ranks candidates from 80M+ profiles and maps their competencies.
+  discovers and ranks candidates from 800M+ profiles and maps their competencies.
 - [Naira, the AI interviewer](https://employlabs.ai/naira-ai-interviewer) — the voice
   interview agent: one assessment agent across engineering, sales, product, HR,
   finance and more, with fresh role-calibrated assessments instead of question banks.

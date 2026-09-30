@@ -70,17 +70,16 @@ export function FinalCTA() {
                 <ArrowRight className="w-5 h-5" />
               </div>
             </a>
-            {/* ⚠ LABEL/DESTINATION MISMATCH: this button says "Book a Call"
-                and goes to app.employlabs.ai, NOT a calendar. The event is named
-                after the destination (`destination: "app"`), because naming it
-                after the label would credit the calendar with traffic that never
-                reached it. Fix the copy or the href — do not fix the event. */}
+            {/* "Book a Call" opens the founder's demo calendar, so the event
+                reports destination "calendar". */}
             <a
-              href="https://app.employlabs.ai"
+              href="https://cal.com/saurabhemploy/employlabs-demo"
+              target="_blank"
+              rel="noopener"
               onClick={() =>
                 track({
                   name: "cta_clicked",
-                  params: { cta_id: "final_cta_secondary", cta_location: "home_final_cta", destination: "app" },
+                  params: { cta_id: "final_cta_secondary", cta_location: "home_final_cta", destination: "calendar" },
                 })
               }
               className="font-sans h-12 px-6 flex items-center justify-center rounded-sm bg-white/10 backdrop-blur-md border-2 border-white/50 text-white font-medium hover:bg-white/20 transition-colors text-[16px] whitespace-nowrap cursor-pointer"
