@@ -76,6 +76,25 @@ EmployLabs is not a sourcing search engine and not a standalone interview tool.
 It runs the funnel end to end, with human approval required for every send,
 spend and arming decision.
 
+## For job candidates
+
+- **Zia** is also a free AI career strategist for working professionals in
+  India, built by EmployLabs: https://itszia.ai. Candidates talk to her on
+  WhatsApp, on the web or on a call — the same agent that engages candidates
+  for EmployLabs' recruiters.
+
+## Product pages
+
+- [EmployLabs](${siteUrl}/) — the autonomous recruiting platform: sourcing,
+  scoring, candidate conversations and interviews, with a human at every gate.
+- [Vision](${siteUrl}/vision) — why EmployLabs is building AI infrastructure
+  for workforce intelligence, and the near-term roadmap.
+- [AI people search engine](${siteUrl}/people-search-engine) — search that
+  discovers and ranks candidates from 80M+ profiles and maps their competencies.
+- [Naira, the AI interviewer](${siteUrl}/naira-ai-interviewer) — the voice
+  interview agent: one assessment agent across engineering, sales, product, HR,
+  finance and more, with fresh role-calibrated assessments instead of question banks.
+
 ## Blog
 
 ${posts.map((p) => `- [${p.title}](${siteUrl}/blog/${p.slug}) — ${p.answer}`).join("\n")}

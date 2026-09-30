@@ -6,6 +6,8 @@ import { Footer } from "@/components/Footer";
 import { CoverArt } from "@/components/blog/CoverArt";
 import { CategoryChip, formatDate } from "@/components/blog/PostCard";
 import { Answer } from "@/components/blog/prose";
+import { ReadDepthTracker } from "@/components/analytics/ReadDepthTracker";
+import { TrackedCtaLink } from "@/components/analytics/TrackedCtaLink";
 import { livePosts, findLivePost, relatedPosts, SITE_URL } from "@/content/blog";
 import { buildPostJsonLd } from "@/content/blog/builders";
 
@@ -73,6 +75,12 @@ export default async function BlogPostPage({ params }: Params) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Nav variant="dark" />
 
+      {/* A Server Component cannot hold a scroll listener, so read depth lives in
+          this `"use client"` child. GA4's automatic scroll tracking is OFF for
+          this property, so without it a finished 12-minute read and a two-second
+          bounce are the same single `page_view`. */}
+      <ReadDepthTracker postSlug={post.slug} readingMinutes={post.readingMinutes} articleId="post-prose" />
+
       <main className="mx-auto max-w-[1180px] px-6 md:px-8">
         <article className="mx-auto max-w-[720px] pt-52 md:pt-56">
           <Link href="/blog" className="font-mono text-[11px] uppercase tracking-[0.1em] text-zinc-500 hover:text-accent transition-colors">
@@ -107,23 +115,27 @@ export default async function BlogPostPage({ params }: Params) {
             <CoverArt motif={post.motif} category={post.category} className="aspect-video w-full" />
           </div>
 
-          <Answer>{post.answer}</Answer>
+          {/* The prose read-depth measures: answer, body and FAQ. Everything around
+              it — header, related reading, the CTA — is not reading. */}
+          <div id="post-prose">
+            <Answer>{post.answer}</Answer>
 
-          <post.Body />
+            <post.Body />
 
-          {post.faq?.length ? (
-            <section className="mt-16 border-t border-border pt-10">
-              <h2 className="font-display text-2xl font-semibold tracking-tight">Common questions</h2>
-              <dl className="mt-6 space-y-7">
-                {post.faq.map((f) => (
-                  <div key={f.q}>
-                    <dt className="font-display text-[17px] font-semibold text-white">{f.q}</dt>
-                    <dd className="mt-2 font-title text-[17px] leading-relaxed text-zinc-400">{f.a}</dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
-          ) : null}
+            {post.faq?.length ? (
+              <section className="mt-16 border-t border-border pt-10">
+                <h2 className="font-display text-2xl font-semibold tracking-tight">Common questions</h2>
+                <dl className="mt-6 space-y-7">
+                  {post.faq.map((f) => (
+                    <div key={f.q}>
+                      <dt className="font-display text-[17px] font-semibold text-white">{f.q}</dt>
+                      <dd className="mt-2 font-title text-[17px] leading-relaxed text-zinc-400">{f.a}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            ) : null}
+          </div>
 
           {related.length > 0 && (
             <section className="mt-16 border-t border-border pt-10">
@@ -162,12 +174,15 @@ export default async function BlogPostPage({ params }: Params) {
             <p className="mx-auto mt-2.5 max-w-[46ch] text-[15px] text-zinc-400">
               Upload a job description and watch the pipeline run before you commit to anything.
             </p>
-            <a
+            <TrackedCtaLink
               href="https://app.employlabs.ai"
+              ctaId="blog_post_start_free"
+              ctaLocation="blog_post_footer"
+              destination="app"
               className="mt-6 inline-block rounded-sm bg-accent px-6 py-2.5 font-display text-sm font-semibold text-[#04120a] transition-colors hover:bg-accent-hover"
             >
               Start for free
-            </a>
+            </TrackedCtaLink>
           </section>
 
           {/* Always rendered, unlike the link in Related reading — that whole

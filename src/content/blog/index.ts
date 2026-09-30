@@ -171,4 +171,4 @@ export function relatedPosts(slug: string, limit = 3, now: Date = new Date()): B
   return scored.slice(0, limit).map((s) => s.post);
 }
 
-export const SITE_URL = "https://employlabs.ai";
+export { SITE_URL } from "../site";

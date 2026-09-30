@@ -1,8 +1,12 @@
 import { Sparkles, Bot, Sparkle, Brain } from "lucide-react";
 
+import { ZiaCandidateBand } from "@/components/ZiaCandidateBand";
+
 export function Footer() {
   return (
-    <footer className="relative h-[600px] flex flex-col pt-24 pb-12 overflow-hidden bg-transparent">
+    // min-h, not h: a fixed 600px clipped the 2-column mobile grid under
+    // overflow-hidden, and the candidate band adds height on every breakpoint.
+    <footer className="relative min-h-[600px] flex flex-col pt-24 pb-12 overflow-hidden bg-transparent">
       {/* Background image masked to fade to transparent at the top so it blends with the section above */}
       <div
         className="absolute inset-0 pointer-events-none opacity-60 contrast-90"
@@ -17,7 +21,11 @@ export function Footer() {
       {/* Balanced dark overlay to ensure readability while letting the image show through */}
       <div className="absolute inset-0 bg-zinc-950/45 pointer-events-none" />
 
-      <div className="max-w-[1400px] mx-auto w-full px-8 relative z-10 flex flex-col h-full">
+      <div className="max-w-[1400px] mx-auto w-full px-8 relative z-10 flex flex-col flex-1">
+        <div className="mb-16">
+          <ZiaCandidateBand />
+        </div>
+
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-x-8 gap-y-12">
 
           <div>

@@ -48,7 +48,7 @@ import { __allPostsForTests } from "..";
 const POSTS_DIR = join(import.meta.dirname, "..", "posts");
 
 /** Metadata keywords are not claims made to a reader. */
-const stripTopics = (source: string) => source.replace(/topics:\s*\[[^\]]*\]/gs, "");
+const stripTopics = (source: string) => source.replace(/topics:\s*\[[^\]]*\]/g, "");
 
 const SOURCES = __allPostsForTests().map((p) => {
   const file = readdirSync(POSTS_DIR).find((f) => f === `${p.slug}.tsx`);

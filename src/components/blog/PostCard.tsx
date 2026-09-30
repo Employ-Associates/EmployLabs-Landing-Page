@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { CoverArt } from "./CoverArt";
+import { TrackedPostLink } from "@/components/analytics/TrackedPostLink";
 import { CATEGORY_LABEL, type BlogPost } from "@/content/blog/types";
 
 const CHIP: Record<BlogPost["category"], string> = {
@@ -27,9 +27,16 @@ export function formatDate(iso: string) {
 
 export function PostCard({ post }: { post: BlogPost }) {
   return (
-    <Link
-      href={`/blog/${post.slug}`}
-      data-category={post.category}
+    // A Server Component cannot hold an onClick, and this list is rendered on
+    // the server on purpose (see BlogFilter) — so the click boundary is this one
+    // shared child. `dataCategory` must keep flowing: the CSS category filter
+    // reads it.
+    <TrackedPostLink
+      slug={post.slug}
+      category={post.category}
+      listPosition="grid"
+      linkSurface="card"
+      dataCategory={post.category}
       className="group flex flex-col bg-card transition-colors hover:bg-[#1b1b1b]"
     >
       <CoverArt motif={post.motif} category={post.category} className="aspect-video w-full border-b border-border" />
@@ -45,6 +52,6 @@ export function PostCard({ post }: { post: BlogPost }) {
           {post.readingMinutes} min read
         </div>
       </div>
-    </Link>
+    </TrackedPostLink>
   );
 }
