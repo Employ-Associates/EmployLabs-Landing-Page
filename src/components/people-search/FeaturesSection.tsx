@@ -8,7 +8,7 @@ const features = [
     icon: Brain,
     title: "Proprietary AI Engine",
     description:
-      "Our custom-built AI engine processes 80M+ profiles with semantic indexing and vector databases, understanding context like no other search engine.",
+      "Our custom-built AI engine processes 800M+ profiles with semantic indexing and vector databases, understanding context like no other search engine.",
   },
   {
     icon: Search,
@@ -24,7 +24,7 @@ const features = [
   },
   {
     icon: Users,
-    title: "80M+ Profile Database",
+    title: "800M+ Profile Database",
     description:
       "Massive proprietary index of professional profiles with real-time updates, far beyond what public search engines can access.",
   },
