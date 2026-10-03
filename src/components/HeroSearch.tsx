@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, MotionConfig, motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, ArrowRight, Building2, Check, FileText, Globe, Link2, Loader2, Mail } from "lucide-react";
 
 import {
@@ -66,15 +66,14 @@ function AutoHeight({ children, instant }: { children: ReactNode; instant: boole
 
 /** A message that grows into place instead of shoving the form down. */
 function Reveal({ show, children }: { show: boolean; children: ReactNode }) {
-  const reduce = useReducedMotion();
   return (
     <AnimatePresence initial={false}>
       {show ? (
         <motion.div
           key="r"
-          initial={reduce ? false : { height: 0, opacity: 0 }}
+          initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
-          exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
+          exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.22, ease: EASE }}
           className="overflow-hidden"
         >
@@ -105,13 +104,14 @@ export function HeroSearch() {
   const emailRef = useRef<HTMLInputElement>(null);
   const urlRef = useRef<HTMLInputElement>(null);
   const textRef = useRef<HTMLTextAreaElement>(null);
+  const domainRef = useRef<HTMLInputElement>(null);
   const launching = useRef(false);
   /** A field to focus as soon as its panel mounts (a tab swap waits for the old panel to leave). */
   const [autoFocusField, setAutoFocusField] = useState<"url" | "text" | null>(null);
 
   const cleaned = cleanJdText(text);
   const chars = cleaned.length;
-  const urlProblem = url.trim() ? urlIssue(url) : null;
+  const urlProblem = url.trim() ? urlIssue(url) : touched.url ? "Paste a job link to start." : null;
   const urlHost = (() => {
     try {
       return url.trim() ? new URL(normalizeUrl(url)).hostname : "";
@@ -119,7 +119,11 @@ export function HeroSearch() {
       return "";
     }
   })();
-  const domainProblem = domain.trim() ? domainIssue(domain) : null;
+  const domainProblem = domain.trim()
+    ? domainIssue(domain)
+    : touched.domain
+      ? "Enter the company's website, e.g. stripe.com."
+      : null;
   const lengthProblem =
     chars > MAX_JD_CHARS
       ? `That's ${chars.toLocaleString("en-US")} characters, over the ${MAX_JD_CHARS.toLocaleString("en-US")} limit. Keep the role, requirements and location.`
@@ -156,6 +160,7 @@ export function HeroSearch() {
       // Put the cursor on whatever is wrong.
       if (mode === "url") urlRef.current?.focus();
       else if (chars < MIN_JD_CHARS || textProblem) textRef.current?.focus();
+      else domainRef.current?.focus();
       return;
     }
     if (mode === "url") setUrl(normalizeUrl(url));
@@ -212,25 +217,24 @@ export function HeroSearch() {
         })()
       : `Pasted JD · ${chars.toLocaleString("en-US")} characters`;
 
-  const swap = reduce
-    ? {}
-    : {
-        initial: { opacity: 0, y: 10 },
-        animate: { opacity: 1, y: 0, transition: { duration: 0.28, delay: 0.06, ease: EASE } },
-        exit: { opacity: 0, y: -6, transition: { duration: 0.14, ease: "easeIn" as const } },
-      };
-  const panelSwap = reduce
-    ? {}
-    : {
-        initial: { opacity: 0, x: 12 },
-        animate: { opacity: 1, x: 0, transition: { duration: 0.24, ease: EASE } },
-        exit: { opacity: 0, x: -12, transition: { duration: 0.12 } },
-      };
+  // Same props on server and client (no hydration mismatch); `MotionConfig reducedMotion="user"`
+  // below turns the movement off for people who ask for less, leaving only the fade.
+  const swap = {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.28, delay: 0.06, ease: EASE } },
+    exit: { opacity: 0, y: -6, transition: { duration: 0.14, ease: "easeIn" as const } },
+  };
+  const panelSwap = {
+    initial: { opacity: 0, x: 12 },
+    animate: { opacity: 1, x: 0, transition: { duration: 0.24, ease: EASE } },
+    exit: { opacity: 0, x: -12, transition: { duration: 0.12 } },
+  };
 
   const meter = Math.min(1, chars / MAX_JD_CHARS);
   const nearLimit = chars > MAX_JD_CHARS * 0.9 && !lengthProblem;
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="liquid-glass hero-glass w-full rounded-sm p-5 sm:p-6 text-white backdrop-blur-xl backdrop-saturate-150">
       <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/85">From a job to real insights</p>
       <h2 className="mt-2 font-display text-[26px] sm:text-[30px] leading-[1.1] tracking-tight font-medium text-balance">
@@ -254,6 +258,15 @@ export function HeroSearch() {
                       id={`${ids}-tab-${id}`}
                       aria-selected={mode === id}
                       aria-controls={`${ids}-panel-${id}`}
+                      tabIndex={mode === id ? 0 : -1}
+                      onKeyDown={(e) => {
+                        if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+                        e.preventDefault();
+                        const next = TABS[(TABS.findIndex((t) => t.id === id) + (e.key === "ArrowRight" ? 1 : TABS.length - 1)) % TABS.length]!;
+                        setAutoFocusField(null);
+                        setMode(next.id);
+                        document.getElementById(`${ids}-tab-${next.id}`)?.focus();
+                      }}
                       onClick={() => {
                         setAutoFocusField(null);
                         setMode(id);
@@ -402,6 +415,7 @@ export function HeroSearch() {
                           <Globe className="h-4 w-4 shrink-0 text-white/80" aria-hidden />
                           <span className="sr-only">Company website</span>
                           <input
+                            ref={domainRef}
                             className={input}
                             name="company-website"
                             inputMode="url"
@@ -440,7 +454,7 @@ export function HeroSearch() {
                   />
                 </label>
 
-                <CtaButton disabled={!jobReady} label="Start run" />
+                <CtaButton disabled={false} label="Start run" />
               </motion.form>
             ) : step === "email" ? (
               <motion.form key="email" {...swap} onSubmit={start} noValidate className="grid gap-3">
@@ -523,7 +537,7 @@ export function HeroSearch() {
             ) : (
               <motion.div key="launch" {...swap} role="status" aria-live="polite" className="grid justify-items-center gap-3 py-6 text-center">
                 <motion.span
-                  initial={reduce ? false : { scale: 0.6, opacity: 0 }}
+                  initial={{ scale: 0.6, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ type: "spring", stiffness: 420, damping: 22 }}
                   className="grid h-11 w-11 place-items-center rounded-full bg-accent text-zinc-950"
@@ -535,7 +549,7 @@ export function HeroSearch() {
                 <span aria-hidden className="relative mt-1 h-[2px] w-40 overflow-hidden rounded-full bg-white/15">
                   <motion.i
                     className="absolute inset-y-0 left-0 w-full origin-left rounded-full bg-accent"
-                    initial={reduce ? false : { scaleX: 0 }}
+                    initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ duration: reduce ? 0 : LAUNCH_MIN_MS / 1000 + 0.4, ease: EASE }}
                   />
@@ -546,6 +560,7 @@ export function HeroSearch() {
         </AutoHeight>
       </div>
     </div>
+    </MotionConfig>
   );
 }
 
