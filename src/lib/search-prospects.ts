@@ -14,7 +14,39 @@ export const APP_URL = (process.env.NEXT_PUBLIC_APP_URL || "https://app.employla
 
 /** The app's limits for a pasted JD (el-platform `PASTED_JD_MIN_CHARS` / `PASTED_JD_MAX_CHARS`). */
 export const MIN_JD_CHARS = 300;
-export const MAX_JD_CHARS = 3_000;
+export const MAX_JD_CHARS = 10_000;
+
+/** The longest handoff link we'll build; browsers and proxies start refusing URLs well past this. */
+export const MAX_RUN_URL_CHARS = 60_000;
+
+/**
+ * A pasted JD, tidied the way the app will read it: one newline style, no
+ * invisible characters from a PDF/Word copy, no runs of blank lines. The
+ * visitor's visible text is unchanged — only the noise goes.
+ */
+export const cleanJdText = (raw: string): string =>
+  raw
+    .replace(/\r\n?/g, "\n")
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f\u200b-\u200d\u2060\ufeff]/g, "")
+    .replace(/\u00a0/g, " ")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+/** What's wrong with a pasted JD's content, in the visitor's words; `null` when it reads like one. */
+export const jdContentIssue = (cleaned: string): { message: string; switchToLink?: string } | null => {
+  if (/^(?:https?:\/\/|www\.)\S+$/i.test(cleaned)) {
+    return { message: "That's a link, not a JD. Use the Job link tab and we'll read the page for you.", switchToLink: cleaned };
+  }
+  if (/^\s*(?:<!doctype|<html|<\?xml)/i.test(cleaned)) {
+    return { message: "That looks like page code, not text. Copy the posting's text from the page and paste that." };
+  }
+  const letters = (cleaned.match(/\p{L}/gu) ?? []).length;
+  if (cleaned.length >= MIN_JD_CHARS && letters / cleaned.length < 0.5) {
+    return { message: "Most of that isn't words. Paste the job description as plain text." };
+  }
+  return null;
+};
 
 export type JobSource =
   | { mode: "url"; url: string; companyName: string }
@@ -22,9 +54,39 @@ export type JobSource =
 
 /** "careers.acme.com/jobs/1" → "https://careers.acme.com/jobs/1". */
 export const normalizeUrl = (raw: string): string => {
-  const v = raw.trim();
+  // Whitespace inside a pasted link (a wrapped line, a stray space) breaks it.
+  // Also drop the <…> / (…) / trailing "." a link picks up when copied out of an email or sentence.
+  const v = raw.trim().replace(/\s+/g, "").replace(/^[<("'[]+|[>)"'\].,;]+$/g, "");
   if (!v) return v;
-  return /^[a-z]+:\/\//i.test(v) ? v : `https://${v}`;
+  return /^[a-z][a-z0-9+.-]*:\/\//i.test(v) ? v : `https://${v}`;
+};
+
+/**
+ * Job boards that only show a posting to a signed-in browser (el-platform's
+ * `UNREADABLE_BOARD_HOSTS`). A link to one can never be read, so say so before
+ * the visitor spends a step on it.
+ */
+const UNREADABLE_BOARDS = [
+  "naukri.com",
+  "glassdoor.com",
+  "glassdoor.co.in",
+  "indeed.com",
+  "indeed.co.in",
+  "instahyre.com",
+  "foundit.in",
+  "monster.com",
+  "shine.com",
+];
+
+/** The board's name (`naukri.com`) when the link points at one we can't read; otherwise `null`. */
+export const unreadableBoard = (raw: string): string | null => {
+  let host: string;
+  try {
+    host = new URL(normalizeUrl(raw)).hostname.toLowerCase().replace(/^www\./, "");
+  } catch {
+    return null;
+  }
+  return UNREADABLE_BOARDS.find((b) => host === b || host.endsWith(`.${b}`)) ?? null;
 };
 
 /** A job link we could fetch, or why not; `null` when it looks fine. */
@@ -36,13 +98,19 @@ export const urlIssue = (raw: string): string | null => {
     return "That isn't a web link. Paste the job posting's address.";
   }
   if (u.protocol !== "https:" && u.protocol !== "http:") return "Paste a web link (https://…).";
+  if (normalizeUrl(raw).length > 2000) return "That link is too long to be a job posting.";
+  if (u.username || u.password) return "Remove the username and password from that link.";
+  if (/^(?:localhost|127\.|10\.|192\.168\.)/i.test(u.hostname) || u.hostname.endsWith(".local")) return "That link only opens on your own network. Paste the public job posting.";
   if (!u.hostname.includes(".")) return "That link is missing its domain, e.g. careers.acme.com.";
+  const board = unreadableBoard(raw);
+  if (board) return `${board} only shows its postings to a signed-in browser, so we can't read it from a link. Copy the job description from the page and paste it instead.`;
   if (/\.(?:pdf|docx?)$/i.test(u.pathname)) return "That link is a file. Paste the JD's text instead.";
   return null;
 };
 
 export const domainIssue = (raw: string): string | null => {
   const v = raw.trim();
+  if (v.length > 253) return "That's too long for a website address.";
   if (v.includes("@")) return "That's an email address. Enter the company's website, e.g. acme.com.";
   const host = v.replace(/^[a-z]+:\/\//i, "").replace(/^www\./i, "").split(/[/?#]/)[0] ?? "";
   if (!/^[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/i.test(host)) return "Enter the company's website, e.g. acme.com.";
@@ -85,10 +153,10 @@ export const runUrl = (path: string, job: JobSource): string => {
   const p = new URLSearchParams({ mode: job.mode });
   if (job.mode === "url") p.set("url", normalizeUrl(job.url));
   else {
-    p.set("text", job.text.trim());
+    p.set("text", cleanJdText(job.text));
     p.set("domain", job.domain.trim());
   }
-  if (job.companyName.trim()) p.set("company", job.companyName.trim());
+  if (job.companyName.trim()) p.set("company", job.companyName.trim().slice(0, 120));
   return `${APP_URL}${path}#${p.toString()}`;
 };
 
@@ -98,21 +166,38 @@ export type StartResult = { ok: true; path: string } | { ok: false; message: str
  * Ask the app for an invite. Sent as text/plain so the browser makes a "simple"
  * request (no CORS preflight); the server reads the body as JSON regardless.
  */
-export const requestInvite = async (email: string, companyName: string): Promise<StartResult> => {
+export const requestInvite = async (email: string, companyName: string, timeoutMs = 20_000): Promise<StartResult> => {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   let res: Response;
   try {
     res = await fetch(`${APP_URL}/api/search-prospects/self-serve`, {
       method: "POST",
       headers: { "content-type": "text/plain;charset=UTF-8" },
       body: JSON.stringify({ email: email.trim(), ...(companyName.trim() ? { companyName: companyName.trim() } : {}) }),
+      signal: ctrl.signal,
     });
   } catch {
-    return { ok: false, message: "We couldn't reach EmployLabs. Check your connection and try again." };
+    clearTimeout(timer);
+    return ctrl.signal.aborted
+      ? { ok: false, message: "That took too long. Check your connection and try again." }
+      : { ok: false, message: "We couldn't reach EmployLabs. Check your connection and try again." };
   }
-  const body = (await res.json().catch(() => ({}))) as { path?: string; error?: string; suggestion?: string };
-  if (res.ok && body.path) return { ok: true, path: body.path };
+  clearTimeout(timer);
+  const body = (await res.json().catch(() => ({}))) as { path?: unknown; error?: unknown; suggestion?: unknown };
+  const path = typeof body.path === "string" && body.path.startsWith("/") && !body.path.startsWith("//") ? body.path : null;
+  if (res.ok && path) return { ok: true, path };
   if (res.status === 400 || res.status === 429) {
-    return { ok: false, message: body.error ?? "That email address doesn't look right.", suggestion: body.suggestion };
+    return {
+      ok: false,
+      message:
+        typeof body.error === "string" && body.error
+          ? body.error
+          : res.status === 429
+            ? "Too many searches from here. Try again in a little while."
+            : "That email address doesn't look right.",
+      suggestion: typeof body.suggestion === "string" ? body.suggestion : undefined,
+    };
   }
   return { ok: false, message: "Searches can't start from here right now. Try again in a few minutes." };
 };

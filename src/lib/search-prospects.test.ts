@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { domainIssue, emailIssue, runUrl, urlIssue } from "./search-prospects";
+import { unreadableBoard, cleanJdText, domainIssue, emailIssue, jdContentIssue, MAX_JD_CHARS, normalizeUrl, runUrl, urlIssue } from "./search-prospects";
 
 describe("emailIssue", () => {
   it.each(["", "nope", "a@b", "a@b.c", "a..b@acme.com", "a b@acme.com"])("flags %j", (v) => {
@@ -47,5 +47,45 @@ describe("runUrl", () => {
     expect(p.get("text")).toBe(text);
     expect(p.get("domain")).toBe("acme.com");
     expect(p.has("company")).toBe(false);
+  });
+});
+
+describe("cleanJdText / jdContentIssue", () => {
+  it("drops invisible characters and blank-line runs", () => {
+    expect(cleanJdText("﻿Senior​ Engineer\r\n\r\n\r\n\r\nBuild  things \n")).toBe("Senior Engineer\n\nBuild  things");
+  });
+
+  it("sends a pasted link to the Job link tab", () => {
+    expect(jdContentIssue("https://acme.com/jobs/1")?.switchToLink).toBe("https://acme.com/jobs/1");
+  });
+
+  it("lets a real posting through", () => {
+    expect(jdContentIssue("Senior Backend Engineer. ".repeat(20))).toBeNull();
+  });
+
+  it("flags text that is mostly symbols", () => {
+    expect(jdContentIssue("#### ".repeat(100))).not.toBeNull();
+  });
+});
+
+describe("normalizeUrl", () => {
+  it("removes spaces from a wrapped link", () => {
+    expect(normalizeUrl(" acme.com/jobs/ 1 ")).toBe("https://acme.com/jobs/1");
+  });
+  it("keeps the 10,000-character JD limit", () => {
+    expect(MAX_JD_CHARS).toBe(10_000);
+  });
+});
+
+describe("unreadable job boards", () => {
+  const NAUKRI = "https://www.naukri.com/job-listings-java-full-stack-lead-hexaware-technologies-pune-8-to-12-years-010226004753?src=seo_srp&sid=1";
+  it("flags a Naukri link before any request is made", () => {
+    expect(unreadableBoard(NAUKRI)).toBe("naukri.com");
+    expect(urlIssue(NAUKRI)).toMatch(/paste it instead/);
+  });
+  it("matches subdomains but not look-alikes", () => {
+    expect(unreadableBoard("in.indeed.com/viewjob?jk=1")).toBe("indeed.com");
+    expect(unreadableBoard("https://notnaukri.com/x")).toBeNull();
+    expect(unreadableBoard("https://boards.greenhouse.io/acme/jobs/1")).toBeNull();
   });
 });
