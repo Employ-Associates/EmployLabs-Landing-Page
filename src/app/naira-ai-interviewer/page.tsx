@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     title: "Naira — The AI Interview That Thinks Back | EmployLabs",
     description:
       "One assessment agent for every role and industry. Engineering. Sales. Product. HR. Finance. Naira generates fresh assessments — calibrated to the role, not pulled from a question bank.",
-    url: "https://employlabs.com/naira-ai-interviewer",
+    url: "/naira-ai-interviewer",
     siteName: "EmployLabs",
     type: "website",
   },

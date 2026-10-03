@@ -188,19 +188,16 @@ export const requestInvite = async (email: string, companyName: string, timeoutM
   }
   clearTimeout(timer);
   const body = (await res.json().catch(() => ({}))) as { path?: unknown; error?: unknown; suggestion?: unknown };
+  // Only a same-site absolute path is ever navigated to.
   const path = typeof body.path === "string" && body.path.startsWith("/") && !body.path.startsWith("//") ? body.path : null;
   if (res.ok && path) return { ok: true, path };
   if (res.status === 400 || res.status === 429) {
-    return {
-      ok: false,
-      message:
-        typeof body.error === "string" && body.error
-          ? body.error
-          : res.status === 429
-            ? "Too many searches from here. Try again in a little while."
-            : "That email address doesn't look right.",
-      suggestion: typeof body.suggestion === "string" ? body.suggestion : undefined,
-    };
+    // The body is server JSON, so any field can be `null` or the wrong type.
+    // Only a non-empty string is a suggestion; anything else is "none", which is
+    // exactly what `suggestion?: string` promises every caller.
+    const suggestion = typeof body.suggestion === "string" && body.suggestion.trim() ? body.suggestion : undefined;
+    const message = typeof body.error === "string" && body.error ? body.error : "That email address doesn't look right.";
+    return suggestion ? { ok: false, message, suggestion } : { ok: false, message };
   }
   return { ok: false, message: "Searches can't start from here right now. Try again in a few minutes." };
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "../Button";
+import { TrackedCtaLink } from "@/components/analytics/TrackedCtaLink";
 
 export const CallToActionSection: React.FC = () => {
   return (
@@ -16,8 +17,11 @@ export const CallToActionSection: React.FC = () => {
           Start your search today or request a personalized demo.
         </p>
         <div className="flex justify-center">
-          <a
+          <TrackedCtaLink
             href="https://cal.com/employ-partnerships/30min"
+            ctaId="talk_to_specialist"
+            ctaLocation="people_search_cta_section"
+            destination="calendar"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -29,7 +33,7 @@ export const CallToActionSection: React.FC = () => {
             >
               Talk to a Specialist
             </Button>
-          </a>
+          </TrackedCtaLink>
         </div>
       </div>
     </section>

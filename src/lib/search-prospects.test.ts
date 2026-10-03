@@ -1,6 +1,19 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { MIN_JD_CHARS, UNREADABLE_BOARD_LIST, unreadableBoard, cleanJdText, domainIssue, emailIssue, jdContentIssue, MAX_JD_CHARS, normalizeUrl, runUrl, urlIssue } from "./search-prospects";
+import {
+  MIN_JD_CHARS,
+  UNREADABLE_BOARD_LIST,
+  unreadableBoard,
+  cleanJdText,
+  domainIssue,
+  emailIssue,
+  jdContentIssue,
+  MAX_JD_CHARS,
+  normalizeUrl,
+  requestInvite,
+  runUrl,
+  urlIssue,
+} from "./search-prospects";
 
 describe("emailIssue", () => {
   it.each(["", "nope", "a@b", "a@b.c", "a..b@acme.com", "a b@acme.com"])("flags %j", (v) => {
@@ -95,5 +108,35 @@ describe("shared rules (must match el-platform's packages/shared/src/test/job-ur
   it("uses the same limits and unreadable boards as the app", () => {
     expect([MIN_JD_CHARS, MAX_JD_CHARS]).toEqual([300, 10_000]);
     expect([...UNREADABLE_BOARD_LIST].sort()).toEqual(["naukri.com", "glassdoor.com", "glassdoor.co.in", "indeed.com", "indeed.co.in", "instahyre.com", "foundit.in", "monster.com", "shine.com"].sort());
+  });
+});
+
+describe("requestInvite — the server body is untrusted JSON", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  const answer = (status: number, body: unknown) =>
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify(body), { status })));
+
+  // `hero_run_failed.has_suggestion` is `Boolean(res.suggestion)`; a `null` that
+  // leaked through as a present key once reported "a correction was offered".
+  it.each([null, "", "   ", 42])("a %j suggestion is no suggestion at all", async (suggestion) => {
+    answer(400, { error: "Bad address.", suggestion });
+    const res = await requestInvite("a@acme.com", "");
+    expect(res).toEqual({ ok: false, message: "Bad address." });
+    expect("suggestion" in res).toBe(false);
+  });
+
+  it("keeps a real suggestion", async () => {
+    answer(400, { error: "Did you mean a@gmail.com?", suggestion: "a@gmail.com" });
+    expect(await requestInvite("a@gmial.com", "")).toEqual({
+      ok: false,
+      message: "Did you mean a@gmail.com?",
+      suggestion: "a@gmail.com",
+    });
+  });
+
+  it("falls back to a fixed message when the error is not a string", async () => {
+    answer(429, { error: null });
+    expect(await requestInvite("a@acme.com", "")).toEqual({ ok: false, message: "That email address doesn't look right." });
   });
 });

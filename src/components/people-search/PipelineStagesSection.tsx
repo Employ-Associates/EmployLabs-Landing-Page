@@ -35,11 +35,11 @@ const stages: Stage[] = [
   {
     id: "search",
     number: 1,
-    title: "Search across 80M+ profiles",
+    title: "Search across 800M+ profiles",
     subtitle: "Initial filtering by role, location, and basic criteria",
     icon: Search,
     color: "emerald",
-    inputCount: "80M+",
+    inputCount: "800M+",
     outputCount: "2,847",
     candidates: [
       {
@@ -74,7 +74,7 @@ const stages: Stage[] = [
       metrics: [
         { label: "Data Sources", value: "15+" },
         { label: "Search Speed", value: "1.2s" },
-        { label: "Profiles Scanned", value: "80M+" },
+        { label: "Profiles Scanned", value: "800M+" },
         { label: "Real-time Updates", value: "24/7" },
       ],
       features: [
@@ -828,7 +828,7 @@ const PipelineStagesSection: React.FC = () => {
             </h2>
 
             <div className="max-w-3xl text-base sm:text-lg text-zinc-400 lg:w-[35%] lg:text-right">
-              A 5-stage pipeline that turns 80M+ profiles into prioritized
+              A 5-stage pipeline that turns 800M+ profiles into prioritized
               people using neural models, semantic indexing and multi-factor
               ranking.
             </div>

@@ -4,6 +4,8 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } f
 import { AnimatePresence, MotionConfig, motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, ArrowRight, Building2, Check, FileText, Globe, Link2, Loader2, Mail } from "lucide-react";
 
+import { track } from "@/lib/analytics-events";
+
 import {
   cleanJdText,
   domainIssue,
@@ -164,6 +166,13 @@ export function HeroSearch() {
       return;
     }
     if (mode === "url") setUrl(normalizeUrl(url));
+    // ⛔ AFTER the readiness gate, never on the click. A visitor stabbing at a
+    // disabled button has not submitted a job, and counting that would make the
+    // step-1 → step-2 drop-off — the only thing this funnel is for — meaningless.
+    track({
+      name: "hero_job_submitted",
+      params: { mode, has_company_name: companyName.trim() !== "" },
+    });
     setStep("email");
   };
 
@@ -177,6 +186,13 @@ export function HeroSearch() {
     if (!res.ok) {
       setBusy(false);
       setServerError({ message: res.message, suggestion: res.suggestion });
+      // ⛔ NO MESSAGE, EVER. `res.message` and `res.suggestion` are server prose
+      // that can echo what the visitor typed — an address, a domain. Whether a
+      // correction was offered is the only part a funnel needs.
+      track({
+        name: "hero_run_failed",
+        params: { mode, has_suggestion: Boolean(res.suggestion) },
+      });
       emailRef.current?.focus();
       return;
     }
@@ -184,10 +200,20 @@ export function HeroSearch() {
     if (href.length > MAX_RUN_URL_CHARS) {
       setBusy(false);
       setServerError({ message: "That job description is too long to carry over. Shorten it, or use the job link instead." });
+      track({ name: "hero_run_failed", params: { mode, has_suggestion: false } });
       return;
     }
+    // ⛔ ON THE SERVER'S ANSWER, BEFORE THE NAVIGATION. Firing on the click would
+    // count every visitor who typed an address the endpoint then refused.
+    // ⚠️ `email` is in scope on this very line and is deliberately absent — the
+    // closed param union makes attaching it a compile error.
+    track({
+      name: "hero_run_started",
+      params: { mode, has_company_name: companyName.trim() !== "" },
+    });
     launching.current = true;
     setStep("launch");
+    // Stays "busy" through the navigation.
     window.setTimeout(() => window.location.assign(href), reduce ? 0 : LAUNCH_MIN_MS);
   };
 

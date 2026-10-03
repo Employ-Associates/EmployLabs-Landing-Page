@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "../Button";
+import { TrackedCtaLink } from "@/components/analytics/TrackedCtaLink";
 
 export const Hero: React.FC = () => {
   return (
@@ -51,8 +52,11 @@ export const Hero: React.FC = () => {
           className="flex flex-col justify-center gap-4 mt-8 sm:flex-row animate-fade-in-up"
           style={{ animationDelay: "0.4s" }}
         >
-          <a
+          <TrackedCtaLink
             href="https://cal.com/saurabhemploy/impossibleispossible"
+            ctaId="employ_lab_get_in_touch"
+            ctaLocation="employ_lab_hero"
+            destination="calendar"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -64,7 +68,7 @@ export const Hero: React.FC = () => {
             >
               Get in Touch
             </Button>
-          </a>
+          </TrackedCtaLink>
         </div>
       </div>
     </section>

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { PostCard, CategoryChip, formatDate } from "@/components/blog/PostCard";
 import { CoverArt } from "@/components/blog/CoverArt";
 import { BlogFilter } from "@/components/blog/BlogFilter";
+import { TrackedPostLink } from "@/components/analytics/TrackedPostLink";
 import { livePosts, SITE_URL } from "@/content/blog";
 import { buildBlogIndexJsonLd } from "@/content/blog/builders";
 
@@ -68,17 +68,34 @@ export default function BlogIndexPage() {
               data-category={lead.category}
               className="glass-card mb-11 grid grid-cols-1 overflow-hidden rounded-sm md:grid-cols-2"
             >
-              <Link href={`/blog/${lead.slug}`} className="border-b border-border md:border-b-0 md:border-r">
+              {/* ⛔ THE LEAD BLOCK HAS THREE LINKS TO ONE SLUG (cover, title,
+                  button). They carry the same slug and the same list_position, so
+                  `link_surface` is the only thing that says which one was clicked
+                  — and "is the big cover image doing any work?" is the whole
+                  reason the lead block is laid out this way. */}
+              <TrackedPostLink
+                slug={lead.slug}
+                category={lead.category}
+                listPosition="lead"
+                linkSurface="cover"
+                className="border-b border-border md:border-b-0 md:border-r"
+              >
                 <CoverArt motif={lead.motif} category={lead.category} className="h-full w-full aspect-video md:aspect-auto md:min-h-[320px]" />
-              </Link>
+              </TrackedPostLink>
               <div className="flex flex-col justify-center p-8 md:p-10">
                 <div>
                   <CategoryChip category={lead.category} />
                 </div>
                 <h2 className="mt-4 font-display text-3xl md:text-4xl font-bold leading-tight tracking-tight text-balance">
-                  <Link href={`/blog/${lead.slug}`} className="hover:text-accent transition-colors">
+                  <TrackedPostLink
+                    slug={lead.slug}
+                    category={lead.category}
+                    listPosition="lead"
+                    linkSurface="title"
+                    className="hover:text-accent transition-colors"
+                  >
                     {lead.title}
-                  </Link>
+                  </TrackedPostLink>
                 </h2>
                 <p className="mt-4 max-w-[46ch] font-title text-base leading-relaxed text-zinc-400">{lead.dek}</p>
                 <div className="mt-5 font-mono text-[11px] text-zinc-500">
@@ -86,12 +103,15 @@ export default function BlogIndexPage() {
                   {" · "}
                   {lead.readingMinutes} min read
                 </div>
-                <Link
-                  href={`/blog/${lead.slug}`}
+                <TrackedPostLink
+                  slug={lead.slug}
+                  category={lead.category}
+                  listPosition="lead"
+                  linkSurface="button"
                   className="mt-7 w-fit rounded-sm bg-accent px-5 py-2.5 font-display text-sm font-semibold text-[#04120a] transition-colors hover:bg-accent-hover"
                 >
                   Read the post
-                </Link>
+                </TrackedPostLink>
               </div>
             </article>
           )}

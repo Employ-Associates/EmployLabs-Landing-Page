@@ -1,5 +1,9 @@
 import Script from "next/script";
+import { Suspense } from "react";
+
+import { PageViewTracker } from "./PageViewTracker";
 import { isValidMeasurementId } from "@/lib/analytics";
+import { buildGaBootstrap } from "@/lib/internal-traffic";
 
 /**
  * The standard Google-documented GA4 snippet: the gtag.js loader plus the inline
@@ -15,7 +19,11 @@ import { isValidMeasurementId } from "@/lib/analytics";
  * gtag.js branches on the type of each dataLayer entry and silently discards a
  * real Array, so the queue shim MUST push `arguments`. A hand-rolled helper that
  * spreads a rest parameter and pushes an array sends nothing, with no error
- * anywhere. Do not "modernise" the function below.
+ * anywhere. Do not "modernise" the shim in buildGaBootstrap.
+ *
+ * The bootstrap also marks STAFF DEVICES: it reads the `el_internal` cookie (and
+ * the `?el_internal=1|0` opt-in/out) before `config`, so every event from a
+ * marked device carries `traffic_type: 'internal'`. See lib/internal-traffic.ts.
  */
 export function GoogleAnalytics() {
   const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
@@ -31,11 +39,13 @@ export function GoogleAnalytics() {
         strategy="afterInteractive"
       />
       <Script id="ga4-init" strategy="afterInteractive">
-        {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', '${measurementId}');`}
+        {buildGaBootstrap(measurementId)}
       </Script>
+      {/* `useSearchParams()` inside needs a boundary or the whole tree opts out
+          of static rendering. */}
+      <Suspense fallback={null}>
+        <PageViewTracker />
+      </Suspense>
     </>
   );
 }
