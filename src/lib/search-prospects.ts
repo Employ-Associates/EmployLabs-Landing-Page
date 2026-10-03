@@ -55,8 +55,11 @@ export type JobSource =
 /** "careers.acme.com/jobs/1" → "https://careers.acme.com/jobs/1". */
 export const normalizeUrl = (raw: string): string => {
   // Whitespace inside a pasted link (a wrapped line, a stray space) breaks it.
+  // A link pasted with words around it ("see https://acme.com/jobs/1 thanks"): keep the link.
+  let v = raw.trim();
+  if (/\s/.test(v)) v = v.match(/(?:https?:\/\/|www\.)\S+|\b[a-z0-9-]+(?:\.[a-z0-9-]+)+\/\S*/i)?.[0] ?? v.replace(/\s+/g, "");
   // Also drop the <…> / (…) / trailing "." a link picks up when copied out of an email or sentence.
-  const v = raw.trim().replace(/\s+/g, "").replace(/^[<("'[]+|[>)"'\].,;]+$/g, "");
+  v = v.replace(/^[<("'[]+|[>)"'\].,;]+$/g, "");
   if (!v) return v;
   return /^[a-z][a-z0-9+.-]*:\/\//i.test(v) ? v : `https://${v}`;
 };
@@ -66,7 +69,7 @@ export const normalizeUrl = (raw: string): string => {
  * `UNREADABLE_BOARD_HOSTS`). A link to one can never be read, so say so before
  * the visitor spends a step on it.
  */
-const UNREADABLE_BOARDS = [
+export const UNREADABLE_BOARD_LIST = [
   "naukri.com",
   "glassdoor.com",
   "glassdoor.co.in",
@@ -86,7 +89,7 @@ export const unreadableBoard = (raw: string): string | null => {
   } catch {
     return null;
   }
-  return UNREADABLE_BOARDS.find((b) => host === b || host.endsWith(`.${b}`)) ?? null;
+  return UNREADABLE_BOARD_LIST.find((b) => host === b || host.endsWith(`.${b}`)) ?? null;
 };
 
 /** A job link we could fetch, or why not; `null` when it looks fine. */

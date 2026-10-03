@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { unreadableBoard, cleanJdText, domainIssue, emailIssue, jdContentIssue, MAX_JD_CHARS, normalizeUrl, runUrl, urlIssue } from "./search-prospects";
+import { MIN_JD_CHARS, UNREADABLE_BOARD_LIST, unreadableBoard, cleanJdText, domainIssue, emailIssue, jdContentIssue, MAX_JD_CHARS, normalizeUrl, runUrl, urlIssue } from "./search-prospects";
 
 describe("emailIssue", () => {
   it.each(["", "nope", "a@b", "a@b.c", "a..b@acme.com", "a b@acme.com"])("flags %j", (v) => {
@@ -69,8 +69,9 @@ describe("cleanJdText / jdContentIssue", () => {
 });
 
 describe("normalizeUrl", () => {
-  it("removes spaces from a wrapped link", () => {
-    expect(normalizeUrl(" acme.com/jobs/ 1 ")).toBe("https://acme.com/jobs/1");
+  it("keeps just the link when it was pasted with words around it", () => {
+    expect(normalizeUrl("Check this out: https://acme.com/jobs/1?x=1. Thanks!")).toBe("https://acme.com/jobs/1?x=1");
+    expect(normalizeUrl("see careers.acme.com/jobs/9 please")).toBe("https://careers.acme.com/jobs/9");
   });
   it("keeps the 10,000-character JD limit", () => {
     expect(MAX_JD_CHARS).toBe(10_000);
@@ -87,5 +88,12 @@ describe("unreadable job boards", () => {
     expect(unreadableBoard("in.indeed.com/viewjob?jk=1")).toBe("indeed.com");
     expect(unreadableBoard("https://notnaukri.com/x")).toBeNull();
     expect(unreadableBoard("https://boards.greenhouse.io/acme/jobs/1")).toBeNull();
+  });
+});
+
+describe("shared rules (must match el-platform's packages/shared/src/job-url.test.ts)", () => {
+  it("uses the same limits and unreadable boards as the app", () => {
+    expect([MIN_JD_CHARS, MAX_JD_CHARS]).toEqual([300, 10_000]);
+    expect([...UNREADABLE_BOARD_LIST].sort()).toEqual(["naukri.com", "glassdoor.com", "glassdoor.co.in", "indeed.com", "indeed.co.in", "instahyre.com", "foundit.in", "monster.com", "shine.com"].sort());
   });
 });

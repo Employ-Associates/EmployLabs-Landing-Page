@@ -466,7 +466,7 @@ export function HeroSearch() {
 
                 <div>
                   <label htmlFor={`${ids}-email`} className="mb-1.5 block text-[14px] font-medium text-white">
-                    Where should we send your results?
+                    Your work email
                   </label>
                   <div className={field}>
                     <Mail className="h-4 w-4 shrink-0 text-white/80" aria-hidden />
@@ -513,7 +513,7 @@ export function HeroSearch() {
                         )}
                       </p>
                     ) : (
-                      <p className="mt-1.5 text-[12px] text-white/75">Your work email works best. No password, no sign-up.</p>
+                      <p className="mt-1.5 text-[12px] text-white/75">We use it to open your search here. No password, no sign-up.</p>
                     )}
                   </div>
                 </div>
