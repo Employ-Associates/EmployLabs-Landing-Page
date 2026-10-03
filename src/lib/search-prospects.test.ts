@@ -91,7 +91,7 @@ describe("unreadable job boards", () => {
   });
 });
 
-describe("shared rules (must match el-platform's packages/shared/src/job-url.test.ts)", () => {
+describe("shared rules (must match el-platform's packages/shared/src/test/job-url.test.ts)", () => {
   it("uses the same limits and unreadable boards as the app", () => {
     expect([MIN_JD_CHARS, MAX_JD_CHARS]).toEqual([300, 10_000]);
     expect([...UNREADABLE_BOARD_LIST].sort()).toEqual(["naukri.com", "glassdoor.com", "glassdoor.co.in", "indeed.com", "indeed.co.in", "instahyre.com", "foundit.in", "monster.com", "shine.com"].sort());
